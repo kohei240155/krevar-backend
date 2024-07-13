@@ -5,7 +5,7 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     user_type ENUM('admin', 'user') NOT NULL,
-    subscription_type ENUM('free', 'premium', 'enterprise') NOT NULL,
+    subscription_type ENUM('free', 'basic', 'value', 'premium') NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -13,7 +13,7 @@ CREATE TABLE users (
 -- mastery_statuses table
 CREATE TABLE mastery_statuses (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    status ENUM('new', 'learning', 'mastered') NOT NULL,
+    status ENUM('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i') NOT NULL,
     days INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -45,3 +45,15 @@ CREATE TABLE words (
     FOREIGN KEY (deck_id) REFERENCES decks(id),
     FOREIGN KEY (mastery_status_id) REFERENCES mastery_statuses(id)
 );
+
+-- 初期データの挿入
+INSERT INTO mastery_statuses (status, days) VALUES
+('a', 1),
+('b', 2),
+('c', 4),
+('d', 7),
+('e', 15),
+('f', 30),
+('g', 60),
+('h', 120),
+('i', 240);
