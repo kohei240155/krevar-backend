@@ -9,5 +9,7 @@ public class IrukaBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(IrukaBackendApplication.class, args);
 	}
+	
+	
 
 }
