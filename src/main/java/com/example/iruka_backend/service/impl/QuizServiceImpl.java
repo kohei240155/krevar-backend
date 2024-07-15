@@ -1,5 +1,6 @@
 package com.example.iruka_backend.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,12 @@ public class QuizServiceImpl implements QuizService {
 	
 	@Override
 	public List<Word> getQuestionsByDeckId(Long deckId) {
-		return quizRepository.findByDeckId(deckId);
+//		LocalDateTime now = LocalDateTime.now();
+//		TODO: 動作確認用
+		LocalDateTime now = LocalDateTime.parse("2024-07-18T12:00:00");
+		System.out.println("★：" + now.toString());
+		System.out.println("★：" + deckId);
+		return quizRepository.findTodaysWords(now, deckId);
 	}
 
 }
