@@ -10,18 +10,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.iruka_backend.entity.Word;
-import com.example.iruka_backend.service.WordService;
+import com.example.iruka_backend.service.QuizService;
 
 @RestController
-@RequestMapping("/api/decks/{deckId}/words")
+@RequestMapping("/api/questions/{deckId}")
 @CrossOrigin(origins = "http://localhost:3000")
-public class WordController {
-	
+public class QuizController {
+
 	@Autowired
-	private WordService wordService;
+	private QuizService quizService;
 	
 	@GetMapping
-	public List<Word> getWordsByDeckId(@PathVariable("deckId") Long deckId) {
-		return wordService.getWordsByDeckId(deckId);
+	public List<Word> getQuestionsByDeckId(@PathVariable("deckId") Long deckId) {
+		return quizService.getQuestionsByDeckId(deckId);
 	}
+	
 }
