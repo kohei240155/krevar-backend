@@ -35,8 +35,17 @@ public class Word {
 	@Column(name = "next_practice_date", nullable = false)
 	private LocalDateTime nextPracticeDate;
 	
+	@Column(name = "correct_count", nullable = false)
+	private Long correct_count;
+
+	@Column(name = "incorrect_count", nullable = false)
+	private Long incorrect_count;
+	
+	@Column(name = "last_result", nullable = true)
+	private String last_result;
+	
 	@Column(name = "deck_id", nullable = false)
-	private long deckId;
+	private Long deckId;
 	
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt;
@@ -99,12 +108,36 @@ public class Word {
 	public void setNextPracticeDate(LocalDateTime nextPracticeDate) {
 		this.nextPracticeDate = nextPracticeDate;
 	}
+	
+	public Long getCorrect_count() {
+		return correct_count;
+	}
+
+	public void setCorrect_count(Long correct_count) {
+		this.correct_count = correct_count;
+	}
+
+	public Long getIncorrect_count() {
+		return incorrect_count;
+	}
+
+	public void setIncorrect_count(Long incorrect_count) {
+		this.incorrect_count = incorrect_count;
+	}
+
+	public String getLast_result() {
+		return last_result;
+	}
+
+	public void setLast_result(String last_result) {
+		this.last_result = last_result;
+	}
 
 	public long getDeckId() {
 		return deckId;
 	}
-
-	public void setDeckId(long deckId) {
+	
+	public void setDeckId(Long deckId) {
 		this.deckId = deckId;
 	}
 
