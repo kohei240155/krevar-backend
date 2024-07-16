@@ -28,7 +28,7 @@ public class Deck {
 	
 	@Column(name = "updated_at", nullable = false)
 	private LocalDateTime updatedAt;
-
+	
 	public Long getId() {
 		return id;
 	}

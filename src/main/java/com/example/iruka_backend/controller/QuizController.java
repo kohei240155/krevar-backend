@@ -13,7 +13,7 @@ import com.example.iruka_backend.entity.Word;
 import com.example.iruka_backend.service.QuizService;
 
 @RestController
-@RequestMapping("/api/questions/{deckId}")
+@RequestMapping("/api/quiz/{deckId}")
 @CrossOrigin(origins = "http://localhost:3000")
 public class QuizController {
 
