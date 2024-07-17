@@ -24,5 +24,4 @@ public class QuizController {
 	public List<Word> getQuestionsByDeckId(@PathVariable("deckId") Long deckId) {
 		return quizService.getQuestionsByDeckId(deckId);
 	}
-	
 }
