@@ -7,7 +7,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,8 +35,13 @@ public class DeckController {
 	@PostMapping
 	public Deck createDeck(@RequestBody Deck deck) {
 		logger.info("Received request to create deck: {}", deck);
-		System.out.println("Deck Name: " + deck.getDeckName());
-		System.out.println("User ID: " + deck.getUserId());
-		return deck;
+		return deckService.save(deck);
 	}
+	
+	@PutMapping("/{id}")
+	public Deck updateDeckName(@PathVariable("id") Long id, @RequestBody Deck updatedDeck) {
+		logger.info("Received request to update deck: {}", updatedDeck);
+		return deckService.updateDeckName(id, updatedDeck.getDeckName());
+	}
+	
 }

@@ -19,4 +19,16 @@ public class DeckServiceImpl implements DeckService {
 	public List<Deck> getAllDecks() {
 		return deckRepository.findAll();
 	}
+
+	@Override
+	public Deck save(Deck deck) {
+		return deckRepository.save(deck);
+	}
+
+	@Override
+	public Deck updateDeckName(Long id, String newDeckName) {
+		Deck deck = deckRepository.findById(id).orElseThrow(() -> new RuntimeException("Deck not found"));
+		deck.setDeckName(newDeckName);
+		return deckRepository.save(deck);
+	}
 }
