@@ -8,4 +8,5 @@ public interface DeckService {
 	List<Deck> getAllDecks();
 	Deck save(Deck deck);
 	Deck updateDeckName(Long id, String newDeckName);
+	void deleteDeck(Long id);
 }

@@ -31,4 +31,10 @@ public class DeckServiceImpl implements DeckService {
 		deck.setDeckName(newDeckName);
 		return deckRepository.save(deck);
 	}
+
+	@Override
+	public void deleteDeck(Long id) {
+		Deck deck = deckRepository.findById(id).orElseThrow(() -> new RuntimeException("Deck not found"));
+		deckRepository.delete(deck);
+	}
 }
