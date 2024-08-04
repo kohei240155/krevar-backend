@@ -6,4 +6,5 @@ import com.example.iruka_backend.entity.Word;
 
 public interface WordService {
 	List<Word> getWordsByDeckId(Long deckId);
+	Word save(Word word);
 }

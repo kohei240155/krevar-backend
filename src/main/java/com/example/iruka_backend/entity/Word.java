@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name = "words")
 public class Word {
@@ -17,33 +19,46 @@ public class Word {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
+	@JsonProperty("original_text")
 	@Column(name = "original_text", nullable = false)
 	private String originalText;
 	
+	@JsonProperty("translated_text")
 	@Column(name = "translated_text")
 	private String translatedText;
 	
+	@JsonProperty("original_image_url")
 	@Column(name = "original_image_url")
 	private String originalImageUrl;
 	
+	@JsonProperty("image_url")
+	@Column(name = "image_url")
+	private String imageUrl;
+	
+	@JsonProperty("mastery_status_id")
 	@Column(name = "mastery_status_id", nullable = false)
 	private Long masteryStatusId;
 	
+	@JsonProperty("last_practiced_date")
 	@Column(name = "last_practiced_date", nullable = false)
 	private LocalDateTime lastPracticedDate;
 	
+	@JsonProperty("next_practice_date")
 	@Column(name = "next_practice_date", nullable = false)
 	private LocalDateTime nextPracticeDate;
 	
+	@JsonProperty("correct_count")
 	@Column(name = "correct_count", nullable = false)
 	private Long correct_count;
 
+	@JsonProperty("incorrect_count")
 	@Column(name = "incorrect_count", nullable = false)
 	private Long incorrect_count;
 	
 	@Column(name = "last_result", nullable = true)
 	private String last_result;
 	
+	@JsonProperty("deck_id")
 	@Column(name = "deck_id", nullable = false)
 	private Long deckId;
 	
@@ -83,6 +98,14 @@ public class Word {
 
 	public void setOriginalImageUrl(String originalImageUrl) {
 		this.originalImageUrl = originalImageUrl;
+	}
+	
+	public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
 	}
 
 	public Long getMasteryStatusId() {

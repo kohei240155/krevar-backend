@@ -20,4 +20,9 @@ public class WordServiceImpl implements WordService {
 		return wordRepository.findByDeckId(deckId);
 	}
 
+	@Override
+	public Word save(Word word) {
+		return wordRepository.save(word);
+	}
+	
 }
