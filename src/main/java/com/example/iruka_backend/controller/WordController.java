@@ -16,7 +16,7 @@ import com.example.iruka_backend.entity.Word;
 import com.example.iruka_backend.service.WordService;
 
 @RestController
-@RequestMapping("/api/decks/{deckId}/words")
+@RequestMapping("/api/word/{deckId}")
 @CrossOrigin(origins = "http://localhost:3000")
 public class WordController {
 	
