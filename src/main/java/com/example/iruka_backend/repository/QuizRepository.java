@@ -12,7 +12,7 @@ import com.example.iruka_backend.entity.Word;
 
 @Repository
 public interface QuizRepository extends JpaRepository<Word, Long> {
-	
+
 	@Query("SELECT w FROM Word w WHERE w.nextPracticeDate < :now AND w.deckId = :deckId")
 	List<Word> findTodaysWords(
 			@Param("now") LocalDateTime now,

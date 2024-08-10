@@ -1,6 +1,7 @@
 package com.example.iruka_backend.service.impl;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,7 @@ public class WordServiceImpl implements WordService {
 
 	@Autowired
 	private WordRepository wordRepository;
-	
+
 	@Override
 	public List<Word> getWordsByDeckId(Long deckId) {
 		return wordRepository.findByDeckId(deckId);
@@ -24,5 +25,14 @@ public class WordServiceImpl implements WordService {
 	public Word save(Word word) {
 		return wordRepository.save(word);
 	}
-	
+
+	@Override
+	public Optional<Word> getWordById(Long wordId) {
+		return wordRepository.findById(wordId);
+	}
+
+	@Override
+	public Word update(Word word) {
+		return wordRepository.save(word);
+	}
 }

@@ -22,29 +22,29 @@ import com.example.iruka_backend.service.DeckService;
 @RequestMapping("/api/decks")
 @CrossOrigin(origins = "http://localhost:3000")
 public class DeckController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(DeckController.class);
-	
+
 	@Autowired
 	private DeckService deckService;
-	
+
 	@GetMapping
 	public List<Deck> getAllDecks() {
 		return deckService.getAllDecks();
 	}
-	
+
 	@PostMapping
 	public Deck createDeck(@RequestBody Deck deck) {
 		logger.info("Received request to create deck: {}", deck);
 		return deckService.save(deck);
 	}
-	
+
 	@PutMapping("/{id}")
 	public Deck updateDeckName(@PathVariable("id") Long id, @RequestBody Deck updatedDeck) {
 		logger.info("Received request to update deck: {}", updatedDeck);
 		return deckService.updateDeckName(id, updatedDeck.getDeckName());
 	}
-	
+
 	@DeleteMapping("/{id}")
 	public void deleteDeck(@PathVariable("id") Long id) {
 		logger.info("Received request to delete deck with id: {}", id);
