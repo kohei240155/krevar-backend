@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.iruka_backend.entity.DeckEntity;
 import com.example.iruka_backend.service.DeckService;
 import com.example.iruka_backend.responsedto.DeckListResponse;
-import com.example.iruka_backend.responsedto.DeckCreatedResponse; // Added import
+import com.example.iruka_backend.responsedto.DeckCreatedResponse;
+import com.example.iruka_backend.responsedto.DeckUpdatedResponse;
 
 @RestController
 @RequestMapping("/api/decks")
@@ -55,9 +56,15 @@ public class DeckController {
 	}
 
 	@PutMapping("/{id}")
-	public DeckEntity updateDeckName(@PathVariable("id") Long id, @RequestBody DeckEntity updatedDeck) {
+	public DeckUpdatedResponse updateDeckName(@PathVariable("id") Long id, @RequestBody DeckEntity updatedDeck) {
 		logger.info("Received request to update deck: {}", updatedDeck);
-		return deckService.updateDeckName(id, updatedDeck.getDeckName());
+		try {
+			DeckEntity updatedEntity = deckService.updateDeckName(id, updatedDeck.getDeckName());
+			return new DeckUpdatedResponse(updatedEntity.getId(), updatedEntity.getDeckName(), "Deck updated successfully");
+		} catch (Exception e) {
+			logger.error("Error updating deck: {}", e.getMessage());
+			return new DeckUpdatedResponse(null, null, "Error updating deck");
+		}
 	}
 
 	@DeleteMapping("/{id}")
