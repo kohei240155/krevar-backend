@@ -1,80 +1,62 @@
--- ダミーユーザーデータ
-INSERT INTO users (name, email, password, user_type, subscription_type, created_at, updated_at) VALUES
-('Alice', 'alice@example.com', 'password123', 'user', 'free', NOW(), NOW()),
-('Bob', 'bob@example.com', 'password123', 'user', 'basic', NOW(), NOW()),
-('Carol', 'carol@example.com', 'password123', 'user', 'value', NOW(), NOW()),
-('Dave', 'dave@example.com', 'password123', 'user', 'premium', NOW(), NOW()),
-('Eve', 'eve@example.com', 'password123', 'admin', 'free', NOW(), NOW());
+-- usersテーブルにダミーデータを挿入
+INSERT INTO users (name, email, password)
+VALUES
+('John Doe', 'john.doe@example.com', 'password123'),
+('Jane Smith', 'jane.smith@example.com', 'securepass'),
+('Alice Johnson', 'alice.johnson@example.com', 'alicepassword');
 
--- ダミーデッキデータ
-INSERT INTO decks (deck_name, user_id, created_at, updated_at) VALUES
-('Deck 1', 1, NOW(), NOW()),
-('Deck 2', 2, NOW(), NOW()),
-('Deck 3', 3, NOW(), NOW()),
-('Deck 4', 4, NOW(), NOW()),
-('Deck 5', 5, NOW(), NOW());
+-- review_intervalsテーブルにダミーデータを挿入
+INSERT INTO review_intervals (interval_order, interval_days)
+VALUES
+(1, 1),    -- 1日後
+(2, 3),    -- 3日後
+(3, 7),    -- 7日後
+(4, 14),   -- 14日後
+(5, 30),   -- 30日後
+(6, 60),   -- 60日後
+(7, 90),   -- 90日後
+(8, 180),  -- 180日後
+(9, 300);  -- 300日後
 
--- 初期データの挿入（習得ステータステーブル）
-INSERT INTO mastery_statuses (status, days, created_at, updated_at) VALUES
-('a', 1, NOW(), NOW()),
-('b', 2, NOW(), NOW()),
-('c', 4, NOW(), NOW()),
-('d', 7, NOW(), NOW()),
-('e', 15, NOW(), NOW()),
-('f', 30, NOW(), NOW()),
-('g', 60, NOW(), NOW()),
-('h', 120, NOW(), NOW()),
-('i', 240, NOW(), NOW());
+-- decksテーブルにダミーデータを挿入
+INSERT INTO decks (deck_name, user_id)
+VALUES
+('Basic Vocabulary', 1),  -- John Doeのデッキ1
+('Intermediate Vocabulary', 1),  -- John Doeのデッキ2
+('Advanced Vocabulary', 2),  -- Jane Smithのデッキ1
+('Business English', 2),  -- Jane Smithのデッキ2
+('Technical Terms', 3),  -- Alice Johnsonのデッキ1
+('Daily Conversation', 3);  -- Alice Johnsonのデッキ2
 
--- ダミー単語データ
-INSERT INTO words (original_text, translated_text, original_image_url, image_url, mastery_status_id, last_practiced_date, next_practice_date, correct_count, incorrect_count, last_result, deck_id, created_at, updated_at) VALUES
-('Word 1', '単語1', 'http://example.com/original1.jpg', 'http://example.com/image1.jpg', 1, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), 0, 0, NULL, 1, NOW(), NOW()),
-('Word 2', '単語2', 'http://example.com/original2.jpg', 'http://example.com/image2.jpg', 2, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), 0, 0, NULL, 1, NOW(), NOW()),
-('Word 3', '単語3', 'http://example.com/original3.jpg', 'http://example.com/image3.jpg', 3, NOW(), DATE_ADD(NOW(), INTERVAL 4 DAY), 0, 0, NULL, 1, NOW(), NOW()),
-('Word 4', '単語4', 'http://example.com/original4.jpg', 'http://example.com/image4.jpg', 4, NOW(), DATE_ADD(NOW(), INTERVAL 7 DAY), 0, 0, NULL, 1, NOW(), NOW()),
-('Word 5', '単語5', 'http://example.com/original5.jpg', 'http://example.com/image5.jpg', 5, NOW(), DATE_ADD(NOW(), INTERVAL 15 DAY), 0, 0, NULL, 1, NOW(), NOW()),
-('Word 6', '単語6', 'http://example.com/original6.jpg', 'http://example.com/image6.jpg', 6, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 0, 0, NULL, 1, NOW(), NOW()),
-('Word 7', '単語7', 'http://example.com/original7.jpg', 'http://example.com/image7.jpg', 7, NOW(), DATE_ADD(NOW(), INTERVAL 60 DAY), 0, 0, NULL, 1, NOW(), NOW()),
-('Word 8', '単語8', 'http://example.com/original8.jpg', 'http://example.com/image8.jpg', 8, NOW(), DATE_ADD(NOW(), INTERVAL 120 DAY), 0, 0, NULL, 1, NOW(), NOW()),
-('Word 9', '単語9', 'http://example.com/original9.jpg', 'http://example.com/image9.jpg', 9, NOW(), DATE_ADD(NOW(), INTERVAL 240 DAY), 0, 0, NULL, 1, NOW(), NOW()),
-('Word 10', '単語10', 'http://example.com/original10.jpg', 'http://example.com/image10.jpg', 1, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), 0, 0, NULL, 2, NOW(), NOW()),
-('Word 11', '単語11', 'http://example.com/original11.jpg', 'http://example.com/image11.jpg', 2, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), 0, 0, NULL, 2, NOW(), NOW()),
-('Word 12', '単語12', 'http://example.com/original12.jpg', 'http://example.com/image12.jpg', 3, NOW(), DATE_ADD(NOW(), INTERVAL 4 DAY), 0, 0, NULL, 2, NOW(), NOW()),
-('Word 13', '単語13', 'http://example.com/original13.jpg', 'http://example.com/image13.jpg', 4, NOW(), DATE_ADD(NOW(), INTERVAL 7 DAY), 0, 0, NULL, 2, NOW(), NOW()),
-('Word 14', '単語14', 'http://example.com/original14.jpg', 'http://example.com/image14.jpg', 5, NOW(), DATE_ADD(NOW(), INTERVAL 15 DAY), 0, 0, NULL, 2, NOW(), NOW()),
-('Word 15', '単語15', 'http://example.com/original15.jpg', 'http://example.com/image15.jpg', 6, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 0, 0, NULL, 2, NOW(), NOW()),
-('Word 16', '単語16', 'http://example.com/original16.jpg', 'http://example.com/image16.jpg', 7, NOW(), DATE_ADD(NOW(), INTERVAL 60 DAY), 0, 0, NULL, 2, NOW(), NOW()),
-('Word 17', '単語17', 'http://example.com/original17.jpg', 'http://example.com/image17.jpg', 8, NOW(), DATE_ADD(NOW(), INTERVAL 120 DAY), 0, 0, NULL, 2, NOW(), NOW()),
-('Word 18', '単語18', 'http://example.com/original18.jpg', 'http://example.com/image18.jpg', 9, NOW(), DATE_ADD(NOW(), INTERVAL 240 DAY), 0, 0, NULL, 2, NOW(), NOW()),
-('Word 19', '単語19', 'http://example.com/original19.jpg', 'http://example.com/image19.jpg', 1, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), 0, 0, NULL, 3, NOW(), NOW()),
-('Word 20', '単語20', 'http://example.com/original20.jpg', 'http://example.com/image20.jpg', 2, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), 0, 0, NULL, 3, NOW(), NOW()),
-('Word 21', '単語21', 'http://example.com/original21.jpg', 'http://example.com/image21.jpg', 3, NOW(), DATE_ADD(NOW(), INTERVAL 4 DAY), 0, 0, NULL, 3, NOW(), NOW()),
-('Word 22', '単語22', 'http://example.com/original22.jpg', 'http://example.com/image22.jpg', 4, NOW(), DATE_ADD(NOW(), INTERVAL 7 DAY), 0, 0, NULL, 3, NOW(), NOW()),
-('Word 23', '単語23', 'http://example.com/original23.jpg', 'http://example.com/image23.jpg', 5, NOW(), DATE_ADD(NOW(), INTERVAL 15 DAY), 0, 0, NULL, 3, NOW(), NOW()),
-('Word 24', '単語24', 'http://example.com/original24.jpg', 'http://example.com/image24.jpg', 6, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 0, 0, NULL, 3, NOW(), NOW()),
-('Word 25', '単語25', 'http://example.com/original25.jpg', 'http://example.com/image25.jpg', 7, NOW(), DATE_ADD(NOW(), INTERVAL 60 DAY), 0, 0, NULL, 3, NOW(), NOW()),
-('Word 26', '単語26', 'http://example.com/original26.jpg', 'http://example.com/image26.jpg', 8, NOW(), DATE_ADD(NOW(), INTERVAL 120 DAY), 0, 0, NULL, 3, NOW(), NOW()),
-('Word 27', '単語27', 'http://example.com/original27.jpg', 'http://example.com/image27.jpg', 9, NOW(), DATE_ADD(NOW(), INTERVAL 240 DAY), 0, 0, NULL, 3, NOW(), NOW()),
-('Word 28', '単語28', 'http://example.com/original28.jpg', 'http://example.com/image28.jpg', 1, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), 0, 0, NULL, 4, NOW(), NOW()),
-('Word 29', '単語29', 'http://example.com/original29.jpg', 'http://example.com/image29.jpg', 2, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), 0, 0, NULL, 4, NOW(), NOW()),
-('Word 30', '単語30', 'http://example.com/original30.jpg', 'http://example.com/image30.jpg', 3, NOW(), DATE_ADD(NOW(), INTERVAL 4 DAY), 0, 0, NULL, 4, NOW(), NOW()),
-('Word 31', '単語31', 'http://example.com/original31.jpg', 'http://example.com/image31.jpg', 4, NOW(), DATE_ADD(NOW(), INTERVAL 7 DAY), 0, 0, NULL, 4, NOW(), NOW()),
-('Word 32', '単語32', 'http://example.com/original32.jpg', 'http://example.com/image32.jpg', 5, NOW(), DATE_ADD(NOW(), INTERVAL 15 DAY), 0, 0, NULL, 4, NOW(), NOW()),
-('Word 33', '単語33', 'http://example.com/original33.jpg', 'http://example.com/image33.jpg', 6, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 0, 0, NULL, 4, NOW(), NOW()),
-('Word 34', '単語34', 'http://example.com/original34.jpg', 'http://example.com/image34.jpg', 7, NOW(), DATE_ADD(NOW(), INTERVAL 60 DAY), 0, 0, NULL, 4, NOW(), NOW()),
-('Word 35', '単語35', 'http://example.com/original35.jpg', 'http://example.com/image35.jpg', 8, NOW(), DATE_ADD(NOW(), INTERVAL 120 DAY), 0, 0, NULL, 4, NOW(), NOW()),
-('Word 36', '単語36', 'http://example.com/original36.jpg', 'http://example.com/image36.jpg', 9, NOW(), DATE_ADD(NOW(), INTERVAL 240 DAY), 0, 0, NULL, 4, NOW(), NOW()),
-('Word 37', '単語37', 'http://example.com/original37.jpg', 'http://example.com/image37.jpg', 1, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), 0, 0, NULL, 5, NOW(), NOW()),
-('Word 38', '単語38', 'http://example.com/original38.jpg', 'http://example.com/image38.jpg', 2, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), 0, 0, NULL, 5, NOW(), NOW()),
-('Word 39', '単語39', 'http://example.com/original39.jpg', 'http://example.com/image39.jpg', 3, NOW(), DATE_ADD(NOW(), INTERVAL 4 DAY), 0, 0, NULL, 5, NOW(), NOW()),
-('Word 40', '単語40', 'http://example.com/original40.jpg', 'http://example.com/image40.jpg', 4, NOW(), DATE_ADD(NOW(), INTERVAL 7 DAY), 0, 0, NULL, 5, NOW(), NOW()),
-('Word 41', '単語41', 'http://example.com/original41.jpg', 'http://example.com/image41.jpg', 5, NOW(), DATE_ADD(NOW(), INTERVAL 15 DAY), 0, 0, NULL, 5, NOW(), NOW()),
-('Word 42', '単語42', 'http://example.com/original42.jpg', 'http://example.com/image42.jpg', 6, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), 0, 0, NULL, 5, NOW(), NOW()),
-('Word 43', '単語43', 'http://example.com/original43.jpg', 'http://example.com/image43.jpg', 7, NOW(), DATE_ADD(NOW(), INTERVAL 60 DAY), 0, 0, NULL, 5, NOW(), NOW()),
-('Word 44', '単語44', 'http://example.com/original44.jpg', 'http://example.com/image44.jpg', 8, NOW(), DATE_ADD(NOW(), INTERVAL 120 DAY), 0, 0, NULL, 5, NOW(), NOW()),
-('Word 45', '単語45', 'http://example.com/original45.jpg', 'http://example.com/image45.jpg', 9, NOW(), DATE_ADD(NOW(), INTERVAL 240 DAY), 0, 0, NULL, 5, NOW(), NOW()),
-('Word 46', '単語46', 'http://example.com/original46.jpg', 'http://example.com/image46.jpg', 1, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY), 0, 0, NULL, 1, NOW(), NOW()),
-('Word 47', '単語47', 'http://example.com/original47.jpg', 'http://example.com/image47.jpg', 2, NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY), 0, 0, NULL, 2, NOW(), NOW()),
-('Word 48', '単語48', 'http://example.com/original48.jpg', 'http://example.com/image48.jpg', 3, NOW(), DATE_ADD(NOW(), INTERVAL 4 DAY), 0, 0, NULL, 3, NOW(), NOW()),
-('Word 49', '単語49', 'http://example.com/original49.jpg', 'http://example.com/image49.jpg', 4, NOW(), DATE_ADD(NOW(), INTERVAL 7 DAY), 0, 0, NULL, 4, NOW(), NOW()),
-('Word 50', '単語50', 'http://example.com/original50.jpg', 'http://example.com/image50.jpg', 5, NOW(), DATE_ADD(NOW(), INTERVAL 15 DAY), 0, 0, NULL, 5, NOW(), NOW());
+-- wordsテーブルにダミーデータを挿入
+INSERT INTO words (original_text, translated_text, nuance_text, image_url, review_interval_id, next_practice_date, correct_count, incorrect_count, is_correct, deck_id)
+VALUES
+-- John Doe's Basic Vocabulary Deck
+('apple', 'りんご', 'A common fruit.', 'http://example.com/apple.jpg', 1, CURDATE(), 3, 1, TRUE, 1),
+('banana', 'バナナ', 'A yellow fruit.', 'http://example.com/banana.jpg', 2, CURDATE(), 2, 2, FALSE, 1),
+('grape', 'ぶどう', 'A small round fruit.', NULL, 1, CURDATE(), 1, 1, TRUE, 1),
+
+-- John Doe's Intermediate Vocabulary Deck
+('philosophy', '哲学', 'The study of the fundamental nature of knowledge.', NULL, 3, CURDATE(), 2, 0, TRUE, 2),
+('culture', '文化', 'The arts and other manifestations of human intellectual achievement.', NULL, 4, CURDATE(), 3, 1, TRUE, 2),
+('architecture', '建築', 'The art or practice of designing and constructing buildings.', 'http://example.com/architecture.jpg', 5, CURDATE(), 0, 3, FALSE, 2),
+
+-- Jane Smith's Advanced Vocabulary Deck
+('infrastructure', 'インフラ', 'The basic physical and organizational structures and facilities.', NULL, 3, CURDATE(), 1, 2, TRUE, 3),
+('philanthropy', '慈善活動', 'The desire to promote the welfare of others.', 'http://example.com/philanthropy.jpg', 4, CURDATE(), 4, 0, TRUE, 3),
+('dichotomy', '二分法', 'A division or contrast between two things.', NULL, 2, CURDATE(), 0, 1, FALSE, 3),
+
+-- Jane Smith's Business English Deck
+('synergy', '相乗効果', 'The interaction or cooperation of two or more organizations.', NULL, 2, CURDATE(), 3, 0, TRUE, 4),
+('paradigm', 'パラダイム', 'A typical example or pattern of something.', NULL, 1, CURDATE(), 2, 1, TRUE, 4),
+('leverage', 'レバレッジ', 'The exertion of force by means of a lever.', 'http://example.com/leverage.jpg', 4, CURDATE(), 1, 2, FALSE, 4),
+
+-- Alice Johnson's Technical Terms Deck
+('algorithm', 'アルゴリズム', 'A step-by-step procedure for calculations.', NULL, 1, CURDATE(), 4, 1, TRUE, 5),
+('database', 'データベース', 'A structured set of data.', NULL, 5, CURDATE(), 5, 0, TRUE, 5),
+('encryption', '暗号化', 'The process of converting information or data into a code.', NULL, 3, CURDATE(), 2, 3, FALSE, 5),
+
+-- Alice Johnson's Daily Conversation Deck
+('hello', 'こんにちは', 'A common greeting.', 'http://example.com/hello.jpg', 1, CURDATE(), 10, 0, TRUE, 6),
+('thank you', 'ありがとう', 'A polite expression of gratitude.', 'http://example.com/thankyou.jpg', 2, CURDATE(), 8, 1, TRUE, 6),
+('goodbye', 'さようなら', 'A farewell expression.', NULL, 3, CURDATE(), 6, 2, TRUE, 6);
