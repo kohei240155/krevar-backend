@@ -60,6 +60,8 @@ public class WordEntity extends BaseEntity {
 	@Column(name = "deck_id", nullable = false)
 	private Long deckId;
 
+	private LocalDateTime lastPracticedDate;
+
 	public Long getId() {
 		return id;
 	}
@@ -146,5 +148,13 @@ public class WordEntity extends BaseEntity {
 
 	public void setDeckId(Long deckId) {
 		this.deckId = deckId;
+	}
+
+	public LocalDateTime getLastPracticedDate() {
+		return lastPracticedDate;
+	}
+
+	public void setLastPracticedDate(LocalDateTime lastPracticedDate) {
+		this.lastPracticedDate = lastPracticedDate;
 	}
 }

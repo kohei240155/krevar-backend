@@ -1,5 +1,6 @@
 package com.example.iruka_backend.controller;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -37,20 +38,20 @@ public class WordController {
 	@PostMapping("/{deckId}")
 	public WordEntity createWord(@PathVariable("deckId") Long deckId, @RequestBody WordEntity word) {
 		word.setDeckId(deckId);
-		word.setMasteryStatusId(1L);
+		word.setReviewIntervalId(1L); // この行を追加
 		word.setLastPracticedDate(LocalDateTime.now());
 		word.setNextPracticeDate(LocalDateTime.now());
-		word.setCorrect_count(0L);
-		word.setIncorrect_count(0L);
-		word.setCreatedAt(LocalDateTime.now());
-		word.setUpdatedAt(LocalDateTime.now());
+		word.setCorrectCount(0L); // メソッド名を修正
+		word.setIncorrectCount(0L); // メソッド名を修正
+		word.setCreatedAt(Timestamp.valueOf(LocalDateTime.now())); // 修正
+		word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now())); // 修正
 		return wordService.save(word);
 	}
 
 	@PutMapping("/{wordId}")
 	public WordEntity updateWord(@PathVariable("wordId") Long wordId, @RequestBody WordEntity word) {
 		word.setId(wordId);
-		word.setUpdatedAt(LocalDateTime.now());
+		word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now())); // 修正
 		return wordService.update(word);
 	}
 }
