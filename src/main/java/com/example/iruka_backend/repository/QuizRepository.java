@@ -13,9 +13,9 @@ import com.example.iruka_backend.entity.WordEntity;
 @Repository
 public interface QuizRepository extends JpaRepository<WordEntity, Long> {
 
-	@Query("SELECT w FROM Word w WHERE w.nextPracticeDate < :now AND w.deckId = :deckId")
+	@Query("SELECT w FROM WordEntity w WHERE w.createdAt = :date AND w.id = :id")
 	List<WordEntity> findTodaysWords(
-			@Param("now") LocalDateTime now,
-			@Param("deckId") Long deckId
+			@Param("date") LocalDateTime date,
+			@Param("id") Long id
 			);
 }
