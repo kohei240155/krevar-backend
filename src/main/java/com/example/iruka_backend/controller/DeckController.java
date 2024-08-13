@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.iruka_backend.entity.DeckEntity;
 import com.example.iruka_backend.service.DeckService;
-import com.example.iruka_backend.responsedto.DeckListResponse; // Added import
+import com.example.iruka_backend.responsedto.DeckListResponse;
+import com.example.iruka_backend.responsedto.DeckCreatedResponse; // Added import
 
 @RestController
 @RequestMapping("/api/decks")
@@ -42,9 +43,15 @@ public class DeckController {
 	}
 
 	@PostMapping
-	public DeckEntity createDeck(@RequestBody DeckEntity deck) {
+	public DeckCreatedResponse createDeck(@RequestBody DeckEntity deck) {
 		logger.info("Received request to create deck: {}", deck);
-		return deckService.save(deck);
+		try {
+			DeckEntity createdDeck = deckService.save(deck);
+			return new DeckCreatedResponse(createdDeck.getId(), "Deck created successfully");
+		} catch (Exception e) {
+			logger.error("Error creating deck: {}", e.getMessage());
+			return new DeckCreatedResponse(null, "Error creating deck");
+		}
 	}
 
 	@PutMapping("/{id}")
