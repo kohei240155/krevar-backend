@@ -3,8 +3,8 @@ package com.example.iruka_backend.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.iruka_backend.entity.Deck;
+import com.example.iruka_backend.entity.DeckEntity;
 
 @Repository
-public interface DeckRepository extends JpaRepository<Deck, Long> {
+public interface DeckRepository extends JpaRepository<DeckEntity, Long> {
 }

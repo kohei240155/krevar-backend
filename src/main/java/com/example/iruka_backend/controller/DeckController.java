@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.iruka_backend.entity.Deck;
+import com.example.iruka_backend.entity.DeckEntity;
 import com.example.iruka_backend.service.DeckService;
 
 @RestController
@@ -29,18 +29,18 @@ public class DeckController {
 	private DeckService deckService;
 
 	@GetMapping
-	public List<Deck> getAllDecks() {
+	public List<DeckEntity> getAllDecks() {
 		return deckService.getAllDecks();
 	}
 
 	@PostMapping
-	public Deck createDeck(@RequestBody Deck deck) {
+	public DeckEntity createDeck(@RequestBody DeckEntity deck) {
 		logger.info("Received request to create deck: {}", deck);
 		return deckService.save(deck);
 	}
 
 	@PutMapping("/{id}")
-	public Deck updateDeckName(@PathVariable("id") Long id, @RequestBody Deck updatedDeck) {
+	public DeckEntity updateDeckName(@PathVariable("id") Long id, @RequestBody DeckEntity updatedDeck) {
 		logger.info("Received request to update deck: {}", updatedDeck);
 		return deckService.updateDeckName(id, updatedDeck.getDeckName());
 	}

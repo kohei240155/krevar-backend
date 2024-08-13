@@ -1,6 +1,7 @@
 package com.example.iruka_backend.entity;
 
 import java.time.LocalDateTime;
+import java.sql.Timestamp; // Added this line to import java.sql.Timestamp
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,44 +12,45 @@ import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
+import com.example.iruka_backend.common.entity.BaseEntity;
+
 @Entity
 @Table(name = "decks")
-public class Deck {
-	
+public class DeckEntity extends BaseEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "deck_name", nullable = false)
 	private String deckName;
-	
+
 	@Column(name = "user_id", nullable = false)
 	private Long userId;
-	
-	@Column(name = "created_at", nullable = false)
-	private LocalDateTime createdAt;
-	
-	@Column(name = "updated_at", nullable = false)
-	private LocalDateTime updatedAt;
-	
-	public Deck() {}
-	
-	public Deck(String deckName, long userId) {
+
+	@Column(name = "last_practiced_date", nullable = false)
+	private LocalDateTime lastPracticedDate;
+
+	public DeckEntity() {}
+
+	public DeckEntity(String deckName, long userId) {
 		this.deckName = deckName;
 		this.userId = userId;
 	}
-	
+
 	@PrePersist
 	protected void onCreate() {
-		createdAt = LocalDateTime.now();
-		updatedAt = LocalDateTime.now();
+		LocalDateTime now = LocalDateTime.now();
+		setCreatedAt(Timestamp.valueOf(now));
+		setUpdatedAt(Timestamp.valueOf(now));
+		lastPracticedDate = now;
 	}
-	
+
 	@PreUpdate
 	protected void onUpdate() {
-		updatedAt = LocalDateTime.now();
+		setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
 	}
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -73,32 +75,24 @@ public class Deck {
 		this.userId = userId;
 	}
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
+	public LocalDateTime getLastPracticedDate() {
+		return lastPracticedDate;
 	}
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
+	public void setLastPracticedDate(LocalDateTime lastPracticedDate) {
+		this.lastPracticedDate = lastPracticedDate;
 	}
 
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-	
 	@Override
 	public String toString() {
 		return "Deck{" +
 				"id=" + id +
 				", deckName='" + deckName + '\'' +
 				", userId=" + userId +
-				", createdAt=" + createdAt +
-				", updatedAt=" + updatedAt +
+				", lastPracticedDate=" + lastPracticedDate +
+				", createdAt=" + getCreatedAt() +
+				", updatedAt=" + getUpdatedAt() +
+				", deletedAt=" + getDeletedAt() +
 				'}';
 	}
-	
-	
 }
