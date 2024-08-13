@@ -3,6 +3,8 @@ package com.example.iruka_backend.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.iruka_backend.entity.DeckEntity;
@@ -36,5 +38,11 @@ public class DeckServiceImpl implements DeckService {
 	public void deleteDeck(Long id) {
 		DeckEntity deck = deckRepository.findById(id).orElseThrow(() -> new RuntimeException("Deck not found"));
 		deckRepository.delete(deck);
+	}
+
+	// ページネーション対応のメソッドを実装
+	@Override
+	public Page<DeckEntity> getDecks(Pageable pageable) {
+		return deckRepository.findAll(pageable);
 	}
 }
