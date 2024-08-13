@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.iruka_backend.entity.Word;
+import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.service.QuizService;
 
 @RestController
@@ -21,7 +21,7 @@ public class QuizController {
 	private QuizService quizService;
 
 	@GetMapping
-	public List<Word> getQuestionsByDeckId(@PathVariable("deckId") Long deckId) {
+	public List<WordEntity> getQuestionsByDeckId(@PathVariable("deckId") Long deckId) {
 		return quizService.getQuestionsByDeckId(deckId);
 	}
 }

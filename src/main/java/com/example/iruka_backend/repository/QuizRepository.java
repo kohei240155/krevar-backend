@@ -8,13 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.example.iruka_backend.entity.Word;
+import com.example.iruka_backend.entity.WordEntity;
 
 @Repository
-public interface QuizRepository extends JpaRepository<Word, Long> {
+public interface QuizRepository extends JpaRepository<WordEntity, Long> {
 
 	@Query("SELECT w FROM Word w WHERE w.nextPracticeDate < :now AND w.deckId = :deckId")
-	List<Word> findTodaysWords(
+	List<WordEntity> findTodaysWords(
 			@Param("now") LocalDateTime now,
 			@Param("deckId") Long deckId
 			);
