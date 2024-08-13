@@ -1,7 +1,5 @@
 package com.example.iruka_backend.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.iruka_backend.entity.DeckEntity;
 import com.example.iruka_backend.service.DeckService;
-import com.example.iruka_backend.responsedto.DeckResponse; // Added import
+import com.example.iruka_backend.responsedto.DeckListResponse; // Added import
 
 @RestController
 @RequestMapping("/api/decks")
@@ -34,13 +32,13 @@ public class DeckController {
 	private DeckService deckService;
 
 	@GetMapping
-	public DeckResponse getAllDecks(@RequestParam(name = "page", defaultValue = "0") int page,
+	public DeckListResponse getAllDecks(@RequestParam(name = "page", defaultValue = "0") int page,
 									@RequestParam(name = "size", defaultValue = "10") int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<DeckEntity> decks = deckService.getDecks(pageable);
 		long count = deckService.countActiveDecks(); // Added: count active decks
 		logger.info("Total active decks: {}", count); // Log the count
-		return new DeckResponse(decks.getContent(), count); // Return DeckResponse
+		return new DeckListResponse(decks.getContent(), count); // Return DeckResponse
 	}
 
 	@PostMapping
