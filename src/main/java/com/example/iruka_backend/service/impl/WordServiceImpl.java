@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.iruka_backend.entity.Word;
+import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.service.WordService;
 
@@ -17,22 +17,22 @@ public class WordServiceImpl implements WordService {
 	private WordRepository wordRepository;
 
 	@Override
-	public List<Word> getWordsByDeckId(Long deckId) {
+	public List<WordEntity> getWordsByDeckId(Long deckId) {
 		return wordRepository.findByDeckId(deckId);
 	}
 
 	@Override
-	public Word save(Word word) {
+	public WordEntity save(WordEntity word) {
 		return wordRepository.save(word);
 	}
 
 	@Override
-	public Optional<Word> getWordById(Long wordId) {
+	public Optional<WordEntity> getWordById(Long wordId) {
 		return wordRepository.findById(wordId);
 	}
 
 	@Override
-	public Word update(Word word) {
+	public WordEntity update(WordEntity word) {
 		return wordRepository.save(word);
 	}
 }
