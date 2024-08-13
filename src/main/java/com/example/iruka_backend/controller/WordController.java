@@ -39,7 +39,6 @@ public class WordController {
 	public WordEntity createWord(@PathVariable("deckId") Long deckId, @RequestBody WordEntity word) {
 		word.setDeckId(deckId);
 		word.setReviewIntervalId(1L); // この行を追加
-		word.setLastPracticedDate(LocalDateTime.now());
 		word.setNextPracticeDate(LocalDateTime.now());
 		word.setCorrectCount(0L); // メソッド名を修正
 		word.setIncorrectCount(0L); // メソッド名を修正
