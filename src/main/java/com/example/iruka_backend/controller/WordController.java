@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.iruka_backend.entity.Word;
+import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.service.WordService;
 
 @RestController
@@ -25,17 +25,17 @@ public class WordController {
 	private WordService wordService;
 
 	@GetMapping("/deck/{deckId}")
-	public List<Word> getWordsByDeckId(@PathVariable("deckId") Long deckId) {
+	public List<WordEntity> getWordsByDeckId(@PathVariable("deckId") Long deckId) {
 		return wordService.getWordsByDeckId(deckId);
 	}
 
 	@GetMapping("/{wordId}")
-	public Word getWordById(@PathVariable("wordId") Long wordId) {
+	public WordEntity getWordById(@PathVariable("wordId") Long wordId) {
 		return wordService.getWordById(wordId).orElse(null);
 	}
 
 	@PostMapping("/{deckId}")
-	public Word createWord(@PathVariable("deckId") Long deckId, @RequestBody Word word) {
+	public WordEntity createWord(@PathVariable("deckId") Long deckId, @RequestBody WordEntity word) {
 		word.setDeckId(deckId);
 		word.setMasteryStatusId(1L);
 		word.setLastPracticedDate(LocalDateTime.now());
@@ -48,7 +48,7 @@ public class WordController {
 	}
 
 	@PutMapping("/{wordId}")
-	public Word updateWord(@PathVariable("wordId") Long wordId, @RequestBody Word word) {
+	public WordEntity updateWord(@PathVariable("wordId") Long wordId, @RequestBody WordEntity word) {
 		word.setId(wordId);
 		word.setUpdatedAt(LocalDateTime.now());
 		return wordService.update(word);

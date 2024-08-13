@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.iruka_backend.entity.Word;
+import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.QuizRepository;
 import com.example.iruka_backend.service.QuizService;
 
@@ -17,7 +17,7 @@ public class QuizServiceImpl implements QuizService {
 	private QuizRepository quizRepository;
 
 	@Override
-	public List<Word> getQuestionsByDeckId(Long deckId) {
+	public List<WordEntity> getQuestionsByDeckId(Long deckId) {
 		LocalDateTime now = LocalDateTime.parse("2024-07-18T12:00:00");
 		return quizRepository.findTodaysWords(now, deckId);
 	}
