@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,10 +15,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.service.WordService;
+import com.example.iruka_backend.responsedto.WordListResponse;
 
 @RestController
 @RequestMapping("/api/word")
@@ -26,8 +31,12 @@ public class WordController {
 	private WordService wordService;
 
 	@GetMapping("/deck/{deckId}")
-	public List<WordEntity> getWordsByDeckId(@PathVariable("deckId") Long deckId) {
-		return wordService.getWordsByDeckId(deckId);
+	public WordListResponse getAllWords(@RequestParam(name = "page", defaultValue = "0") int page,
+										@RequestParam(name = "size", defaultValue = "10") int size) {
+		Pageable pageable = PageRequest.of(page, size);
+		Page<WordEntity> words = wordService.getWords(pageable);
+		long count = wordService.countActiveWords();
+		return new WordListResponse(words.getContent(), count);
 	}
 
 	@GetMapping("/{wordId}")
@@ -38,19 +47,19 @@ public class WordController {
 	@PostMapping("/{deckId}")
 	public WordEntity createWord(@PathVariable("deckId") Long deckId, @RequestBody WordEntity word) {
 		word.setDeckId(deckId);
-		word.setReviewIntervalId(1L); // この行を追加
+		word.setReviewIntervalId(1L);
 		word.setNextPracticeDate(LocalDateTime.now());
-		word.setCorrectCount(0L); // メソッド名を修正
-		word.setIncorrectCount(0L); // メソッド名を修正
-		word.setCreatedAt(Timestamp.valueOf(LocalDateTime.now())); // 修正
-		word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now())); // 修正
+		word.setCorrectCount(0L);
+		word.setIncorrectCount(0L);
+		word.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+		word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
 		return wordService.save(word);
 	}
 
 	@PutMapping("/{wordId}")
 	public WordEntity updateWord(@PathVariable("wordId") Long wordId, @RequestBody WordEntity word) {
 		word.setId(wordId);
-		word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now())); // 修正
+		word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
 		return wordService.update(word);
 	}
 }
