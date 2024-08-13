@@ -11,6 +11,9 @@ import com.example.iruka_backend.entity.DeckEntity;
 import com.example.iruka_backend.repository.DeckRepository;
 import com.example.iruka_backend.service.DeckService;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Service
 public class DeckServiceImpl implements DeckService {
 
@@ -19,7 +22,7 @@ public class DeckServiceImpl implements DeckService {
 
 	@Override
 	public List<DeckEntity> getAllDecks() {
-		return deckRepository.findAll();
+		return deckRepository.findByDeletedAtIsNull(); // ソフトデリートされたデッキを除外
 	}
 
 	@Override
@@ -37,12 +40,25 @@ public class DeckServiceImpl implements DeckService {
 	@Override
 	public void deleteDeck(Long id) {
 		DeckEntity deck = deckRepository.findById(id).orElseThrow(() -> new RuntimeException("Deck not found"));
-		deckRepository.delete(deck);
+		deck.setDeletedAt(Timestamp.valueOf(LocalDateTime.now())); // 削除フラグを設定
+		deckRepository.save(deck);
 	}
 
 	// ページネーション対応のメソッドを実装
 	@Override
 	public Page<DeckEntity> getDecks(Pageable pageable) {
-		return deckRepository.findAll(pageable);
+		return deckRepository.findAllByDeletedAtIsNull(pageable); // ソフトデリートされたデッキを除外
+	}
+
+	@Override
+	public void softDeleteDeck(Long id) {
+		DeckEntity deck = deckRepository.findById(id).orElseThrow(() -> new RuntimeException("Deck not found"));
+		deck.setDeletedAt(Timestamp.valueOf(LocalDateTime.now())); // 削除フラグを設定
+		deckRepository.save(deck);
+	}
+
+	@Override
+	public long countActiveDecks() {
+		return deckRepository.countByDeletedAtIsNull(); // 追加: 有効なデッキのカウント
 	}
 }

@@ -2,9 +2,18 @@ package com.example.iruka_backend.common.entity;
 
 import java.sql.Timestamp;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+
+@MappedSuperclass
 public class BaseEntity {
+    @Column(name = "created_at", nullable = false, updatable = false)
     private Timestamp createdAt;
+
+    @Column(name = "updated_at", nullable = false)
     private Timestamp updatedAt;
+
+    @Column(name = "deleted_at")
     private Timestamp deletedAt;
 
     // Getters and Setters

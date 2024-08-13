@@ -51,6 +51,10 @@ public class DeckEntity extends BaseEntity {
 		setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
 	}
 
+	public void softDelete() {
+		setDeletedAt(Timestamp.valueOf(LocalDateTime.now()));
+	}
+
 	public Long getId() {
 		return id;
 	}

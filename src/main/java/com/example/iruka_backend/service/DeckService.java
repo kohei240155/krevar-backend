@@ -11,7 +11,9 @@ public interface DeckService {
 	List<DeckEntity> getAllDecks();
 	DeckEntity save(DeckEntity deck);
 	DeckEntity updateDeckName(Long id, String newDeckName);
-	void deleteDeck(Long id);
+	void softDeleteDeck(Long id); // 物理削除から論理削除に変更
 	// ページネーション対応のメソッドを追加
-	Page<DeckEntity> getDecks(Pageable pageable);
+	Page<DeckEntity> getDecks(Pageable pageable); // deleted_atがnullのデッキのみ取得
+	long countActiveDecks(); // 追加: 有効なデッキのカウントメソッド
+	void deleteDeck(Long id);
 }

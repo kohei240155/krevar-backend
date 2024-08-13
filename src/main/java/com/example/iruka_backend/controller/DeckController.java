@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.iruka_backend.entity.DeckEntity;
 import com.example.iruka_backend.service.DeckService;
+import com.example.iruka_backend.responsedto.DeckResponse; // Added import
 
 @RestController
 @RequestMapping("/api/decks")
@@ -33,9 +34,13 @@ public class DeckController {
 	private DeckService deckService;
 
 	@GetMapping
-	public Page<DeckEntity> getAllDecks(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+	public DeckResponse getAllDecks(@RequestParam(name = "page", defaultValue = "0") int page,
+									@RequestParam(name = "size", defaultValue = "10") int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		return deckService.getDecks(pageable);
+		Page<DeckEntity> decks = deckService.getDecks(pageable);
+		long count = deckService.countActiveDecks(); // Added: count active decks
+		logger.info("Total active decks: {}", count); // Log the count
+		return new DeckResponse(decks.getContent(), count); // Return DeckResponse
 	}
 
 	@PostMapping
@@ -53,6 +58,6 @@ public class DeckController {
 	@DeleteMapping("/{id}")
 	public void deleteDeck(@PathVariable("id") Long id) {
 		logger.info("Received request to delete deck with id: {}", id);
-		deckService.deleteDeck(id);
+		deckService.softDeleteDeck(id); // 物理削除から論理削除に変更
 	}
 }
