@@ -8,8 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.example.iruka_backend.common.entity.BaseEntity;
 
 @Entity
@@ -20,43 +18,33 @@ public class WordEntity extends BaseEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@JsonProperty("original_text")
 	@Column(name = "original_text", nullable = false)
 	private String originalText;
 
-	@JsonProperty("translated_text")
 	@Column(name = "translated_text", nullable = false)
 	private String translatedText;
 
-	@JsonProperty("nuance_text")
 	@Column(name = "nuance_text", nullable = false)
 	private String nuanceText;
 
-	@JsonProperty("image_url")
 	@Column(name = "image_url")
 	private String imageUrl;
 
-	@JsonProperty("review_interval_id")
 	@Column(name = "review_interval_id", nullable = false)
 	private Long reviewIntervalId;
 
-	@JsonProperty("next_practice_date")
 	@Column(name = "next_practice_date", nullable = false)
 	private LocalDateTime nextPracticeDate;
 
-	@JsonProperty("correct_count")
 	@Column(name = "correct_count", nullable = false)
 	private Long correctCount;
 
-	@JsonProperty("incorrect_count")
 	@Column(name = "incorrect_count", nullable = false)
 	private Long incorrectCount;
 
-	@JsonProperty("is_correct")
 	@Column(name = "is_correct", nullable = false)
 	private Boolean isCorrect;
 
-	@JsonProperty("deck_id")
 	@Column(name = "deck_id", nullable = false)
 	private Long deckId;
 

@@ -22,6 +22,8 @@ import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.service.WordService;
 import com.example.iruka_backend.responsedto.WordListResponse;
 import com.example.iruka_backend.responsedto.WordCreatedResponse;
+import com.example.iruka_backend.responsedto.WordUpdatedResponse;
+import com.example.iruka_backend.requestdto.WordUpdateRequest;
 
 @RestController
 @RequestMapping("/api/word")
@@ -59,9 +61,15 @@ public class WordController {
 	}
 
 	@PutMapping("/{wordId}")
-	public WordEntity updateWord(@PathVariable("wordId") Long wordId, @RequestBody WordEntity word) {
-		word.setId(wordId);
+	public WordUpdatedResponse updateWord(@PathVariable("wordId") Long wordId, @RequestBody WordUpdateRequest wordUpdateRequest) {
+		WordEntity word = wordService.getWordById(wordId).orElseThrow(() -> new RuntimeException("Word not found"));
+		word.setOriginalText(wordUpdateRequest.getOriginalText());
+		word.setTranslatedText(wordUpdateRequest.getTranslatedText());
+		word.setImageUrl(wordUpdateRequest.getImageUrl());
+		word.setDeckId(wordUpdateRequest.getDeckId()); // Changed: wordUpdateRequest.getDeck_id() -> wordUpdateRequest.getDeckId()
+		word.setNuanceText(wordUpdateRequest.getNuanceText());
 		word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-		return wordService.update(word);
+		WordEntity updatedWord = wordService.update(word);
+		return new WordUpdatedResponse(updatedWord.getId(), "Word updated successfully");
 	}
 }
