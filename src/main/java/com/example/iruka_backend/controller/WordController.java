@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.service.WordService;
 import com.example.iruka_backend.responsedto.WordListResponse;
+import com.example.iruka_backend.responsedto.WordCreatedResponse;
 
 @RestController
 @RequestMapping("/api/word")
@@ -45,7 +46,7 @@ public class WordController {
 	}
 
 	@PostMapping("/{deckId}")
-	public WordEntity createWord(@PathVariable("deckId") Long deckId, @RequestBody WordEntity word) {
+	public WordCreatedResponse createWord(@PathVariable("deckId") Long deckId, @RequestBody WordEntity word) {
 		word.setDeckId(deckId);
 		word.setReviewIntervalId(1L);
 		word.setNextPracticeDate(LocalDateTime.now());
@@ -53,7 +54,8 @@ public class WordController {
 		word.setIncorrectCount(0L);
 		word.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
 		word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-		return wordService.save(word);
+		WordEntity createdWord = wordService.save(word);
+		return new WordCreatedResponse(createdWord.getId(), "Word created successfully");
 	}
 
 	@PutMapping("/{wordId}")
