@@ -18,4 +18,7 @@ public interface QuizRepository extends JpaRepository<WordEntity, Long> {
 			@Param("date") LocalDateTime date,
 			@Param("deckId") Long deckId
 			);
+
+	@Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.isCorrect = FALSE AND w.nextPracticeDate = CURRENT_DATE")
+	Long findCountByDeckIdAndIsCorrectFalseAndNextPracticeDate(@Param("deckId") Long deckId);
 }

@@ -1,5 +1,6 @@
 package com.example.iruka_backend.controller;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,8 +25,15 @@ public class QuizController {
 	private QuizService quizService;
 
 	@GetMapping("/normal/{deckId}")
-	public Optional<WordEntity> getFirstQuestionByDeckId(@PathVariable("deckId") Long deckId) {
-		return quizService.getFirstQuestionByDeckId(deckId);
+	public Map<String, Object> getFirstQuestionByDeckId(@PathVariable("deckId") Long deckId) {
+		Optional<WordEntity> firstQuestion = quizService.getFirstQuestionByDeckId(deckId);
+		Long incorrectWordCount = quizService.getIncorrectWordCountByDeckId(deckId);
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("firstQuestion", firstQuestion.orElse(null));
+		response.put("incorrectWordCount", incorrectWordCount);
+
+		return response;
 	}
 
 	@PostMapping("/answer/{wordId}")

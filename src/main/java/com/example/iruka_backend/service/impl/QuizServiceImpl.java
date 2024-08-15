@@ -43,4 +43,9 @@ public class QuizServiceImpl implements QuizService {
 		}
 	}
 
+	@Override
+	public Long getIncorrectWordCountByDeckId(Long deckId) {
+		return wordRepository.findCountByDeckIdAndIsCorrectFalseAndNextPracticeDate(deckId);
+	}
+
 }

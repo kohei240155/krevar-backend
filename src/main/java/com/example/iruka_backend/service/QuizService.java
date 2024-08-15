@@ -9,4 +9,5 @@ public interface QuizService {
 	Optional<WordEntity> getFirstQuestionByDeckId(Long deckId);
 	List<WordEntity> getQuestionsByDeckId(Long deckId);
 	void updateWordIsCorrect(Long wordId, Boolean isCorrect);
+	Long getIncorrectWordCountByDeckId(Long deckId);
 }
