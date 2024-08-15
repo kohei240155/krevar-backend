@@ -2,24 +2,34 @@ package com.example.iruka_backend.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.iruka_backend.entity.WordEntity;
-import com.example.iruka_backend.repository.QuizRepository;
+import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.service.QuizService;
 
 @Service
 public class QuizServiceImpl implements QuizService {
 
 	@Autowired
-	private QuizRepository quizRepository;
+	private WordRepository wordRepository;
+
+	@Override
+	public Optional<WordEntity> getFirstQuestionByDeckId(Long deckId) {
+		LocalDateTime now = LocalDateTime.now();
+		List<WordEntity> words = wordRepository.findWordsByDeckId(deckId);
+		if (words.isEmpty()) {
+			return Optional.empty();
+		}
+		return Optional.of(words.get(0));
+	}
 
 	@Override
 	public List<WordEntity> getQuestionsByDeckId(Long deckId) {
-		LocalDateTime now = LocalDateTime.parse("2024-07-18T12:00:00");
-		return quizRepository.findTodaysWords(now, deckId);
+		return wordRepository.findWordsByDeckId(deckId);
 	}
 
 }

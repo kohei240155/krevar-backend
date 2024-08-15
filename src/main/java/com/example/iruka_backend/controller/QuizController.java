@@ -1,6 +1,6 @@
 package com.example.iruka_backend.controller;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,7 +21,7 @@ public class QuizController {
 	private QuizService quizService;
 
 	@GetMapping("/normal/{deckId}")
-	public List<WordEntity> getQuestionsByDeckId(@PathVariable("deckId") Long deckId) {
-		return quizService.getQuestionsByDeckId(deckId);
+	public Optional<WordEntity> getFirstQuestionByDeckId(@PathVariable("deckId") Long deckId) {
+		return quizService.getFirstQuestionByDeckId(deckId);
 	}
 }

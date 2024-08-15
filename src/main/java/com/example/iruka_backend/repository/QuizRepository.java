@@ -1,7 +1,7 @@
 package com.example.iruka_backend.repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,9 +13,9 @@ import com.example.iruka_backend.entity.WordEntity;
 @Repository
 public interface QuizRepository extends JpaRepository<WordEntity, Long> {
 
-	@Query("SELECT w FROM WordEntity w WHERE w.createdAt = :date AND w.id = :id")
-	List<WordEntity> findTodaysWords(
+	@Query("SELECT w FROM WordEntity w WHERE w.nextPracticeDate <= :date AND w.deckId = :deckId ORDER BY w.nextPracticeDate ASC")
+	Optional<WordEntity> findFirstWordByDeckIdAndDate(
 			@Param("date") LocalDateTime date,
-			@Param("id") Long id
+			@Param("deckId") Long deckId
 			);
 }

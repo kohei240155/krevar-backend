@@ -11,7 +11,8 @@ import com.example.iruka_backend.entity.WordEntity;
 
 @Repository
 public interface WordRepository extends JpaRepository<WordEntity, Long> {
-	List<WordEntity> findByDeckId(Long deckId);
+    List<WordEntity> findWordsByDeckId(Long deckId);
+    List<WordEntity> findByDeckId(Long deckId);
 	Page<WordEntity> findAllByDeletedAtIsNull(Pageable pageable); // ページネーション対応
 	long countByDeletedAtIsNull(); // 有効なWordのカウント
 }
