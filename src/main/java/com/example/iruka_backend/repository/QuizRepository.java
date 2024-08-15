@@ -14,8 +14,8 @@ import com.example.iruka_backend.entity.WordEntity;
 @Repository
 public interface QuizRepository extends JpaRepository<WordEntity, Long> {
 
-	@Query("SELECT w FROM WordEntity w WHERE w.nextPracticeDate = CURRENT_DATE AND w.deckId = :deckId AND w.isCorrect = FALSE ORDER BY w.nextPracticeDate ASC")
-	List<WordEntity> findWordsByDeckIdAndDate(@Param("deckId") Long deckId);
+	@Query("SELECT w FROM WordEntity w WHERE w.nextPracticeDate = CURRENT_DATE AND w.deckId = :deckId AND w.isCorrect = FALSE ORDER BY RAND()")
+	List<WordEntity> findRandomWordByDeckIdAndDate(@Param("deckId") Long deckId);
 
 	@Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.isCorrect = FALSE AND w.nextPracticeDate = CURRENT_DATE")
 	Long findCountByDeckIdAndIsCorrectFalseAndNextPracticeDate(@Param("deckId") Long deckId);

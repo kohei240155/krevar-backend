@@ -18,8 +18,8 @@ public class QuizServiceImpl implements QuizService {
 	private QuizRepository quizRepository;
 
 	@Override
-	public Optional<WordEntity> getFirstQuestionByDeckId(Long deckId) {
-		List<WordEntity> words = quizRepository.findWordsByDeckIdAndDate(deckId);
+	public Optional<WordEntity> getRandomQuestionByDeckId(Long deckId) {
+		List<WordEntity> words = quizRepository.findRandomWordByDeckIdAndDate(deckId);
 		return words.isEmpty() ? Optional.empty() : Optional.of(words.get(0));
 	}
 
