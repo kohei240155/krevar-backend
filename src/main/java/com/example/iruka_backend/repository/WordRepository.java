@@ -20,4 +20,9 @@ public interface WordRepository extends JpaRepository<WordEntity, Long> {
 
     @Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.isCorrect = false AND w.nextPracticeDate <= CURRENT_DATE")
     Long findCountByDeckIdAndIsCorrectFalseAndNextPracticeDate(@Param("deckId") Long deckId);
+
+    Long countByDeckIdAndIsCorrectTrue(Long deckId); // メソッドの追加
+
+    @Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.nextPracticeDate = CURRENT_DATE")
+    Long findTodayQuestionCountByDeckId(@Param("deckId") Long deckId);
 }
