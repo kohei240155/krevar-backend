@@ -13,14 +13,14 @@ import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.service.QuizService;
 
 @RestController
-@RequestMapping("/api/quiz/normal/{deckId}")
+@RequestMapping("/api/quiz")
 @CrossOrigin(origins = "http://localhost:3000")
 public class QuizController {
 
 	@Autowired
 	private QuizService quizService;
 
-	@GetMapping
+	@GetMapping("/normal/{deckId}")
 	public List<WordEntity> getQuestionsByDeckId(@PathVariable("deckId") Long deckId) {
 		return quizService.getQuestionsByDeckId(deckId);
 	}
