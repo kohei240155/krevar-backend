@@ -8,4 +8,5 @@ import com.example.iruka_backend.entity.WordEntity;
 public interface QuizService {
 	Optional<WordEntity> getFirstQuestionByDeckId(Long deckId);
 	List<WordEntity> getQuestionsByDeckId(Long deckId);
+	void updateWordIsCorrect(Long wordId, Boolean isCorrect);
 }

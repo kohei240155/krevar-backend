@@ -2,6 +2,7 @@ package com.example.iruka_backend.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,16 @@ public class QuizServiceImpl implements QuizService {
 	@Override
 	public List<WordEntity> getQuestionsByDeckId(Long deckId) {
 		return wordRepository.findWordsByDeckId(deckId);
+	}
+
+	@Override
+	public void updateWordIsCorrect(Long wordId, Boolean isCorrect) {
+		Optional<WordEntity> wordOpt = wordRepository.findById(wordId);
+		if (wordOpt.isPresent()) {
+			WordEntity word = wordOpt.get();
+			word.setIsCorrect(isCorrect);
+			wordRepository.save(word);
+		}
 	}
 
 }

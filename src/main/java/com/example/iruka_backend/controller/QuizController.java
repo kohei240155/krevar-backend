@@ -1,11 +1,14 @@
 package com.example.iruka_backend.controller;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,5 +26,11 @@ public class QuizController {
 	@GetMapping("/normal/{deckId}")
 	public Optional<WordEntity> getFirstQuestionByDeckId(@PathVariable("deckId") Long deckId) {
 		return quizService.getFirstQuestionByDeckId(deckId);
+	}
+
+	@PostMapping("/answer/{wordId}")
+	public void submitAnswer(@PathVariable("wordId") Long wordId, @RequestBody Map<String, Boolean> request) {
+		Boolean isCorrect = request.get("isCorrect");
+		quizService.updateWordIsCorrect(wordId, isCorrect);
 	}
 }
