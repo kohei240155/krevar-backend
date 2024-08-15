@@ -27,12 +27,12 @@ public class QuizController {
 	@GetMapping("/normal/{deckId}")
 	public Map<String, Object> getFirstQuestionByDeckId(@PathVariable("deckId") Long deckId) {
 		Optional<WordEntity> firstQuestion = quizService.getFirstQuestionByDeckId(deckId);
-		Long todayQuestionCount = quizService.getTodayQuestionCountByDeckId(deckId); // Changed
+		Long todayQuestionCount = quizService.getTodayQuestionCountByDeckId(deckId);
 		Long correctWordCount = quizService.getCorrectWordCountByDeckId(deckId);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("firstQuestion", firstQuestion.orElse(null));
-		response.put("todayQuestionCount", todayQuestionCount); // Changed
+		response.put("todayQuestionCount", todayQuestionCount);
 		response.put("correctWordCount", correctWordCount);
 
 		return response;
