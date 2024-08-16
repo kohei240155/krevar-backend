@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.example.iruka_backend.entity.DeckEntity;
 import com.example.iruka_backend.repository.DeckRepository;
 import com.example.iruka_backend.service.DeckService;
+import com.example.iruka_backend.service.QuizService;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -19,6 +20,9 @@ public class DeckServiceImpl implements DeckService {
 
 	@Autowired
 	private DeckRepository deckRepository;
+
+	@Autowired
+	private QuizService quizService; // Added: dependency on QuizService
 
 	@Override
 	public List<DeckEntity> getAllDecks() {
@@ -60,5 +64,10 @@ public class DeckServiceImpl implements DeckService {
 	@Override
 	public long countActiveDecks() {
 		return deckRepository.countByDeletedAtIsNull(); // 追加: 有効なデッキのカウント
+	}
+
+	@Override
+	public void setQuizService(QuizService quizService) {
+		this.quizService = quizService;
 	}
 }

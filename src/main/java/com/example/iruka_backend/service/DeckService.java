@@ -16,4 +16,6 @@ public interface DeckService {
 	Page<DeckEntity> getDecks(Pageable pageable); // deleted_atがnullのデッキのみ取得
 	long countActiveDecks(); // 追加: 有効なデッキのカウントメソッド
 	void deleteDeck(Long id);
+	// 追加: クイズサービスの依存関係を追加
+	void setQuizService(QuizService quizService);
 }

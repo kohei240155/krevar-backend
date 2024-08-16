@@ -22,6 +22,11 @@ import com.example.iruka_backend.service.DeckService;
 import com.example.iruka_backend.responsedto.DeckListResponse;
 import com.example.iruka_backend.responsedto.DeckCreatedResponse;
 import com.example.iruka_backend.responsedto.DeckUpdatedResponse;
+import com.example.iruka_backend.responsedto.DeckProgressResponse;
+import com.example.iruka_backend.service.QuizService;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/decks")
@@ -33,14 +38,27 @@ public class DeckController {
 	@Autowired
 	private DeckService deckService;
 
+	@Autowired
+	private QuizService quizService;
+
 	@GetMapping
 	public DeckListResponse getAllDecks(@RequestParam(name = "page", defaultValue = "0") int page,
-									@RequestParam(name = "size", defaultValue = "10") int size) {
+									 @RequestParam(name = "size", defaultValue = "10") int size) {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<DeckEntity> decks = deckService.getDecks(pageable);
 		long count = deckService.countActiveDecks(); // Added: count active decks
 		logger.info("Total active decks: {}", count); // Log the count
-		return new DeckListResponse(decks.getContent(), count); // Return DeckResponse
+
+		// 進捗情報を取得
+		List<DeckProgressResponse> deckProgressResponses = decks.getContent().stream()
+			.map(deck -> {
+				long totalQuestions = quizService.getTodayQuestionCountByDeckId(deck.getId());
+				long correctQuestions = quizService.getCorrectWordCountByDeckId(deck.getId());
+				return new DeckProgressResponse(deck, totalQuestions, correctQuestions);
+			})
+			.collect(Collectors.toList());
+
+		return new DeckListResponse(deckProgressResponses, count); // Return DeckResponse with progress
 	}
 
 	@PostMapping

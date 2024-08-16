@@ -1,22 +1,21 @@
 package com.example.iruka_backend.responsedto;
 
 import java.util.List;
-import com.example.iruka_backend.entity.DeckEntity;
 
 public class DeckListResponse {
-	private List<DeckEntity> decks;
+	private List<DeckProgressResponse> decks;
 	private long totalDecks;
 
-	public DeckListResponse(List<DeckEntity> decks, long totalDecks) {
+	public DeckListResponse(List<DeckProgressResponse> decks, long totalDecks) {
 		this.decks = decks;
 		this.totalDecks = totalDecks;
 	}
 
-	public List<DeckEntity> getDecks() {
+	public List<DeckProgressResponse> getDecks() {
 		return decks;
 	}
 
-	public void setDecks(List<DeckEntity> decks) {
+	public void setDecks(List<DeckProgressResponse> decks) {
 		this.decks = decks;
 	}
 
