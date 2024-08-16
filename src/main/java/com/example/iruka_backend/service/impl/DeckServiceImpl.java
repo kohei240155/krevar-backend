@@ -1,6 +1,7 @@
 package com.example.iruka_backend.service.impl;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -69,5 +70,17 @@ public class DeckServiceImpl implements DeckService {
 	@Override
 	public void setQuizService(QuizService quizService) {
 		this.quizService = quizService;
+	}
+
+	@Override
+	public List<DeckEntity> getAllDecksSortedByCorrectQuestions() {
+		List<DeckEntity> allDecks = deckRepository.findByDeletedAtIsNull(); // ソフトデリートされたデッキを除外
+		return allDecks.stream()
+			.sorted((d1, d2) -> {
+				long correctQuestions1 = quizService.getCorrectWordCountByDeckId(d1.getId());
+				long correctQuestions2 = quizService.getCorrectWordCountByDeckId(d2.getId());
+				return Long.compare(correctQuestions1, correctQuestions2);
+			})
+			.collect(Collectors.toList());
 	}
 }

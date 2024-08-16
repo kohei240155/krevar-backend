@@ -18,4 +18,5 @@ public interface DeckService {
 	void deleteDeck(Long id);
 	// 追加: クイズサービスの依存関係を追加
 	void setQuizService(QuizService quizService);
+	List<DeckEntity> getAllDecksSortedByCorrectQuestions(); // 追加: correctQuestionsでソートされた全デッキを取得するメソッド
 }

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -45,12 +46,17 @@ public class DeckController {
 	public DeckListResponse getAllDecks(@RequestParam(name = "page", defaultValue = "0") int page,
 									 @RequestParam(name = "size", defaultValue = "10") int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		Page<DeckEntity> decks = deckService.getDecks(pageable);
+		List<DeckEntity> allDecks = deckService.getAllDecksSortedByCorrectQuestions(); // 全デッキを取得し、correctQuestionsでソート
 		long count = deckService.countActiveDecks(); // Added: count active decks
 		logger.info("Total active decks: {}", count); // Log the count
 
+		// ページネーションを適用
+		int start = (int) pageable.getOffset();
+		int end = Math.min((start + pageable.getPageSize()), allDecks.size());
+		Page<DeckEntity> decksPage = new PageImpl<>(allDecks.subList(start, end), pageable, allDecks.size());
+
 		// 進捗情報を取得
-		List<DeckProgressResponse> deckProgressResponses = decks.getContent().stream()
+		List<DeckProgressResponse> deckProgressResponses = decksPage.getContent().stream()
 			.map(deck -> {
 				long totalQuestions = quizService.getTodayQuestionCountByDeckId(deck.getId());
 				long correctQuestions = quizService.getCorrectWordCountByDeckId(deck.getId());
@@ -65,7 +71,7 @@ public class DeckController {
 	public DeckCreatedResponse createDeck(@RequestBody DeckEntity deck) {
 		logger.info("Received request to create deck: {}", deck);
 		try {
-			DeckEntity createdDeck = deckService.save(deck);
+			 DeckEntity createdDeck = deckService.save(deck);
 			return new DeckCreatedResponse(createdDeck.getId(), "Deck created successfully");
 		} catch (Exception e) {
 			logger.error("Error creating deck: {}", e.getMessage());
@@ -88,6 +94,6 @@ public class DeckController {
 	@DeleteMapping("/{id}")
 	public void deleteDeck(@PathVariable("id") Long id) {
 		logger.info("Received request to delete deck with id: {}", id);
-		deckService.softDeleteDeck(id); // 物理削除から論理削除に変更
+		deckService.softDeleteDeck(id); // 物理削除から論理削除に変��
 	}
 }
