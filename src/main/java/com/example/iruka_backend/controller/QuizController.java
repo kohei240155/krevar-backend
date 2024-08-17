@@ -48,7 +48,7 @@ public class QuizController {
 		return response;
 	}
 
-	@PostMapping("/answer/{wordId}")
+	@PostMapping("/normal/answer/{wordId}")
 	public void submitAnswer(@PathVariable("wordId") Long wordId, @RequestBody Map<String, Boolean> request) {
 		Boolean isCorrect = request.get("isCorrect");
 		quizService.updateWordIsCorrect(wordId, isCorrect);
