@@ -1,5 +1,6 @@
 package com.example.iruka_backend.service.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.QuizRepository;
 import com.example.iruka_backend.repository.ReviewIntervalRepository;
+import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.service.QuizService;
 
 @Service
@@ -20,6 +22,9 @@ public class QuizServiceImpl implements QuizService {
 
 	@Autowired
 	private ReviewIntervalRepository reviewIntervalRepository;
+
+	@Autowired
+	private WordRepository wordRepository;
 
 	@Override
 	public Optional<WordEntity> getRandomQuestionByDeckId(Long deckId) {
@@ -47,7 +52,7 @@ public class QuizServiceImpl implements QuizService {
 				int intervalDays = reviewIntervalRepository.findById(word.getReviewIntervalId())
 						.map(interval -> interval.getIntervalDays())
 						.orElse(1);
-				word.setNextPracticeDate(LocalDateTime.now().plusDays(intervalDays));
+				word.setNextPracticeDate(LocalDate.now().plusDays(intervalDays).atStartOfDay());
 			} else {
 				word.setIncorrectCount(word.getIncorrectCount() + 1);
 				word.setReviewIntervalId(1L);
@@ -65,6 +70,11 @@ public class QuizServiceImpl implements QuizService {
 	@Override
 	public Long getCorrectWordCountByDeckId(Long deckId) {
 		return quizRepository.findCountByDeckIdAndIsCorrectTrueAndNextPracticeDate(deckId);
+	}
+
+	@Override
+	public long getIncorrectWordCountByDeckIdDueToday(Long deckId) {
+		return wordRepository.countByDeckIdAndNextPracticeDateAndIsCorrect(deckId, LocalDate.now().atStartOfDay(), false);
 	}
 
 }

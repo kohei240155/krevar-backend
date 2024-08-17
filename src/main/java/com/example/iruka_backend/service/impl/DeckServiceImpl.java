@@ -83,4 +83,16 @@ public class DeckServiceImpl implements DeckService {
 			})
 			.collect(Collectors.toList());
 	}
+
+	@Override
+	public List<DeckEntity> getAllDecksSortedByDueTodayAndIncorrectWords() {
+		List<DeckEntity> allDecks = deckRepository.findByDeletedAtIsNull();
+		return allDecks.stream()
+			.sorted((d1, d2) -> {
+				long incorrectWords1 = quizService.getIncorrectWordCountByDeckIdDueToday(d1.getId());
+				long incorrectWords2 = quizService.getIncorrectWordCountByDeckIdDueToday(d2.getId());
+				return Long.compare(incorrectWords2, incorrectWords1); // 降順にソート
+			})
+			.collect(Collectors.toList());
+	}
 }

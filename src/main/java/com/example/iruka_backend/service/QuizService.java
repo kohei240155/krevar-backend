@@ -11,4 +11,5 @@ public interface QuizService {
 	void updateWordIsCorrect(Long wordId, Boolean isCorrect);
 	Long getTodayQuestionCountByDeckId(Long deckId);
 	Long getCorrectWordCountByDeckId(Long deckId);
+	long getIncorrectWordCountByDeckIdDueToday(Long deckId); // Added: count of words with next_practice_date today and is_correct = 0
 }

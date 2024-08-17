@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.time.LocalDateTime;
 
 import com.example.iruka_backend.entity.WordEntity;
 
@@ -25,4 +26,6 @@ public interface WordRepository extends JpaRepository<WordEntity, Long> {
 
     @Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.nextPracticeDate = CURRENT_DATE")
     Long findTodayQuestionCountByDeckId(@Param("deckId") Long deckId);
+
+    long countByDeckIdAndNextPracticeDateAndIsCorrect(Long deckId, LocalDateTime nextPracticeDate, Boolean isCorrect); // 追加: next_practice_dateが当日で、is_correctが0のWordのカウントクエリ
 }

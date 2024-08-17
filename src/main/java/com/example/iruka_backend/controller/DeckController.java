@@ -46,7 +46,7 @@ public class DeckController {
 	public DeckListResponse getAllDecks(@RequestParam(name = "page", defaultValue = "0") int page,
 									 @RequestParam(name = "size", defaultValue = "10") int size) {
 		Pageable pageable = PageRequest.of(page, size);
-		List<DeckEntity> allDecks = deckService.getAllDecksSortedByCorrectQuestions(); // 全デッキを取得し、correctQuestionsでソート
+		List<DeckEntity> allDecks = deckService.getAllDecksSortedByDueTodayAndIncorrectWords(); // 修正: next_practice_dateが当日で、is_correctが0のWordが多い順に並べ替え
 		long count = deckService.countActiveDecks(); // Added: count active decks
 		logger.info("Total active decks: {}", count); // Log the count
 
@@ -93,6 +93,6 @@ public class DeckController {
 	@DeleteMapping("/{id}")
 	public void deleteDeck(@PathVariable("id") Long id) {
 		logger.info("Received request to delete deck with id: {}", id);
-		deckService.softDeleteDeck(id); // 物理削除から論理削除に変��
+		deckService.softDeleteDeck(id); // 物理削除から論理削除に変
 	}
 }
