@@ -1,7 +1,6 @@
 package com.example.iruka_backend.service.impl;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,9 +52,11 @@ public class QuizServiceImpl implements QuizService {
 						.map(interval -> interval.getIntervalDays())
 						.orElse(1);
 				word.setNextPracticeDate(LocalDate.now().plusDays(intervalDays).atStartOfDay());
+				word.setIsCorrect(false); // isCorrectをFalseに戻す
 			} else {
 				word.setIncorrectCount(word.getIncorrectCount() + 1);
 				word.setReviewIntervalId(1L);
+				word.setIsCorrect(false); // isCorrectをFalseに戻す
 			}
 
 			quizRepository.save(word);
