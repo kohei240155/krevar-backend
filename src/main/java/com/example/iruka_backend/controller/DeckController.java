@@ -1,5 +1,8 @@
 package com.example.iruka_backend.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +22,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.iruka_backend.entity.DeckEntity;
-import com.example.iruka_backend.service.DeckService;
-import com.example.iruka_backend.responsedto.DeckListResponse;
 import com.example.iruka_backend.responsedto.DeckCreatedResponse;
-import com.example.iruka_backend.responsedto.DeckUpdatedResponse;
+import com.example.iruka_backend.responsedto.DeckListResponse;
 import com.example.iruka_backend.responsedto.DeckProgressResponse;
+import com.example.iruka_backend.responsedto.DeckUpdatedResponse;
+import com.example.iruka_backend.service.DeckService;
 import com.example.iruka_backend.service.QuizService;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/decks")
@@ -59,8 +59,7 @@ public class DeckController {
 		List<DeckProgressResponse> deckProgressResponses = decksPage.getContent().stream()
 			.map(deck -> {
 				long totalQuestions = quizService.getTodayQuestionCountByDeckId(deck.getId());
-				long correctQuestions = quizService.getCorrectWordCountByDeckId(deck.getId());
-				return new DeckProgressResponse(deck, totalQuestions, correctQuestions);
+				return new DeckProgressResponse(deck, totalQuestions);
 			})
 			.collect(Collectors.toList());
 

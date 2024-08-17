@@ -28,12 +28,10 @@ public class QuizController {
 	public Map<String, Object> getRandomQuestionByDeckId(@PathVariable("deckId") Long deckId) {
 		Optional<WordEntity> randomQuestion = quizService.getRandomQuestionByDeckId(deckId);
 		Long todayQuestionCount = quizService.getTodayQuestionCountByDeckId(deckId);
-		Long correctWordCount = quizService.getCorrectWordCountByDeckId(deckId);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("randomQuestion", randomQuestion.orElse(null));
 		response.put("todayQuestionCount", todayQuestionCount);
-		response.put("correctWordCount", correctWordCount);
 
 		return response;
 	}
