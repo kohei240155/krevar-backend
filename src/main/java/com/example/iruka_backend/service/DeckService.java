@@ -19,5 +19,5 @@ public interface DeckService {
 	// 追加: クイズサービスの依存関係を追加
 	void setQuizService(QuizService quizService);
 	List<DeckEntity> getAllDecksSortedByCorrectQuestions(); // 追加: correctQuestionsでソートされた全デッキを取得するメソッド
-	List<DeckEntity> getAllDecksSortedByDueTodayAndIncorrectWords(); // 追加: next_practice_dateが当日で、is_correctが0のWordが多い順に並べ替え
+	List<DeckEntity> getAllDecksSortedByDueTodayAndIncorrectWords(); // 追加: next_practice_dateが当日で、is_normal_mode_correctが0のWordが多い順に並べ替え
 }

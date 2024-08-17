@@ -43,8 +43,8 @@ public class WordEntity extends BaseEntity {
 	@Column(name = "incorrect_count", nullable = false)
 	private Long incorrectCount;
 
-	@Column(name = "is_correct", nullable = false)
-	private Boolean isCorrect;
+	@Column(name = "is_normal_mode_correct", nullable = false)
+	private Boolean isNormalModeCorrect;
 
 	@Column(name = "deck_id", nullable = false)
 	private Long deckId;
@@ -121,12 +121,12 @@ public class WordEntity extends BaseEntity {
 		this.incorrectCount = incorrectCount;
 	}
 
-	public Boolean getIsCorrect() {
-		return isCorrect;
+	public Boolean getIsNormalModeCorrect() {
+		return isNormalModeCorrect;
 	}
 
-	public void setIsCorrect(Boolean isCorrect) {
-		this.isCorrect = isCorrect;
+	public void setIsNormalModeCorrect(Boolean isNormalModeCorrect) {
+		this.isNormalModeCorrect = isNormalModeCorrect;
 	}
 
 	public Long getDeckId() {

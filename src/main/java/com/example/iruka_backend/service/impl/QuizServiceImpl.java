@@ -37,13 +37,13 @@ public class QuizServiceImpl implements QuizService {
 	}
 
 	@Override
-	public void updateWordIsCorrect(Long wordId, Boolean isCorrect) {
+	public void updateWordIsNormalModeCorrect(Long wordId, Boolean isNormalModeCorrect) {
 		Optional<WordEntity> wordOpt = quizRepository.findById(wordId);
 		if (wordOpt.isPresent()) {
 			WordEntity word = wordOpt.get();
-			word.setIsCorrect(isCorrect);
+			word.setIsNormalModeCorrect(isNormalModeCorrect);
 
-			if (isCorrect) {
+			if (isNormalModeCorrect) {
 				word.setCorrectCount(word.getCorrectCount() + 1);
 				if (word.getReviewIntervalId() < 9) {
 					word.setReviewIntervalId(word.getReviewIntervalId() + 1);
@@ -52,11 +52,11 @@ public class QuizServiceImpl implements QuizService {
 						.map(interval -> interval.getIntervalDays())
 						.orElse(1);
 				word.setNextPracticeDate(LocalDate.now().plusDays(intervalDays).atStartOfDay());
-				word.setIsCorrect(false); // isCorrectをFalseに戻す
+				word.setIsNormalModeCorrect(false); // isNormalModeCorrectをFalseに戻す
 			} else {
 				word.setIncorrectCount(word.getIncorrectCount() + 1);
 				word.setReviewIntervalId(1L);
-				word.setIsCorrect(false); // isCorrectをFalseに戻す
+				word.setIsNormalModeCorrect(false); // isNormalModeCorrectをFalseに戻す
 			}
 
 			quizRepository.save(word);
@@ -70,12 +70,12 @@ public class QuizServiceImpl implements QuizService {
 
 	@Override
 	public Long getCorrectWordCountByDeckId(Long deckId) {
-		return quizRepository.findCountByDeckIdAndIsCorrectTrueAndNextPracticeDate(deckId);
+		return quizRepository.findCountByDeckIdAndIsNormalModeCorrectTrueAndNextPracticeDate(deckId);
 	}
 
 	@Override
 	public long getIncorrectWordCountByDeckIdDueToday(Long deckId) {
-		return wordRepository.countByDeckIdAndNextPracticeDateAndIsCorrect(deckId, LocalDate.now().atStartOfDay(), false);
+		return wordRepository.countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(deckId, LocalDate.now().atStartOfDay(), false);
 	}
 
 	@Override

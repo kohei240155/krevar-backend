@@ -19,13 +19,13 @@ public interface WordRepository extends JpaRepository<WordEntity, Long> {
 	Page<WordEntity> findAllByDeletedAtIsNull(Pageable pageable); // ページネーション対応
 	long countByDeletedAtIsNull(); // 有効なWordのカウント
 
-    @Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.isCorrect = false AND w.nextPracticeDate <= CURRENT_DATE")
-    Long findCountByDeckIdAndIsCorrectFalseAndNextPracticeDate(@Param("deckId") Long deckId);
+    @Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.isNormalModeCorrect = false AND w.nextPracticeDate <= CURRENT_DATE")
+    Long findCountByDeckIdAndIsNormalModeCorrectFalseAndNextPracticeDate(@Param("deckId") Long deckId);
 
-    Long countByDeckIdAndIsCorrectTrue(Long deckId); // メソッドの追加
+    Long countByDeckIdAndIsNormalModeCorrectTrue(Long deckId); // メソッドの追加
 
     @Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.nextPracticeDate = CURRENT_DATE")
     Long findTodayQuestionCountByDeckId(@Param("deckId") Long deckId);
 
-    long countByDeckIdAndNextPracticeDateAndIsCorrect(Long deckId, LocalDateTime nextPracticeDate, Boolean isCorrect); // 追加: next_practice_dateが当日で、is_correctが0のWordのカウントクエリ
+    long countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(Long deckId, LocalDateTime nextPracticeDate, Boolean isNormalModeCorrect); // 追加: next_practice_dateが当日で、is_normal_mode_correctが0のWordのカウントクエリ
 }
