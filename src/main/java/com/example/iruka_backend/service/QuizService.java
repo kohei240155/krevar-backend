@@ -16,4 +16,5 @@ public interface QuizService {
 	Optional<WordEntity> getExtraQuestionByDeckId(Long deckId); // Added
 	void updateWordIsExtraModeCorrect(Long wordId, Boolean isExtraModeCorrect); // Added
 	void resetExtraModeCorrectByDeckId(Long deckId); // Added
+	Optional<WordEntity> getRandomExtraQuestionByDeckId(Long deckId); // Added
 }

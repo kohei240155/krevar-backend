@@ -48,7 +48,7 @@ public class QuizController {
 		if (Boolean.TRUE.equals(reset)) {
 			quizService.resetExtraModeCorrectByDeckId(deckId);
 		}
-		Optional<WordEntity> extraQuestion = quizService.getExtraQuestionByDeckId(deckId);
+		Optional<WordEntity> extraQuestion = quizService.getRandomExtraQuestionByDeckId(deckId); // 修正
 		Long todayExtraQuestionCount = quizService.getTodayExtraQuestionCountByDeckId(deckId);
 
 		Map<String, Object> response = new HashMap<>();

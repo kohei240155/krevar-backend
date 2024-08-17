@@ -2,6 +2,7 @@ package com.example.iruka_backend.service.impl;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -110,6 +111,16 @@ public class QuizServiceImpl implements QuizService {
 	public Optional<WordEntity> getExtraQuestionByDeckId(Long deckId) {
 		List<WordEntity> words = quizRepository.findExtraWordByDeckId(deckId);
 		return words.isEmpty() ? Optional.empty() : Optional.of(words.get(0));
+	}
+
+	@Override
+	public Optional<WordEntity> getRandomExtraQuestionByDeckId(Long deckId) {
+		List<WordEntity> words = quizRepository.findExtraWordByDeckId(deckId);
+		if (words.isEmpty()) {
+			return Optional.empty();
+		}
+		int randomIndex = (int) (Math.random() * words.size());
+		return Optional.of(words.get(randomIndex));
 	}
 
 }
