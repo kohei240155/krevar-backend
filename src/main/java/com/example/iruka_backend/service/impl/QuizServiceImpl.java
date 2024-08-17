@@ -13,6 +13,8 @@ import com.example.iruka_backend.repository.ReviewIntervalRepository;
 import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.service.QuizService;
 
+import java.sql.Timestamp; // Added import for Timestamp class
+
 @Service
 public class QuizServiceImpl implements QuizService {
 
@@ -58,6 +60,18 @@ public class QuizServiceImpl implements QuizService {
 				word.setReviewIntervalId(1L);
 				word.setIsNormalModeCorrect(false); // isNormalModeCorrectをFalseに戻す
 			}
+
+			quizRepository.save(word);
+		}
+	}
+
+	@Override
+	public void updateWordIsExtraModeCorrect(Long wordId, Boolean isExtraModeCorrect) {
+		Optional<WordEntity> wordOpt = quizRepository.findById(wordId);
+		if (wordOpt.isPresent()) {
+			WordEntity word = wordOpt.get();
+			word.setIsExtraModeCorrect(isExtraModeCorrect);
+			word.setUpdatedAt(Timestamp.valueOf(LocalDate.now().atStartOfDay())); // Set updated_at to current time
 
 			quizRepository.save(word);
 		}

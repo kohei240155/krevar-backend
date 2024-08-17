@@ -46,6 +46,9 @@ public class WordEntity extends BaseEntity {
 	@Column(name = "is_normal_mode_correct", nullable = false)
 	private Boolean isNormalModeCorrect;
 
+	@Column(name = "is_extra_mode_correct", nullable = false)
+	private Boolean isExtraModeCorrect;
+
 	@Column(name = "deck_id", nullable = false)
 	private Long deckId;
 
@@ -127,6 +130,14 @@ public class WordEntity extends BaseEntity {
 
 	public void setIsNormalModeCorrect(Boolean isNormalModeCorrect) {
 		this.isNormalModeCorrect = isNormalModeCorrect;
+	}
+
+	public Boolean getIsExtraModeCorrect() {
+		return isExtraModeCorrect;
+	}
+
+	public void setIsExtraModeCorrect(Boolean isExtraModeCorrect) {
+		this.isExtraModeCorrect = isExtraModeCorrect;
 	}
 
 	public Long getDeckId() {

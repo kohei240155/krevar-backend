@@ -13,4 +13,5 @@ public interface QuizService {
 	Long getCorrectWordCountByDeckId(Long deckId);
 	long getIncorrectWordCountByDeckIdDueToday(Long deckId); // Added: count of words with next_practice_date today and is_normal_mode_correct = 0
 	Optional<WordEntity> getExtraQuestionByDeckId(Long deckId); // Added
+	void updateWordIsExtraModeCorrect(Long wordId, Boolean isExtraModeCorrect); // Added
 }

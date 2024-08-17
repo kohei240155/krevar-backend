@@ -53,4 +53,10 @@ public class QuizController {
 		Boolean isNormalModeCorrect = request.get("isNormalModeCorrect");
 		quizService.updateWordIsNormalModeCorrect(wordId, isNormalModeCorrect);
 	}
+
+	@PostMapping("/extra/answer/{wordId}")
+	public void submitExtraAnswer(@PathVariable("wordId") Long wordId, @RequestBody Map<String, Boolean> request) {
+		Boolean isExtraModeCorrect = request.get("isExtraModeCorrect");
+		quizService.updateWordIsExtraModeCorrect(wordId, isExtraModeCorrect);
+	}
 }
