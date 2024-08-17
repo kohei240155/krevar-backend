@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.QuizRepository;
+import com.example.iruka_backend.repository.ReviewIntervalRepository;
 import com.example.iruka_backend.service.QuizService;
 
 @Service
@@ -16,6 +17,9 @@ public class QuizServiceImpl implements QuizService {
 
 	@Autowired
 	private QuizRepository quizRepository;
+
+	@Autowired
+	private ReviewIntervalRepository reviewIntervalRepository;
 
 	@Override
 	public Optional<WordEntity> getRandomQuestionByDeckId(Long deckId) {
@@ -34,6 +38,21 @@ public class QuizServiceImpl implements QuizService {
 		if (wordOpt.isPresent()) {
 			WordEntity word = wordOpt.get();
 			word.setIsCorrect(isCorrect);
+
+			if (isCorrect) {
+				word.setCorrectCount(word.getCorrectCount() + 1);
+				if (word.getReviewIntervalId() < 9) {
+					word.setReviewIntervalId(word.getReviewIntervalId() + 1);
+				}
+				int intervalDays = reviewIntervalRepository.findById(word.getReviewIntervalId())
+						.map(interval -> interval.getIntervalDays())
+						.orElse(1);
+				word.setNextPracticeDate(LocalDateTime.now().plusDays(intervalDays));
+			} else {
+				word.setIncorrectCount(word.getIncorrectCount() + 1);
+				word.setReviewIntervalId(1L);
+			}
+
 			quizRepository.save(word);
 		}
 	}
