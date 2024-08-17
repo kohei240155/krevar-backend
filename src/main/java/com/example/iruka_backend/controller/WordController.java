@@ -2,7 +2,6 @@ package com.example.iruka_backend.controller;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.iruka_backend.entity.WordEntity;
+import com.example.iruka_backend.service.ImageService;
 import com.example.iruka_backend.service.WordService;
 import com.example.iruka_backend.responsedto.WordListResponse;
 import com.example.iruka_backend.responsedto.WordCreatedResponse;
@@ -32,6 +33,9 @@ public class WordController {
 
 	@Autowired
 	private WordService wordService;
+
+	@Autowired
+    private ImageService imageService;
 
 	@GetMapping("/deck/{deckId}")
 	public WordListResponse getAllWords(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -48,16 +52,33 @@ public class WordController {
 	}
 
 	@PostMapping("/{deckId}")
-	public WordCreatedResponse createWord(@PathVariable("deckId") Long deckId, @RequestBody WordEntity word) {
-		word.setDeckId(deckId);
-		word.setReviewIntervalId(1L);
-		word.setNextPracticeDate(LocalDateTime.now());
-		word.setCorrectCount(0L);
-		word.setIncorrectCount(0L);
-		word.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-		word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-		WordEntity createdWord = wordService.save(word);
-		return new WordCreatedResponse(createdWord.getId(), "Word created successfully");
+    public WordCreatedResponse createWord(@PathVariable("deckId") Long deckId, @RequestBody WordEntity word) {
+        word.setDeckId(deckId);
+        word.setReviewIntervalId(1L);
+        word.setNextPracticeDate(LocalDateTime.now());
+        word.setCorrectCount(0L);
+        word.setIncorrectCount(0L);
+        word.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+        WordEntity createdWord = wordService.save(word);
+        return new WordCreatedResponse(createdWord.getId(), "Word created successfully");
+    }
+
+	@PostMapping("/upload-image")
+	public String uploadImage(@RequestParam("image") MultipartFile image, @RequestParam("wordId") Long wordId) {
+		try {
+			// 画像をサーバーのローカルディレクトリに保存する
+			String imagePath = imageService.saveImage(image);
+
+			// 画像の保存パスを更新
+			WordEntity word = wordService.getWordById(wordId).orElseThrow(() -> new RuntimeException("Word not found"));
+			word.setImageUrl(imagePath);
+			wordService.save(word);
+
+			return "Image uploaded successfully: " + imagePath;
+		} catch (Exception e) {
+			return "Failed to upload image: " + e.getMessage();
+		}
 	}
 
 	@PutMapping("/{wordId}")
