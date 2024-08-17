@@ -36,6 +36,18 @@ public class QuizController {
 		return response;
 	}
 
+	@GetMapping("/extra/{deckId}")
+	public Map<String, Object> getExtraQuestionByDeckId(@PathVariable("deckId") Long deckId) {
+		Optional<WordEntity> extraQuestion = quizService.getExtraQuestionByDeckId(deckId);
+		Long todayQuestionCount = quizService.getTodayQuestionCountByDeckId(deckId);
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("extraQuestion", extraQuestion.orElse(null));
+		response.put("todayQuestionCount", todayQuestionCount);
+
+		return response;
+	}
+
 	@PostMapping("/answer/{wordId}")
 	public void submitAnswer(@PathVariable("wordId") Long wordId, @RequestBody Map<String, Boolean> request) {
 		Boolean isCorrect = request.get("isCorrect");

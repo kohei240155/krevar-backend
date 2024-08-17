@@ -78,4 +78,10 @@ public class QuizServiceImpl implements QuizService {
 		return wordRepository.countByDeckIdAndNextPracticeDateAndIsCorrect(deckId, LocalDate.now().atStartOfDay(), false);
 	}
 
+	@Override
+	public Optional<WordEntity> getExtraQuestionByDeckId(Long deckId) {
+		List<WordEntity> words = quizRepository.findExtraWordByDeckId(deckId);
+		return words.isEmpty() ? Optional.empty() : Optional.of(words.get(0));
+	}
+
 }
