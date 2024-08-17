@@ -58,7 +58,7 @@ public class DeckController {
 		// 進捗情報を取得
 		List<DeckProgressResponse> deckProgressResponses = decksPage.getContent().stream()
 			.map(deck -> {
-				long totalQuestions = quizService.getTodayQuestionCountByDeckId(deck.getId());
+				long totalQuestions = quizService.getTodayNormalQuestionCountByDeckId(deck.getId());
 				return new DeckProgressResponse(deck, totalQuestions);
 			})
 			.collect(Collectors.toList());

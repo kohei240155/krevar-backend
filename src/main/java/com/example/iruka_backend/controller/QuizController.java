@@ -27,11 +27,11 @@ public class QuizController {
 	@GetMapping("/normal/{deckId}")
 	public Map<String, Object> getRandomQuestionByDeckId(@PathVariable("deckId") Long deckId) {
 		Optional<WordEntity> randomQuestion = quizService.getRandomQuestionByDeckId(deckId);
-		Long todayQuestionCount = quizService.getTodayQuestionCountByDeckId(deckId);
+		Long todayNormalQuestionCount = quizService.getTodayNormalQuestionCountByDeckId(deckId);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("randomQuestion", randomQuestion.orElse(null));
-		response.put("todayQuestionCount", todayQuestionCount);
+		response.put("todayNormalQuestionCount", todayNormalQuestionCount);
 
 		return response;
 	}
@@ -39,11 +39,11 @@ public class QuizController {
 	@GetMapping("/extra/{deckId}")
 	public Map<String, Object> getExtraQuestionByDeckId(@PathVariable("deckId") Long deckId) {
 		Optional<WordEntity> extraQuestion = quizService.getExtraQuestionByDeckId(deckId);
-		Long todayQuestionCount = quizService.getTodayQuestionCountByDeckId(deckId);
+		Long todayExtraQuestionCount = quizService.getTodayExtraQuestionCountByDeckId(deckId);
 
 		Map<String, Object> response = new HashMap<>();
 		response.put("extraQuestion", extraQuestion.orElse(null));
-		response.put("todayQuestionCount", todayQuestionCount);
+		response.put("todayExtraQuestionCount", todayExtraQuestionCount);
 
 		return response;
 	}

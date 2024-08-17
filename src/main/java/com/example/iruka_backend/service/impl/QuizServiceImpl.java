@@ -78,8 +78,13 @@ public class QuizServiceImpl implements QuizService {
 	}
 
 	@Override
-	public Long getTodayQuestionCountByDeckId(Long deckId) {
-		return quizRepository.findTodayQuestionCountByDeckId(deckId);
+	public Long getTodayNormalQuestionCountByDeckId(Long deckId) {
+		return quizRepository.findTodayNormalQuestionCountByDeckId(deckId); // Changed
+	}
+
+	@Override
+	public Long getTodayExtraQuestionCountByDeckId(Long deckId) {
+		return quizRepository.findTodayExtraQuestionCountByDeckId(deckId); // Added
 	}
 
 	@Override
