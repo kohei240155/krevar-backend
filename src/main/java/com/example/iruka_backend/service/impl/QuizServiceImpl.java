@@ -78,6 +78,15 @@ public class QuizServiceImpl implements QuizService {
 	}
 
 	@Override
+	public void resetExtraModeCorrectByDeckId(Long deckId) {
+		List<WordEntity> words = quizRepository.findWordsByDeckId(deckId);
+		for (WordEntity word : words) {
+			word.setIsExtraModeCorrect(false);
+		}
+		quizRepository.saveAll(words);
+	}
+
+	@Override
 	public Long getTodayNormalQuestionCountByDeckId(Long deckId) {
 		return quizRepository.findTodayNormalQuestionCountByDeckId(deckId); // Changed
 	}

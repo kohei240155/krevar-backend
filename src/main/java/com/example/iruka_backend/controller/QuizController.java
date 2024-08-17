@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.iruka_backend.entity.WordEntity;
@@ -36,8 +38,16 @@ public class QuizController {
 		return response;
 	}
 
+	@PutMapping("/extra/{deckId}/reset")
+	public void resetExtraModeCorrectByDeckId(@PathVariable("deckId") Long deckId) {
+		quizService.resetExtraModeCorrectByDeckId(deckId);
+	}
+
 	@GetMapping("/extra/{deckId}")
-	public Map<String, Object> getExtraQuestionByDeckId(@PathVariable("deckId") Long deckId) {
+	public Map<String, Object> getExtraQuestionByDeckId(@PathVariable("deckId") Long deckId, @RequestParam(value = "reset", required = false) Boolean reset) {
+		if (Boolean.TRUE.equals(reset)) {
+			quizService.resetExtraModeCorrectByDeckId(deckId);
+		}
 		Optional<WordEntity> extraQuestion = quizService.getExtraQuestionByDeckId(deckId);
 		Long todayExtraQuestionCount = quizService.getTodayExtraQuestionCountByDeckId(deckId);
 
