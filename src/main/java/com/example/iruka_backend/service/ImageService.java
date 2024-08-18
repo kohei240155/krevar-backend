@@ -6,4 +6,5 @@ import java.io.IOException;
 
 public interface ImageService {
     String saveImage(MultipartFile image) throws IOException;
+    String saveImageFromOpenAI(String imagePath) throws IOException;
 }

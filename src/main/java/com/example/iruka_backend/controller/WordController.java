@@ -26,6 +26,7 @@ import com.example.iruka_backend.responsedto.WordListResponse;
 import com.example.iruka_backend.responsedto.WordCreatedResponse;
 import com.example.iruka_backend.responsedto.WordUpdatedResponse;
 import com.example.iruka_backend.requestdto.WordUpdateRequest;
+import com.example.iruka_backend.requestdto.ImageUploadRequest;
 
 @RestController
 @RequestMapping("/api/word")
@@ -55,7 +56,7 @@ public class WordController {
 	@PostMapping("/{deckId}")
     public WordCreatedResponse createWord(@PathVariable("deckId") Long deckId, @RequestBody WordEntity word) {
         word.setDeckId(deckId);
-        word.setReviewIntervalId(0L);
+        word.setReviewIntervalId(1L);
         word.setNextPracticeDate(LocalDate.now());
         word.setCorrectCount(0L);
         word.setIncorrectCount(0L);
@@ -66,17 +67,24 @@ public class WordController {
     }
 
 	@PostMapping("/upload-image")
-	public String uploadImage(@RequestParam("image") MultipartFile image, @RequestParam("wordId") Long wordId) {
+	public String uploadImage(@RequestBody ImageUploadRequest imageUploadRequest) {
 		try {
-			// 画像をサーバーのローカルディレクトリに保存する
-			String imagePath = imageService.saveImage(image);
+			String imagePath = imageUploadRequest.getImagePath();
+			Long wordId = imageUploadRequest.getWordId();
+
+			if (imagePath == null) {
+				throw new IllegalArgumentException("imagePath must be provided");
+			}
+
+			// OpenAI APIで生成された画像をローカルディレクトリに保存する
+			String savedImagePath = imageService.saveImageFromOpenAI(imagePath);
 
 			// 画像の保存パスを更新
 			WordEntity word = wordService.getWordById(wordId).orElseThrow(() -> new RuntimeException("Word not found"));
-			word.setImageUrl(imagePath);
+			word.setImageUrl(savedImagePath);
 			wordService.save(word);
 
-			return "Image uploaded successfully: " + imagePath;
+			return "Image uploaded successfully: " + savedImagePath;
 		} catch (Exception e) {
 			return "Failed to upload image: " + e.getMessage();
 		}
@@ -88,7 +96,7 @@ public class WordController {
 		word.setOriginalText(wordUpdateRequest.getOriginalText());
 		word.setTranslatedText(wordUpdateRequest.getTranslatedText());
 		word.setImageUrl(wordUpdateRequest.getImageUrl());
-		word.setDeckId(wordUpdateRequest.getDeckId()); // Changed: wordUpdateRequest.getDeck_id() -> wordUpdateRequest.getDeckId()
+		word.setDeckId(wordUpdateRequest.getDeckId());
 		word.setNuanceText(wordUpdateRequest.getNuanceText());
 		word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
 		WordEntity updatedWord = wordService.update(word);
