@@ -1,6 +1,7 @@
 package com.example.iruka_backend.entity;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.sql.Timestamp; // Added this line to import java.sql.Timestamp
 
 import jakarta.persistence.Column;
@@ -29,7 +30,7 @@ public class DeckEntity extends BaseEntity {
 	private Long userId;
 
 	@Column(name = "last_practiced_date", nullable = false)
-	private LocalDateTime lastPracticedDate;
+	private LocalDate lastPracticedDate;
 
 	public DeckEntity() {}
 
@@ -43,7 +44,7 @@ public class DeckEntity extends BaseEntity {
 		LocalDateTime now = LocalDateTime.now();
 		setCreatedAt(Timestamp.valueOf(now));
 		setUpdatedAt(Timestamp.valueOf(now));
-		lastPracticedDate = now;
+		lastPracticedDate = now.toLocalDate(); // 修正: LocalDateTime から LocalDate へ変換
 	}
 
 	@PreUpdate
@@ -79,11 +80,11 @@ public class DeckEntity extends BaseEntity {
 		this.userId = userId;
 	}
 
-	public LocalDateTime getLastPracticedDate() {
+	public LocalDate getLastPracticedDate() {
 		return lastPracticedDate;
 	}
 
-	public void setLastPracticedDate(LocalDateTime lastPracticedDate) {
+	public void setLastPracticedDate(LocalDate lastPracticedDate) {
 		this.lastPracticedDate = lastPracticedDate;
 	}
 

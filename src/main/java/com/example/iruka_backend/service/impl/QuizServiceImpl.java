@@ -2,7 +2,6 @@ package com.example.iruka_backend.service.impl;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class QuizServiceImpl implements QuizService {
 				int intervalDays = reviewIntervalRepository.findById(word.getReviewIntervalId())
 						.map(interval -> interval.getIntervalDays())
 						.orElse(1);
-				word.setNextPracticeDate(LocalDate.now().plusDays(intervalDays).atStartOfDay());
+				word.setNextPracticeDate(LocalDate.now().plusDays(intervalDays)); // LocalDateに変更
 				word.setIsNormalModeCorrect(false); // isNormalModeCorrectをFalseに戻す
 			} else {
 				word.setIncorrectCount(word.getIncorrectCount() + 1);
@@ -104,7 +103,7 @@ public class QuizServiceImpl implements QuizService {
 
 	@Override
 	public long getIncorrectWordCountByDeckIdDueToday(Long deckId) {
-		return wordRepository.countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(deckId, LocalDate.now().atStartOfDay(), false);
+		return wordRepository.countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(deckId, LocalDate.now(),false);
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.example.iruka_backend.controller;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +55,8 @@ public class WordController {
 	@PostMapping("/{deckId}")
     public WordCreatedResponse createWord(@PathVariable("deckId") Long deckId, @RequestBody WordEntity word) {
         word.setDeckId(deckId);
-        word.setReviewIntervalId(1L);
-        word.setNextPracticeDate(LocalDateTime.now());
+        word.setReviewIntervalId(0L);
+        word.setNextPracticeDate(LocalDate.now());
         word.setCorrectCount(0L);
         word.setIncorrectCount(0L);
         word.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));

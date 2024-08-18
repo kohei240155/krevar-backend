@@ -18,7 +18,7 @@ public interface QuizRepository extends JpaRepository<WordEntity, Long> {
 	@Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.isNormalModeCorrect = FALSE AND w.nextPracticeDate = CURRENT_DATE")
 	Long findCountByDeckIdAndIsNormalModeCorrectFalseAndNextPracticeDate(@Param("deckId") Long deckId);
 
-	@Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.nextPracticeDate = CURRENT_DATE")
+	@Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.nextPracticeDate = CURRENT_DATE AND w.isNormalModeCorrect = FALSE")
 	Long findTodayNormalQuestionCountByDeckId(@Param("deckId") Long deckId);
 
 	@Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.isExtraModeCorrect = FALSE")

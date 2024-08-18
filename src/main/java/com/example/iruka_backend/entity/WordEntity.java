@@ -35,7 +35,7 @@ public class WordEntity extends BaseEntity {
 	private Long reviewIntervalId;
 
 	@Column(name = "next_practice_date", nullable = false)
-	private LocalDateTime nextPracticeDate;
+	private LocalDate nextPracticeDate;
 
 	@Column(name = "correct_count", nullable = false)
 	private Long correctCount;
@@ -100,11 +100,11 @@ public class WordEntity extends BaseEntity {
 		this.reviewIntervalId = reviewIntervalId;
 	}
 
-	public LocalDateTime getNextPracticeDate() {
+	public LocalDate getNextPracticeDate() {
 		return nextPracticeDate;
 	}
 
-	public void setNextPracticeDate(LocalDateTime nextPracticeDate) {
+	public void setNextPracticeDate(LocalDate nextPracticeDate) {
 		this.nextPracticeDate = nextPracticeDate;
 	}
 

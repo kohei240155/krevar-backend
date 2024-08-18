@@ -1,6 +1,7 @@
 package com.example.iruka_backend.repository;
 
 import java.util.List;
+import java.time.LocalDate; // 追加
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Page;
@@ -27,5 +28,5 @@ public interface WordRepository extends JpaRepository<WordEntity, Long> {
     @Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.nextPracticeDate = CURRENT_DATE")
     Long findTodayQuestionCountByDeckId(@Param("deckId") Long deckId);
 
-    long countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(Long deckId, LocalDateTime nextPracticeDate, Boolean isNormalModeCorrect); // 追加: next_practice_dateが当日で、is_normal_mode_correctが0のWordのカウントクエリ
+    long countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(Long deckId, LocalDate nextPracticeDate, Boolean isNormalModeCorrect); // 追加: next_practice_dateが当日で、is_normal_mode_correctが0のWordのカウントクエリ
 }
