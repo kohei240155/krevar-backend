@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 @Service
 public class ImageServiceImpl implements ImageService {
 
-    private static final String LOCAL_IMAGE_DIR = "C:/images/"; // Windowsフォルダのパス
+    private static final String LOCAL_IMAGE_DIR = "C:/Git/iruka-frontend/public/images/testImages/"; // Windowsフォルダのパス
 
     @Override
     public String saveImage(MultipartFile image) throws IOException {
