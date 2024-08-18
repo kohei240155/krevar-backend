@@ -60,6 +60,8 @@ public class WordController {
         word.setNextPracticeDate(LocalDate.now());
         word.setCorrectCount(0L);
         word.setIncorrectCount(0L);
+		word.setIsNormalModeCorrect(false);
+		word.setIsExtraModeCorrect(false);
         word.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
         word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
         WordEntity createdWord = wordService.save(word);
