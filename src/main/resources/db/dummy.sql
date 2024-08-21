@@ -1,9 +1,9 @@
 -- usersテーブルにダミーデータを挿入
-INSERT INTO users (name, email, password)
+INSERT INTO users (name, email, password, google_id, role)
 VALUES
-('John Doe', 'john.doe@example.com', 'password123'),
-('Jane Smith', 'jane.smith@example.com', 'securepass'),
-('Alice Johnson', 'alice.johnson@example.com', 'alicepassword');
+('John Doe', 'john.doe@example.com', 'password123', NULL, 'USER'),
+('Jane Smith', 'jane.smith@example.com', 'securepass', NULL, 'USER'),
+('Alice Johnson', 'alice.johnson@example.com', 'alicepassword', 'google-id-alice', 'USER');
 
 -- review_intervalsテーブルにダミーデータを挿入
 INSERT INTO review_intervals (interval_order, interval_days)
@@ -29,7 +29,7 @@ VALUES
 ('Technical Terms', 3),  -- Alice Johnsonのデッキ1
 ('Daily Conversation', 3);  -- Alice Johnsonのデッキ2
 
--- wordsテーブルにダミーデータを挿入（修正版）
+-- wordsテーブルにダーデータを挿入（修正版）
 INSERT INTO words (original_text, translated_text, nuance_text, image_url, review_interval_id, next_practice_date, correct_count, incorrect_count, is_normal_mode_correct, is_extra_mode_correct, deck_id)
 VALUES
 -- John Doe's Basic Vocabulary Deck
