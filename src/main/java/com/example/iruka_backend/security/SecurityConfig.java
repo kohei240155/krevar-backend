@@ -10,12 +10,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.session.jdbc.config.annotation.web.http.EnableJdbcHttpSession;
 
 import com.example.iruka_backend.service.impl.CustomUserDetailsService;
-import static org.springframework.security.config.Customizer.withDefaults; // Added this line
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@EnableJdbcHttpSession // Spring Session JDBCを有効化
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
@@ -46,7 +48,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .formLogin(withDefaults())  // ログインフォームの設定を追加
-            .httpBasic(withDefaults()); // HTTP Basic認証の設定��加
+            .httpBasic(withDefaults()); // HTTP Basic認証の設定を追加
         return http.build();
     }
 }
