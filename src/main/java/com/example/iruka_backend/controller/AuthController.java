@@ -41,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         logger.info("Login request received for email: {}", loginRequest.getEmail());
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -52,10 +52,9 @@ public class AuthController {
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
+            session.setAttribute("user", loginRequest.getEmail()); // セッションにユーザー情報を保存
             logger.info("Login successful for email: {}", loginRequest.getEmail());
-
-            // セッションが正しく作成されたことを示すメッセージを返却
-            return ResponseEntity.ok("Login successful. Session created.");
+            return ResponseEntity.ok("Login successful");
         } catch (BadCredentialsException e) {
             logger.error("Invalid credentials for email: {}", loginRequest.getEmail());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
