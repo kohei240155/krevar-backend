@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.requestdto.LoginRequest;
 import com.example.iruka_backend.requestdto.SignUpRequest;
+import com.example.iruka_backend.responsedto.JwtAuthenticationResponse;
+import com.example.iruka_backend.security.JwtTokenProvider;
 import com.example.iruka_backend.entity.UserEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -30,18 +30,20 @@ import javax.servlet.http.HttpSession;
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AuthController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.authenticationManager = authenticationManager;
+        this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         logger.info("Login request received for email: {}", loginRequest.getEmail());
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -52,9 +54,9 @@ public class AuthController {
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            session.setAttribute("user", loginRequest.getEmail()); // セッションにユーザー情報を保存
+            String jwt = jwtTokenProvider.generateToken(authentication.getName()); // 修正
             logger.info("Login successful for email: {}", loginRequest.getEmail());
-            return ResponseEntity.ok("Login successful");
+            return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
         } catch (BadCredentialsException e) {
             logger.error("Invalid credentials for email: {}", loginRequest.getEmail());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
