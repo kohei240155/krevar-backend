@@ -1,10 +1,14 @@
 package com.example.iruka_backend.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,35 +27,34 @@ import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.requestdto.LoginRequest;
 import com.example.iruka_backend.requestdto.SignUpRequest;
-import com.example.iruka_backend.service.impl.CustomUserDetailsService;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
 @CrossOrigin(origins = "http://localhost:3000")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
-    private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final CustomUserDetailsService userDetailsService;
-    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, PasswordEncoder passwordEncoder, CustomUserDetailsService userDetailsService) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.userDetailsService = userDetailsService;
-    }
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletRequest request) {
-        HttpSession session = request.getSession();  // ここでHttpSessionを取得
+
+    	// HttpSessionを取得
+        HttpSession session = request.getSession();
 
         logger.info("Login request received for email: {}", loginRequest.getEmail());
+
         try {
+
+            // ユーザーが入力した認証情報が正しいかどうかを確認
             Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                     loginRequest.getEmail(),
@@ -59,8 +62,11 @@ public class AuthController {
                 )
             );
 
+            // セキュリティコンテキストに認証情報を設定
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            session.setAttribute("user", loginRequest.getEmail()); // セッションにユーザー情報を保存
+
+            // セッションにユーザー情報を保存
+            session.setAttribute("user", loginRequest.getEmail());
             logger.info("Login successful for email: {}", loginRequest.getEmail());
 
             // ユーザー情報を取得
@@ -73,9 +79,12 @@ public class AuthController {
             response.put("role", user.getRole());
 
             return ResponseEntity.ok(response);
+
         } catch (BadCredentialsException e) {
+
             logger.error("Invalid credentials for email: {}", loginRequest.getEmail());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+
         }
     }
 

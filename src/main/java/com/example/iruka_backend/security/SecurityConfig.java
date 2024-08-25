@@ -16,7 +16,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.lang.NonNull;
 
-import com.example.iruka_backend.service.impl.CustomUserDetailsService;
+import com.example.iruka_backend.service.impl.UserDetailsServiceImpl;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
@@ -24,9 +24,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableJdbcHttpSession // Spring Session JDBCを有効化
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final UserDetailsServiceImpl userDetailsService;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
