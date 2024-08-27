@@ -1,34 +1,224 @@
 package com.example.iruka_backend.repository;
 
+import java.util.HashMap;
 import java.util.List;
-
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import java.util.Map;
+import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate; // 追加
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.example.iruka_backend.entity.WordEntity;
+import com.example.iruka_backend.repository.mapper.WordEntityRowMapper;
 
+import jakarta.transaction.Transactional;
+
+@Transactional
 @Repository
-public interface QuizRepository extends JpaRepository<WordEntity, Long> {
+public class QuizRepository {
 
-	@Query("SELECT w FROM WordEntity w WHERE w.nextPracticeDate = CURRENT_DATE AND w.deckId = :deckId AND w.isNormalModeCorrect = FALSE ORDER BY RAND()")
-	List<WordEntity> findRandomWordByDeckIdAndDate(@Param("deckId") Long deckId);
+	@Autowired
+	private NamedParameterJdbcTemplate namedParameterJdbcTemplate; // 追加
 
-	@Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.isNormalModeCorrect = FALSE AND w.nextPracticeDate = CURRENT_DATE")
-	Long findCountByDeckIdAndIsNormalModeCorrectFalseAndNextPracticeDate(@Param("deckId") Long deckId);
+	private static final String FIND_RANDOM_WORD_BY_DECK_ID_AND_DATE_SQL = """
+			SELECT
+				*
+			FROM
+				words
+			WHERE
+				next_practice_date = CURRENT_DATE
+			AND
+				deck_id = :deckId
+			AND
+				is_normal_mode_correct = FALSE
+			ORDER BY RAND()
+			""";
 
-	@Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.nextPracticeDate = CURRENT_DATE AND w.isNormalModeCorrect = FALSE")
-	Long findTodayNormalQuestionCountByDeckId(@Param("deckId") Long deckId);
+	public List<WordEntity> findRandomWordByDeckIdAndDate(Long deckId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("deckId", deckId);
+		return namedParameterJdbcTemplate.query(FIND_RANDOM_WORD_BY_DECK_ID_AND_DATE_SQL, params, new WordEntityRowMapper());
+	}
 
-	@Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.isExtraModeCorrect = FALSE")
-	Long findTodayExtraQuestionCountByDeckId(@Param("deckId") Long deckId);
+	private static final String FIND_COUNT_BY_DECK_ID_AND_IS_NORMAL_MODE_CORRECT_FALSE_AND_NEXT_PRACTICE_DATE_SQL = """
+			SELECT
+				COUNT(*)
+			FROM
+				words
+			WHERE
+				deck_id = :deckId
+			AND
+				is_normal_mode_correct = FALSE
+			AND
+				next_practice_date = CURRENT_DATE
+			""";
 
-	List<WordEntity> findWordsByDeckId(Long deckId);
+	public Long findCountByDeckIdAndIsNormalModeCorrectFalseAndNextPracticeDate(Long deckId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("deckId", deckId);
+		return namedParameterJdbcTemplate.queryForObject(FIND_COUNT_BY_DECK_ID_AND_IS_NORMAL_MODE_CORRECT_FALSE_AND_NEXT_PRACTICE_DATE_SQL, params, Long.class);
+	}
 
-	@Query("SELECT w FROM WordEntity w WHERE w.deckId = :deckId AND w.nextPracticeDate >= CURRENT_DATE AND w.isExtraModeCorrect = FALSE ORDER BY w.correctCount ASC, w.nextPracticeDate ASC")
-	List<WordEntity> findExtraWordByDeckId(@Param("deckId") Long deckId);
+	private static final String FIND_TODAY_NORMAL_QUESTION_COUNT_BY_DECK_ID_SQL = """
+			SELECT
+				COUNT(*)
+			FROM
+				words
+			WHERE
+				deck_id = :deckId
+			AND
+				next_practice_date = CURRENT_DATE
+			AND
+				is_normal_mode_correct = FALSE
+			""";
 
-	@Query("SELECT COUNT(w) FROM WordEntity w WHERE w.deckId = :deckId AND w.isNormalModeCorrect = true AND w.nextPracticeDate = CURRENT_DATE")
-	Long findCountByDeckIdAndIsNormalModeCorrectTrueAndNextPracticeDate(@Param("deckId") Long deckId);
+	public Long findTodayNormalQuestionCountByDeckId(Long deckId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("deckId", deckId);
+		return namedParameterJdbcTemplate.queryForObject(FIND_TODAY_NORMAL_QUESTION_COUNT_BY_DECK_ID_SQL, params, Long.class);
+	}
+
+	private static final String FIND_TODAY_EXTRA_QUESTION_COUNT_BY_DECK_ID_SQL = """
+			SELECT
+				COUNT(*)
+			FROM
+				words
+			WHERE
+				deck_id = :deckId
+			AND
+				is_extra_mode_correct = FALSE
+			""";
+
+	public Long findTodayExtraQuestionCountByDeckId(Long deckId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("deckId", deckId);
+		return namedParameterJdbcTemplate.queryForObject(FIND_TODAY_EXTRA_QUESTION_COUNT_BY_DECK_ID_SQL, params, Long.class);
+	}
+
+	private static final String FIND_WORDS_BY_DECK_ID_SQL = """
+			SELECT
+				*
+			FROM
+				words
+			WHERE
+				deck_id = :deckId
+			""";
+
+	public List<WordEntity> findWordsByDeckId(Long deckId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("deckId", deckId);
+		return namedParameterJdbcTemplate.query(FIND_WORDS_BY_DECK_ID_SQL, params, new WordEntityRowMapper());
+	}
+
+	private static final String FIND_EXTRA_WORD_BY_DECK_ID_SQL = """
+			SELECT
+				*
+			FROM
+				words
+			WHERE
+				deck_id = :deckId
+			AND
+				next_practice_date >= CURRENT_DATE
+			AND
+				is_extra_mode_correct = FALSE
+			ORDER BY
+				correct_count ASC,
+				next_practice_date ASC
+			""";
+
+	public List<WordEntity> findExtraWordByDeckId(Long deckId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("deckId", deckId);
+		return namedParameterJdbcTemplate.query(FIND_EXTRA_WORD_BY_DECK_ID_SQL, params, new WordEntityRowMapper());
+	}
+
+	private static final String FIND_COUNT_BY_DECK_ID_AND_IS_NORMAL_MODE_CORRECT_TRUE_AND_NEXT_PRACTICE_DATE_SQL = """
+			SELECT
+				COUNT(*)
+			FROM
+				words
+			WHERE
+				deck_id = :deckId
+			AND
+				is_normal_mode_correct = TRUE
+			AND
+				next_practice_date = CURRENT_DATE
+			""";
+
+	public Long findCountByDeckIdAndIsNormalModeCorrectTrueAndNextPracticeDate(Long deckId) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("deckId", deckId);
+		return namedParameterJdbcTemplate.queryForObject(FIND_COUNT_BY_DECK_ID_AND_IS_NORMAL_MODE_CORRECT_TRUE_AND_NEXT_PRACTICE_DATE_SQL, params, Long.class);
+	}
+
+	private static final String FIND_BY_ID_SQL = """
+			SELECT
+				*
+			FROM
+				words
+			WHERE
+				word_id = :wordId
+			""";
+
+	public Optional<WordEntity> findById(Long id) {
+		try {
+			Map<String, Object> params = new HashMap<>();
+			params.put("wordId", id);
+			WordEntity word = namedParameterJdbcTemplate.queryForObject(FIND_BY_ID_SQL, params, new WordEntityRowMapper());
+			return Optional.ofNullable(word);
+		} catch (EmptyResultDataAccessException e) {
+			return Optional.empty();
+		}
+	}
+
+	private static final String SAVE_WORD_SQL = """
+			INSERT INTO words (word_id, deck_id, word, is_normal_mode_correct, correct_count, incorrect_count, review_interval_id, next_practice_date, is_extra_mode_correct)
+			VALUES (:wordId, :deckId, :word, :isNormalModeCorrect, :correctCount, :incorrectCount, :reviewIntervalId, :nextPracticeDate, :isExtraModeCorrect)
+			""";
+
+	private static final String UPDATE_WORD_SQL = """
+			UPDATE words
+			SET
+				deck_id = :deckId,
+				word = :word,
+				is_normal_mode_correct = :isNormalModeCorrect,
+				correct_count = :correctCount,
+				incorrect_count = :incorrectCount,
+				review_interval_id = :reviewIntervalId,
+				next_practice_date = :nextPracticeDate,
+				is_extra_mode_correct = :isExtraModeCorrect
+			WHERE
+				word_id = :wordId
+			""";
+
+	public WordEntity save(WordEntity word) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("wordId", word.getId());
+		params.put("deckId", word.getDeckId());
+		params.put("word", word.getOriginalText());
+		params.put("isNormalModeCorrect", word.getIsNormalModeCorrect());
+		params.put("correctCount", word.getCorrectCount());
+		params.put("incorrectCount", word.getIncorrectCount());
+		params.put("reviewIntervalId", word.getReviewIntervalId());
+		params.put("nextPracticeDate", word.getNextPracticeDate());
+		params.put("isExtraModeCorrect", word.getIsExtraModeCorrect());
+		namedParameterJdbcTemplate.update(SAVE_WORD_SQL, params);
+		return word;
+	}
+
+	public WordEntity update(WordEntity word) {
+		Map<String, Object> params = new HashMap<>();
+		params.put("deckId", word.getDeckId());
+		params.put("word", word.getOriginalText());
+		params.put("isNormalModeCorrect", word.getIsNormalModeCorrect());
+		params.put("correctCount", word.getCorrectCount());
+		params.put("incorrectCount", word.getIncorrectCount());
+		params.put("reviewIntervalId", word.getReviewIntervalId());
+		params.put("nextPracticeDate", word.getNextPracticeDate());
+		params.put("isExtraModeCorrect", word.getIsExtraModeCorrect());
+		params.put("wordId", word.getId());
+		namedParameterJdbcTemplate.update(UPDATE_WORD_SQL, params);
+		return word;
+	}
 }

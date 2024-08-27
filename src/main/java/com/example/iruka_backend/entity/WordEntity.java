@@ -1,5 +1,6 @@
 package com.example.iruka_backend.entity;
 
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -8,12 +9,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
-import com.example.iruka_backend.common.entity.BaseEntity;
 
 @Entity
 @Table(name = "words")
-public class WordEntity extends BaseEntity {
+public class WordEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,6 +53,39 @@ public class WordEntity extends BaseEntity {
 
 	@Column(name = "deck_id", nullable = false)
 	private Long deckId;
+
+	@Column(name = "created_at", nullable = false, updatable = false)
+	private Timestamp createdAt;
+
+	@Column(name = "updated_at", nullable = false)
+	private Timestamp updatedAt;
+
+	@PrePersist
+	protected void onCreate() {
+		LocalDateTime now = LocalDateTime.now();
+		createdAt = Timestamp.valueOf(now);
+		updatedAt = Timestamp.valueOf(now);
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		updatedAt = Timestamp.valueOf(LocalDateTime.now());
+	}
+
+	@Column(name = "deleted_at")
+	private Timestamp deletedAt;
+
+	public void softDelete() {
+		deletedAt = Timestamp.valueOf(LocalDateTime.now());
+	}
+
+	public Timestamp getDeletedAt() {
+		return deletedAt;
+	}
+
+	public void setDeletedAt(Timestamp deletedAt) {
+		this.deletedAt = deletedAt;
+	}
 
 	public Long getId() {
 		return id;
@@ -146,5 +181,21 @@ public class WordEntity extends BaseEntity {
 
 	public void setDeckId(Long deckId) {
 		this.deckId = deckId;
+	}
+
+	public Timestamp getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Timestamp createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Timestamp getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Timestamp updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 }

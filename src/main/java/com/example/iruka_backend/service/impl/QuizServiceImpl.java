@@ -82,8 +82,8 @@ public class QuizServiceImpl implements QuizService {
 		List<WordEntity> words = quizRepository.findWordsByDeckId(deckId);
 		for (WordEntity word : words) {
 			word.setIsExtraModeCorrect(false);
+			quizRepository.update(word); // 1件ずつupdateするように修正
 		}
-		quizRepository.saveAll(words);
 	}
 
 	@Override

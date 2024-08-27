@@ -39,7 +39,7 @@ public class DeckServiceImpl implements DeckService {
 	public DeckEntity updateDeckName(Long id, String newDeckName) {
 		DeckEntity deck = deckRepository.findById(id).orElseThrow(() -> new RuntimeException("Deck not found"));
 		deck.setDeckName(newDeckName);
-		return deckRepository.save(deck);
+		return deckRepository.update(deck);
 	}
 
 	@Override

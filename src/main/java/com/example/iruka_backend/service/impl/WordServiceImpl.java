@@ -20,7 +20,7 @@ public class WordServiceImpl implements WordService {
 
 	@Override
 	public List<WordEntity> getWordsByDeckId(Long deckId) {
-		return wordRepository.findByDeckId(deckId); // This will now work
+		return wordRepository.findWordsByDeckId(deckId); // 修正
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class WordServiceImpl implements WordService {
 
 	@Override
 	public WordEntity update(WordEntity word) {
-		return wordRepository.save(word);
+		return wordRepository.update(word);
 	}
 
 	@Override

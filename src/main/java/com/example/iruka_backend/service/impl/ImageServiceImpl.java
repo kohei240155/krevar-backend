@@ -21,6 +21,9 @@ public class ImageServiceImpl implements ImageService {
         String fileName = image.getOriginalFilename();
 
         // ファイル名の正規化
+        if (fileName == null) {
+            throw new IOException("ファイル名がnullです");
+        }
         fileName = fileName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
 
         // ローカルに保存
