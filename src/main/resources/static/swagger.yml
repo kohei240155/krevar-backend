@@ -1,0 +1,174 @@
+openapi: 3.0.0
+info:
+  title: Deck API
+  version: 1.0.0
+  description: API for managing decks in the application.
+servers:
+  - url: http://localhost:8080/api
+    description: Local server
+
+paths:
+  /decks:
+    get:
+      summary: Get a list of all decks with pagination
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: Page number
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 10
+          description: Page size
+      responses:
+        '200':
+          description: A list of decks with pagination
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeckListResponse'
+    post:
+      summary: Create a new deck
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeckEntity'
+      responses:
+        '200':
+          description: Deck creation response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeckCreatedResponse'
+
+  /decks/{id}:
+    put:
+      summary: Update the name of an existing deck
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the deck to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeckEntity'
+      responses:
+        '200':
+          description: Deck update response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeckUpdatedResponse'
+
+    delete:
+      summary: Soft delete a deck
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+          description: ID of the deck to delete
+      responses:
+        '204':
+          description: No Content, deck deleted successfully
+
+components:
+  schemas:
+    DeckEntity:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique identifier for a deck
+          example: 1
+        deckName:
+          type: string
+          description: The name of the deck
+          example: "My Deck"
+        userId:
+          type: integer
+          description: The ID of the user who owns the deck
+          example: 1001
+        lastPracticedDate:
+          type: string
+          format: date
+          description: The last date this deck was practiced
+          example: "2024-08-27"
+        createdAt:
+          type: string
+          format: date-time
+          description: The timestamp when the deck was created
+          example: "2024-08-27T14:00:00Z"
+        updatedAt:
+          type: string
+          format: date-time
+          description: The timestamp when the deck was last updated
+          example: "2024-08-28T10:00:00Z"
+        deletedAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: The timestamp when the deck was deleted (if soft deleted)
+          example: "2024-08-29T10:00:00Z"
+
+    DeckCreatedResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique identifier for the created deck
+          example: 1
+        message:
+          type: string
+          description: Creation status message
+          example: "Deck created successfully"
+
+    DeckUpdatedResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique identifier for the updated deck
+          example: 1
+        deckName:
+          type: string
+          description: The updated name of the deck
+          example: "Updated Deck Name"
+        message:
+          type: string
+          description: Update status message
+          example: "Deck updated successfully"
+
+    DeckProgressResponse:
+      type: object
+      properties:
+        deck:
+          $ref: '#/components/schemas/DeckEntity'
+        totalQuestions:
+          type: integer
+          description: The total number of questions for the deck
+          example: 20
+
+    DeckListResponse:
+      type: object
+      properties:
+        decks:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeckProgressResponse'
+        totalDecks:
+          type: integer
+          description: Total number of active decks
+          example: 100
