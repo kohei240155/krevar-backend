@@ -50,7 +50,7 @@ public class QuizServiceImpl implements QuizService {
 				if (word.getReviewIntervalId() < 9) {
 					word.setReviewIntervalId(word.getReviewIntervalId() + 1);
 				}
-				int intervalDays = reviewIntervalRepository.findById(word.getReviewIntervalId())
+				int intervalDays = reviewIntervalRepository.findById(word.getReviewIntervalId()) // インスタンスメソッドとして呼び出す
 						.map(interval -> interval.getIntervalDays())
 						.orElse(1);
 				word.setNextPracticeDate(LocalDate.now().plusDays(intervalDays)); // LocalDateに変更
