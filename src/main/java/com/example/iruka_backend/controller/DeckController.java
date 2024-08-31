@@ -30,7 +30,7 @@ import com.example.iruka_backend.service.DeckService;
 import com.example.iruka_backend.service.QuizService;
 
 @RestController
-@RequestMapping("/api/decks")
+@RequestMapping("/api/deck")
 @CrossOrigin(origins = "http://localhost:3000")
 public class DeckController {
 
