@@ -84,6 +84,61 @@ paths:
         '204':
           description: No Content, deck deleted successfully
 
+  /quiz/normal/{deckId}:
+    get:
+      summary: Get a random normal question by deck ID
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: integer
+          description: ID of the deck
+      responses:
+        '200':
+          description: A random normal question and today's question count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  randomQuestion:
+                    $ref: '#/components/schemas/WordEntity'
+                  todayNormalQuestionCount:
+                    type: integer
+                    description: Number of normal questions answered today
+                    example: 5
+
+  /quiz/extra/{deckId}:
+    get:
+      summary: Get a random extra question by deck ID
+      parameters:
+        - in: path
+          name: deckId
+          required: true
+          schema:
+            type: integer
+          description: ID of the deck
+        - in: query
+          name: reset
+          schema:
+            type: boolean
+          description: Reset extra mode correct status
+      responses:
+        '200':
+          description: A random extra question and today's extra question count
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  extraQuestion:
+                    $ref: '#/components/schemas/WordEntity'
+                  todayExtraQuestionCount:
+                    type: integer
+                    description: Number of extra questions answered today
+                    example: 3
+
 components:
   schemas:
     DeckEntity:
@@ -172,3 +227,27 @@ components:
           type: integer
           description: Total number of active decks
           example: 100
+
+    WordEntity:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The unique identifier for a word
+          example: "1"
+        originalText:
+          type: string
+          description: The original text of the word
+          example: "こんにちは"
+        translatedText:
+          type: string
+          description: The translated text of the word
+          example: "Hello"
+        nuanceText:
+          type: string
+          description: The nuance text of the word
+          example: "A casual greeting"
+        imageUrl:
+          type: string
+          description: The URL of the image associated with the word
+          example: "http://example.com/image.jpg"
