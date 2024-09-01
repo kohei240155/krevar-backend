@@ -1,23 +1,32 @@
 package com.example.iruka_backend.service;
 
 import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import com.example.iruka_backend.entity.DeckEntity;
 
 public interface DeckService {
-	List<DeckEntity> getAllDecks();
-	DeckEntity save(DeckEntity deck);
-	DeckEntity updateDeckName(Long id, String newDeckName);
-	void softDeleteDeck(Long id); // 物理削除から論理削除に変更
-	// ページネーション対応のメソッドを追加
-	Page<DeckEntity> getDecks(Pageable pageable); // deleted_atがnullのデッキのみ取得
-	long countActiveDecks(); // 追加: 有効なデッキのカウントメソッド
-	void deleteDeck(Long id);
-	// 追加: クイズサービスの依存関係を追加
-	void setQuizService(QuizService quizService);
-	List<DeckEntity> getAllDecksSortedByCorrectQuestions(); // 追加: correctQuestionsでソートされた全デッキを取得するメソッド
-	List<DeckEntity> getAllDecksSortedByDueTodayAndIncorrectWords(); // 追加: next_practice_dateが当日で、is_normal_mode_correctが0のWordが多い順に並べ替え
+  List<DeckEntity> getAllDecks();
+
+  DeckEntity save(DeckEntity deck);
+
+  DeckEntity updateDeckName(Long id, String newDeckName);
+
+  void softDeleteDeck(Long id); // 物理削除から論理削除に変更
+  // ページネーション対応のメソッドを追加
+
+  Page<DeckEntity> getDecks(Pageable pageable); // deleted_atがnullのデッキのみ取得
+
+  long countActiveDecks(); // 追加: 有効なデッキのカウントメソッド
+
+  void deleteDeck(Long id);
+
+  // 追加: クイズサービスの依存関係を追加
+  void setQuizService(QuizService quizService);
+
+  List<DeckEntity> getAllDecksSortedByCorrectQuestions(); // 追加:
+                                                          // correctQuestionsでソートされた全デッキを取得するメソッド
+
+  List<DeckEntity> getAllDecksSortedByDueTodayAndIncorrectWords(); // 追加:
+                                                                   // next_practice_dateが当日で、is_normal_mode_correctが0のWordが多い順に並べ替え
 }
