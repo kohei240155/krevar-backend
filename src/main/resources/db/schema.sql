@@ -1,7 +1,7 @@
 -- users table
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) DEFAULT,  -- Added default value
+    name VARCHAR(100) DEFAULT '',  -- Added default value
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL, -- Added password column
     google_id VARCHAR(255), -- Google authentication column added
@@ -39,18 +39,26 @@ CREATE TABLE words (
     original_text TEXT NOT NULL,
     translated_text TEXT NOT NULL,
     nuance_text TEXT NOT NULL,
-    image_url TEXT,
-    review_interval_id INT NOT NULL,
-    next_practice_date DATE DEFAULT (CURRENT_DATE),
-    correct_count INT DEFAULT 0,
-    incorrect_count INT DEFAULT 0,
-    is_normal_mode_correct  BOOLEAN DEFAULT FALSE,
-    is_extra_mode_correct  BOOLEAN DEFAULT FALSE,
+    image_url TEXT NOT NULL,
     deck_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP DEFAULT NULL,
-    FOREIGN KEY (deck_id) REFERENCES decks(id),
+    FOREIGN KEY (deck_id) REFERENCES decks(id)
+);
+
+-- quiz_results table
+CREATE TABLE quiz_results (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    word_id INT NOT NULL,
+    review_interval_id INT NOT NULL,
+    next_practice_date DATE DEFAULT (CURRENT_DATE),
+    correct_count INT DEFAULT 0,
+    incorrect_count INT DEFAULT 0,
+    is_extra_mode_correct BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (word_id) REFERENCES words(id),
     FOREIGN KEY (review_interval_id) REFERENCES review_intervals(id)
 );
 
