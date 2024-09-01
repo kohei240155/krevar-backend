@@ -22,8 +22,10 @@ public interface DeckRepository {
 
   Long findTodayQuestionCountByDeckId(Long deckId);
 
-  long countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(Long deckId,
-      LocalDate nextPracticeDate, Boolean isNormalModeCorrect);
+  long countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(
+      Long deckId,
+      LocalDate nextPracticeDate,
+      Boolean isNormalModeCorrect);
 
   DeckEntity save(DeckEntity deck);
 
