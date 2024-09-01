@@ -44,10 +44,9 @@ public class DeckController {
   public DeckListResponse getAllDecks(@RequestParam(name = "page", defaultValue = "0") int page,
       @RequestParam(name = "size", defaultValue = "10") int size) {
     Pageable pageable = PageRequest.of(page, size);
-    List<DeckEntity> allDecks = deckService.getAllDecksSortedByDueTodayAndIncorrectWords(); // 修正:
-                                                                                            // next_practice_dateが当日で、is_normal_mode_correctが0のWordが多い順に並べ替え
-    long count = deckService.countActiveDecks(); // Added: count active decks
-    logger.info("Total active decks: {}", count); // Log the count
+    List<DeckEntity> allDecks = deckService.getAllDecksSortedByDueTodayAndIncorrectWords();
+    long count = deckService.countActiveDecks();
+    logger.info("Total active decks: {}", count);
 
     // ページネーションを適用
     int start = (int) pageable.getOffset();
