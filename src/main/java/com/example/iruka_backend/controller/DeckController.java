@@ -60,7 +60,7 @@ public class DeckController {
       return new DeckProgressResponse(deck, totalQuestions);
     }).collect(Collectors.toList());
 
-    return new DeckListResponse(deckProgressResponses, count); // Return DeckResponse with progress
+    return new DeckListResponse(deckProgressResponses, count);
   }
 
   @PostMapping
@@ -92,6 +92,6 @@ public class DeckController {
   @DeleteMapping("/{id}")
   public void deleteDeck(@PathVariable("id") Long id) {
     logger.info("Received request to delete deck with id: {}", id);
-    deckService.softDeleteDeck(id); // 物理削除から論理削除に変
+    deckService.softDeleteDeck(id);
   }
 }
