@@ -1,3 +1,10 @@
+DROP TABLE `iruka_db`.`spring_session_attributes`;
+DROP TABLE `iruka_db`.`spring_session`;
+DROP TABLE `iruka_db`.`words`;
+DROP TABLE `iruka_db`.`review_intervals`;
+DROP TABLE `iruka_db`.`decks`;
+DROP TABLE `iruka_db`.`users`;
+
 -- users table
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -6,9 +13,9 @@ CREATE TABLE users (
     password VARCHAR(255) NOT NULL, -- Added password column
     google_id VARCHAR(255), -- Google authentication column added
     role VARCHAR(255) NOT NULL, -- Added role column
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP DEFAULT NULL
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME DEFAULT NULL
 );
 
 -- review_intervals table
@@ -16,9 +23,9 @@ CREATE TABLE review_intervals (
     id INT AUTO_INCREMENT PRIMARY KEY,
     interval_order INT NOT NULL,
     interval_days INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP DEFAULT NULL
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME DEFAULT NULL
 );
 
 -- decks table
@@ -26,10 +33,10 @@ CREATE TABLE decks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     deck_name VARCHAR(255) NOT NULL,
     user_id INT NOT NULL,
-    last_practiced_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP DEFAULT NULL,
+    last_practiced_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME DEFAULT NULL,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
@@ -46,9 +53,9 @@ CREATE TABLE words (
     correct_count INT DEFAULT 0, -- 統合されたカラム
     incorrect_count INT DEFAULT 0, -- 統合されたカラム
     is_extra_mode_correct BOOLEAN DEFAULT FALSE, -- 統合されたカラム
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at TIMESTAMP DEFAULT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at DATETIME DEFAULT NULL,
     FOREIGN KEY (deck_id) REFERENCES decks(id),
     FOREIGN KEY (review_interval_id) REFERENCES review_intervals(id) -- 統合された外部キー制約
 );
