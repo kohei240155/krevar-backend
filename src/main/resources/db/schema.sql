@@ -33,7 +33,7 @@ CREATE TABLE decks (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
--- words table
+-- words table (統合版)
 CREATE TABLE words (
     id INT AUTO_INCREMENT PRIMARY KEY,
     original_text TEXT NOT NULL,
@@ -41,25 +41,16 @@ CREATE TABLE words (
     nuance_text TEXT NOT NULL,
     image_url TEXT NOT NULL,
     deck_id INT NOT NULL,
+    review_interval_id INT NOT NULL, -- 統合されたカラム
+    next_practice_date DATE DEFAULT (CURRENT_DATE), -- 統合されたカラム
+    correct_count INT DEFAULT 0, -- 統合されたカラム
+    incorrect_count INT DEFAULT 0, -- 統合されたカラム
+    is_extra_mode_correct BOOLEAN DEFAULT FALSE, -- 統合されたカラム
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP DEFAULT NULL,
-    FOREIGN KEY (deck_id) REFERENCES decks(id)
-);
-
--- quiz_results table
-CREATE TABLE quiz_results (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    word_id INT NOT NULL,
-    review_interval_id INT NOT NULL,
-    next_practice_date DATE DEFAULT (CURRENT_DATE),
-    correct_count INT DEFAULT 0,
-    incorrect_count INT DEFAULT 0,
-    is_extra_mode_correct BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (word_id) REFERENCES words(id),
-    FOREIGN KEY (review_interval_id) REFERENCES review_intervals(id)
+    FOREIGN KEY (deck_id) REFERENCES decks(id),
+    FOREIGN KEY (review_interval_id) REFERENCES review_intervals(id) -- 統合された外部キー制約
 );
 
 -- Spring Session用のテーブル
