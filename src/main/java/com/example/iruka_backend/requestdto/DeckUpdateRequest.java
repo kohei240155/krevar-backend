@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class DeckUpdateRequest {
 
   /** ユーザーID */
-  private int userId;
+  private Long userId;
 
   /** デッキ名 */
   private String deckName;

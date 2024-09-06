@@ -5,15 +5,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import com.example.iruka_backend.entity.DeckEntity;
+import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.repository.DeckRepository;
+import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.requestdto.DeckCreateRequest;
 import com.example.iruka_backend.requestdto.DeckUpdateRequest;
 import com.example.iruka_backend.responsedto.DeckInfo;
 import com.example.iruka_backend.responsedto.DeckListResponse;
 import com.example.iruka_backend.service.DeckService;
+import com.example.iruka_backend.util.SecurityUtil;
 
 @Service
 public class DeckServiceImpl implements DeckService {
@@ -23,6 +27,9 @@ public class DeckServiceImpl implements DeckService {
 
   @Autowired
   private WordRepository wordRepository;
+
+  @Autowired
+  private UserRepository userRepository;
 
   /**
    * ユーザーIDに紐づくデッキを取得する
@@ -96,15 +103,20 @@ public class DeckServiceImpl implements DeckService {
   /**
    * ユーザーIDをチェックする
    *
-   * @param userId ユーザーID
-   * @param chkUserId チェックするユーザーID
+   * @param requestedUserId リクエストされたユーザーID
    */
   @Override
-  public void checkUserId(int userId, int chkUserId) {
+  public void verifyUser(Long requestedUserId) {
 
-    // ユーザーIDが一致しない場合はエラーをスロー
-    if (userId != chkUserId) {
-      throw new IllegalArgumentException("ユーザーIDが一致しません");
+    // ログインユーザーのメールアドレスを取得
+    String username = SecurityUtil.getAuthenticatedUsername();
+
+    // ログインユーザーを取得
+    UserEntity user = userRepository.findByEmail(username);
+
+    // ログインユーザーがリクエストされたユーザーと一致しない場合はエラーをスロー
+    if (user == null || !user.getId().equals(requestedUserId)) {
+      throw new AccessDeniedException("ユーザーにこのリソースへのアクセス権がありません");
     }
   }
 
@@ -114,7 +126,7 @@ public class DeckServiceImpl implements DeckService {
    * @param deckId デッキID
    */
   @Override
-  public int getUserIdByDeckId(Long deckId) {
+  public Long getUserIdByDeckId(Long deckId) {
     return deckRepository.getUserIdByDeckId(deckId);
   }
 }

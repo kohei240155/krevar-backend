@@ -43,14 +43,13 @@ public interface DeckService {
    * ユーザーIDをチェックする
    *
    * @param userId ユーザーID
-   * @param chkUserId チェックするユーザーID
    */
-  void checkUserId(int userId, int chkUserId);
+  void verifyUser(Long requestedUserId);
 
   /**
    * デッキに紐づくユーザーIDを取得する
    *
    * @param deckId デッキID
    */
-  int getUserIdByDeckId(Long deckId);
+  Long getUserIdByDeckId(Long deckId);
 }

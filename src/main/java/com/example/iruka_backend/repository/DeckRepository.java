@@ -42,5 +42,5 @@ public interface DeckRepository {
    *
    * @param deckId デッキID
    */
-  int getUserIdByDeckId(Long deckId);
+  Long getUserIdByDeckId(Long deckId);
 }

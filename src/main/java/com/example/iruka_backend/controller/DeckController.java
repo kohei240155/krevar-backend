@@ -28,13 +28,13 @@ import com.example.iruka_backend.service.DeckService;
 @CrossOrigin(origins = "http://localhost:3000")
 public class DeckController {
 
-  private static final Logger logger = LoggerFactory.getLogger(DeckController.class);
-
   @Autowired
   private DeckService deckService;
 
   @Autowired
   private UserRepository userRepository;
+
+  private static final Logger logger = LoggerFactory.getLogger(DeckController.class);
 
   @GetMapping
   public DeckListResponse getAllDecks(@RequestParam(name = "page", defaultValue = "0") int page,
@@ -63,16 +63,7 @@ public class DeckController {
 
     logger.info("------------- デッキ作成API開始 -------------");
 
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String username = null;
-    if (authentication.getPrincipal() instanceof UserDetails) {
-      username = ((UserDetails) authentication.getPrincipal()).getUsername();
-    }
-
-    UserEntity user = userRepository.findByEmail(username);
-    int userId = user.getId().intValue();
-
-    deckService.checkUserId(userId, deckCreateRequest.getUserId());
+    deckService.verifyUser(deckCreateRequest.getUserId());
 
     deckService.save(deckCreateRequest);
 
@@ -87,16 +78,7 @@ public class DeckController {
 
     logger.info("------------- デッキ更新API開始 -------------");
 
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String username = null;
-    if (authentication.getPrincipal() instanceof UserDetails) {
-      username = ((UserDetails) authentication.getPrincipal()).getUsername();
-    }
-
-    UserEntity user = userRepository.findByEmail(username);
-    int userId = user.getId().intValue();
-
-    deckService.checkUserId(userId, deckUpdateRequest.getUserId());
+    deckService.verifyUser(deckUpdateRequest.getUserId());
 
     deckService.update(deckUpdateRequest, deckId);
 
@@ -110,16 +92,8 @@ public class DeckController {
 
     logger.info("------------- デッキ削除API開始 -------------");
 
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String username = null;
-    if (authentication.getPrincipal() instanceof UserDetails) {
-      username = ((UserDetails) authentication.getPrincipal()).getUsername();
-    }
-
-    UserEntity user = userRepository.findByEmail(username);
-    int userId = user.getId().intValue();
-
-    deckService.checkUserId(userId, deckService.getUserIdByDeckId(deckId));
+    Long userId = deckService.getUserIdByDeckId(deckId);
+    deckService.verifyUser(userId);
 
     deckService.delete(deckId);
 

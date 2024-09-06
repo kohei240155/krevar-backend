@@ -12,7 +12,7 @@ import lombok.Setter;
 public class DeckCreateRequest {
 
     /** ユーザーID */
-    private int userId;
+    private Long userId;
 
     /** デッキ名 */
     private String deckName;
