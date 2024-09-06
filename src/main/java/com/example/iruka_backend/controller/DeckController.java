@@ -1,14 +1,11 @@
 package com.example.iruka_backend.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,13 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.iruka_backend.entity.DeckEntity;
-import com.example.iruka_backend.responsedto.DeckCreatedResponse;
+import com.example.iruka_backend.entity.UserEntity;
+import com.example.iruka_backend.repository.UserRepository;
+import com.example.iruka_backend.requestdto.DeckCreateRequest;
+import com.example.iruka_backend.requestdto.DeckUpdateRequest;
 import com.example.iruka_backend.responsedto.DeckListResponse;
-import com.example.iruka_backend.responsedto.DeckProgressResponse;
-import com.example.iruka_backend.responsedto.DeckUpdatedResponse;
 import com.example.iruka_backend.service.DeckService;
-import com.example.iruka_backend.service.QuizService;
 
 @RestController
 @RequestMapping("/api/deck")
@@ -38,60 +34,97 @@ public class DeckController {
   private DeckService deckService;
 
   @Autowired
-  private QuizService quizService;
+  private UserRepository userRepository;
 
   @GetMapping
   public DeckListResponse getAllDecks(@RequestParam(name = "page", defaultValue = "0") int page,
       @RequestParam(name = "size", defaultValue = "10") int size) {
-    Pageable pageable = PageRequest.of(page, size);
-    List<DeckEntity> allDecks = deckService.getAllDecksSortedByDueTodayAndIncorrectWords();
-    long count = deckService.countActiveDecks();
-    logger.info("Total active decks: {}", count);
 
-    // ページネーションを適用
-    int start = (int) pageable.getOffset();
-    int end = Math.min((start + pageable.getPageSize()), allDecks.size());
-    Page<DeckEntity> decksPage =
-        new PageImpl<>(allDecks.subList(start, end), pageable, allDecks.size());
+    logger.info("------------- デッキ取得API開始 -------------");
 
-    // 進捗情報を取得
-    List<DeckProgressResponse> deckProgressResponses = decksPage.getContent().stream().map(deck -> {
-      long totalQuestions = quizService.getTodayNormalQuestionCountByDeckId(deck.getId());
-      return new DeckProgressResponse(deck, totalQuestions);
-    }).collect(Collectors.toList());
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = null;
+    if (authentication.getPrincipal() instanceof UserDetails) {
+      username = ((UserDetails) authentication.getPrincipal()).getUsername();
+    }
 
-    return new DeckListResponse(deckProgressResponses, count);
+    UserEntity user = userRepository.findByEmail(username);
+    int userId = user.getId().intValue();
+
+    DeckListResponse decks = deckService.getDecksByUserId(userId, page, size);
+
+    logger.info("------------- デッキ取得API終了 -------------");
+
+    return decks;
   }
 
   @PostMapping
-  public DeckCreatedResponse createDeck(@RequestBody DeckEntity deck) {
-    logger.info("Received request to create deck: {}", deck);
-    try {
-      DeckEntity createdDeck = deckService.save(deck);
-      return new DeckCreatedResponse(createdDeck.getId(), "Deck created successfully");
-    } catch (Exception e) {
-      logger.error("Error creating deck: {}", e.getMessage());
-      return new DeckCreatedResponse(null, "Error creating deck");
+  public String createDeck(@RequestBody DeckCreateRequest deckCreateRequest) {
+
+    logger.info("------------- デッキ作成API開始 -------------");
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = null;
+    if (authentication.getPrincipal() instanceof UserDetails) {
+      username = ((UserDetails) authentication.getPrincipal()).getUsername();
     }
+
+    UserEntity user = userRepository.findByEmail(username);
+    int userId = user.getId().intValue();
+
+    deckService.checkUserId(userId, deckCreateRequest.getUserId());
+
+    deckService.save(deckCreateRequest);
+
+    logger.info("------------- デッキ作成API終了 -------------");
+
+    return "デッキの作成に成功しました";
   }
 
-  @PutMapping("/{id}")
-  public DeckUpdatedResponse updateDeckName(@PathVariable("id") Long id,
-      @RequestBody DeckEntity updatedDeck) {
-    logger.info("Received request to update deck: {}", updatedDeck);
-    try {
-      DeckEntity updatedEntity = deckService.updateDeckName(id, updatedDeck.getDeckName());
-      return new DeckUpdatedResponse(updatedEntity.getId(), updatedEntity.getDeckName(),
-          "Deck updated successfully");
-    } catch (Exception e) {
-      logger.error("Error updating deck: {}", e.getMessage());
-      return new DeckUpdatedResponse(null, null, "Error updating deck");
+  @PutMapping("/{deckId}")
+  public String updateDeck(@PathVariable("deckId") Long deckId,
+      @RequestBody DeckUpdateRequest deckUpdateRequest) {
+
+    logger.info("------------- デッキ更新API開始 -------------");
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = null;
+    if (authentication.getPrincipal() instanceof UserDetails) {
+      username = ((UserDetails) authentication.getPrincipal()).getUsername();
     }
+
+    UserEntity user = userRepository.findByEmail(username);
+    int userId = user.getId().intValue();
+
+    deckService.checkUserId(userId, deckUpdateRequest.getUserId());
+
+    deckService.update(deckUpdateRequest, deckId);
+
+    logger.info("------------- デッキ更新API終了 -------------");
+
+    return "デッキの更新に成功しました";
   }
 
-  @DeleteMapping("/{id}")
-  public void deleteDeck(@PathVariable("id") Long id) {
-    logger.info("Received request to delete deck with id: {}", id);
-    deckService.softDeleteDeck(id);
+  @DeleteMapping("/{deckId}")
+  public String deleteDeck(@PathVariable("deckId") Long deckId) {
+
+    logger.info("------------- デッキ削除API開始 -------------");
+
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    String username = null;
+    if (authentication.getPrincipal() instanceof UserDetails) {
+      username = ((UserDetails) authentication.getPrincipal()).getUsername();
+    }
+
+    UserEntity user = userRepository.findByEmail(username);
+    int userId = user.getId().intValue();
+
+    deckService.checkUserId(userId, deckService.getUserIdByDeckId(deckId));
+
+    deckService.delete(deckId);
+
+    logger.info("------------- デッキ削除API終了 -------------");
+
+    return "デッキの削除に成功しました";
   }
 }

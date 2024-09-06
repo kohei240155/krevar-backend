@@ -1,234 +1,137 @@
 package com.example.iruka_backend.repository.impl;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import com.example.iruka_backend.entity.DeckEntity;
 import com.example.iruka_backend.repository.DeckRepository;
 import com.example.iruka_backend.repository.mapper.DeckEntityRowMapper;
+import com.example.iruka_backend.requestdto.DeckCreateRequest;
+import com.example.iruka_backend.requestdto.DeckUpdateRequest;
 
 @Transactional
 @Repository
 public class DeckRepositoryImpl implements DeckRepository {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+  @Autowired
+  private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+  private static final String FIND_BY_ID_SQL = """
+      SELECT
+          *
+      FROM
+          decks
+      WHERE
+          user_id = :userId
+      AND
+          deleted_at IS NULL
+      """;
 
-    private static final String FIND_BY_ID_SQL = """
-            SELECT
-                *
-            FROM
-                decks
-            WHERE
-                id = :id
-            AND
-                deleted_at IS NULL
-            """;
+  @Override
+  public List<DeckEntity> findByUserId(int userId) {
+    Map<String, Object> params = new HashMap<>();
+    params.put("userId", userId);
+    List<DeckEntity> deck =
+        namedParameterJdbcTemplate.query(FIND_BY_ID_SQL, params, new DeckEntityRowMapper());
+    return deck;
+  }
 
-    @Override
-    public Optional<DeckEntity> findById(Long id) {
-        try {
-            Map<String, Object> params = new HashMap<>();
-            params.put("id", id);
-            DeckEntity deck = namedParameterJdbcTemplate.queryForObject(FIND_BY_ID_SQL, params,
-                    new DeckEntityRowMapper());
-            return Optional.ofNullable(deck);
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
+  private static final String SAVE_SQL = """
+      INSERT INTO
+          decks (user_id, deck_name, created_at, updated_at)
+      VALUES
+          (:userId, :deckName, :createdAt, :updatedAt)
+      """;
 
-    private static final String FIND_BY_DELETED_AT_IS_NULL_SQL = """
-            SELECT
-                *
-            FROM
-                decks
-            WHERE
-                deleted_at IS NULL
-            """;
+  @Override
+  public void save(DeckCreateRequest deckCreateRequest) {
 
-    @Override
-    public List<DeckEntity> findByDeletedAtIsNull() {
-        return jdbcTemplate.query(FIND_BY_DELETED_AT_IS_NULL_SQL, new DeckEntityRowMapper());
-    }
+    // パラメータをマップに格納
+    Map<String, Object> params = new HashMap<>();
+    params.put("userId", deckCreateRequest.getUserId());
+    params.put("deckName", deckCreateRequest.getDeckName());
+    params.put("createdAt", LocalDateTime.now());
+    params.put("updatedAt", LocalDateTime.now());
 
-    private static final String FIND_ALL_BY_DELETED_AT_IS_NULL_SQL = """
-            SELECT
-                *
-            FROM
-                decks
-            WHERE
-                deleted_at IS NULL
-            LIMIT :limit OFFSET :offset
-            """;
+    // SQLを実行してデータを保存
+    namedParameterJdbcTemplate.update(SAVE_SQL, params);
+  }
 
-    @Override
-    public Page<DeckEntity> findAllByDeletedAtIsNull(Pageable pageable) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("limit", pageable.getPageSize());
-        params.put("offset", pageable.getOffset());
-        List<DeckEntity> decks =
-                namedParameterJdbcTemplate.query(FIND_ALL_BY_DELETED_AT_IS_NULL_SQL,
-                        params, new DeckEntityRowMapper());
-        long total = countByDeletedAtIsNull();
-        return new PageImpl<>(decks, pageable, total);
-    }
+  private static final String UPDATE_SQL = """
+      UPDATE
+          decks
+      SET
+          deck_name = :deckName,
+          updated_at = :updatedAt
+      WHERE
+          id = :deckId
+      AND
+          user_id = :userId
+      """;
 
-    private static final String COUNT_BY_DELETED_AT_IS_NULL_SQL = """
-            SELECT
-                COUNT(*)
-            FROM
-                decks
-            WHERE
-                deleted_at IS NULL
-            """;
+  @Override
+  public void update(DeckUpdateRequest deckUpdateRequest, Long deckId) {
 
-    @Override
-    public long countByDeletedAtIsNull() {
-        Long count = jdbcTemplate.queryForObject(COUNT_BY_DELETED_AT_IS_NULL_SQL, Long.class);
-        return count != null ? count : 0L;
-    }
+    // パラメータをマップに格納
+    Map<String, Object> params = new HashMap<>();
+    params.put("userId", deckUpdateRequest.getUserId());
+    params.put("deckId", deckId);
+    params.put("deckName", deckUpdateRequest.getDeckName());
+    params.put("updatedAt", LocalDateTime.now());
 
-    private static final String FIND_COUNT_BY_DECK_ID_AND_IS_NORMAL_MODE_CORRECT_FALSE_AND_NEXT_PRACTICE_DATE_SQL =
-            """
-                    SELECT
-                        COUNT(*)
-                    FROM
-                        decks
-                    WHERE
-                        id = :deckId
-                    AND
-                        is_normal_mode_correct = false
-                    AND next_practice_date <= CURRENT_DATE
-                    """;
+    // SQLを実行してデータを更新
+    namedParameterJdbcTemplate.update(UPDATE_SQL, params);
+  }
 
-    @Override
-    public Long findCountByDeckIdAndIsNormalModeCorrectFalseAndNextPracticeDate(Long deckId) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("deckId", deckId);
-        return namedParameterJdbcTemplate.queryForObject(
-                FIND_COUNT_BY_DECK_ID_AND_IS_NORMAL_MODE_CORRECT_FALSE_AND_NEXT_PRACTICE_DATE_SQL,
-                params,
-                Long.class);
-    }
+  private static final String DELETE_SQL = """
+      UPDATE
+          decks
+      SET
+          deleted_at = :deletedAt
+      WHERE
+          id = :deckId
+      """;
 
-    private static final String COUNT_BY_DECK_ID_AND_IS_NORMAL_MODE_CORRECT_TRUE_SQL = """
-            SELECT
-                COUNT(*)
-            FROM
-                decks
-            WHERE
-                id = :deckId
-            AND
-                is_normal_mode_correct = true
-            """;
+  @Override
+  public void delete(Long deckId) {
 
-    @Override
-    public Long countByDeckIdAndIsNormalModeCorrectTrue(Long deckId) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("deckId", deckId);
-        return namedParameterJdbcTemplate
-                .queryForObject(COUNT_BY_DECK_ID_AND_IS_NORMAL_MODE_CORRECT_TRUE_SQL, params,
-                        Long.class);
-    }
+    // パラメータをマップに格納
+    Map<String, Object> params = new HashMap<>();
+    params.put("deckId", deckId);
+    params.put("deletedAt", LocalDateTime.now());
 
-    private static final String FIND_TODAY_QUESTION_COUNT_BY_DECK_ID_SQL = """
-            SELECT
-                COUNT(*)
-            FROM
-                decks
-            WHERE
-                id = :deckId
-            AND
-                next_practice_date = CURRENT_DATE
-            """;
+    // SQLを実行してデータを削除
+    namedParameterJdbcTemplate.update(DELETE_SQL, params);
+  }
 
-    @Override
-    public Long findTodayQuestionCountByDeckId(Long deckId) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("deckId", deckId);
-        return namedParameterJdbcTemplate.queryForObject(FIND_TODAY_QUESTION_COUNT_BY_DECK_ID_SQL,
-                params, Long.class);
-    }
+  private static final String GET_USER_ID_BY_DECK_ID_SQL = """
+      SELECT
+          user_id
+      FROM
+          decks
+      WHERE
+          id = :deckId
+      AND
+          deleted_at IS NULL
+      """;
 
-    private static final String COUNT_BY_DECK_ID_AND_NEXT_PRACTICE_DATE_AND_IS_NORMAL_MODE_CORRECT_SQL =
-            """
-                    SELECT
-                        COUNT(*)
-                    FROM
-                        decks
-                    WHERE
-                        id = :deckId
-                    AND
-                        next_practice_date = CURRENT_DATE
-                    AND
-                        is_normal_mode_correct = true
-                    """;
+  @Override
+  public int getUserIdByDeckId(Long deckId) {
 
-    @Override
-    public long countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(Long deckId,
-            LocalDate nextPracticeDate, Boolean isNormalModeCorrect) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("deckId", deckId);
-        params.put("nextPracticeDate", nextPracticeDate);
-        params.put("isNormalModeCorrect", isNormalModeCorrect);
-        Long count = namedParameterJdbcTemplate.queryForObject(
-                COUNT_BY_DECK_ID_AND_NEXT_PRACTICE_DATE_AND_IS_NORMAL_MODE_CORRECT_SQL, params,
-                Long.class);
-        return count != null ? count : 0L;
-    }
+    // パラメータをマップに格納
+    Map<String, Object> params = new HashMap<>();
+    params.put("deckId", deckId);
 
-    private static final String SAVE_DECK_SQL =
-            """
-                    INSERT INTO decks (deck_name, user_id, last_practiced_date, created_at, updated_at, deleted_at)
-                    VALUES (:deckName, :userId, :lastPracticedDate, :createdAt, :updatedAt, :deletedAt)
-                    """;
+    // SQLを実行してデータを取得
+    Integer userId = namedParameterJdbcTemplate.queryForObject(GET_USER_ID_BY_DECK_ID_SQL, params,
+        Integer.class);
 
-    @Override
-    public DeckEntity save(DeckEntity deck) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("deckName", deck.getDeckName());
-        params.put("userId", deck.getUserId());
-        params.put("lastPracticedDate", deck.getLastPracticedDate());
-        params.put("createdAt", deck.getCreatedAt());
-        params.put("updatedAt", deck.getUpdatedAt());
-        params.put("deletedAt", deck.getDeletedAt());
-        namedParameterJdbcTemplate.update(SAVE_DECK_SQL, params);
-        return deck;
-    }
-
-    private static final String UPDATE_DECK_SQL = """
-            UPDATE decks
-            SET
-                deck_name = :deckName,
-                updated_at = :updatedAt,
-                deleted_at = :deletedAt
-            WHERE
-                id = :id
-            """;
-
-    @Override
-    public DeckEntity update(DeckEntity deck) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("deckName", deck.getDeckName());
-        params.put("updatedAt", deck.getUpdatedAt());
-        params.put("deletedAt", deck.getDeletedAt());
-        params.put("id", deck.getId());
-        namedParameterJdbcTemplate.update(UPDATE_DECK_SQL, params);
-        return deck;
-    }
+    return Optional.ofNullable(userId).orElse(0);
+  }
 }

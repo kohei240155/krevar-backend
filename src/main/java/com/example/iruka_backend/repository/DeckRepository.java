@@ -1,33 +1,46 @@
 package com.example.iruka_backend.repository;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import com.example.iruka_backend.entity.DeckEntity;
+import com.example.iruka_backend.requestdto.DeckCreateRequest;
+import com.example.iruka_backend.requestdto.DeckUpdateRequest;
 
 public interface DeckRepository {
-  Optional<DeckEntity> findById(Long id);
 
-  List<DeckEntity> findByDeletedAtIsNull();
+  /**
+   * ユーザーIDに紐づくデッキを取得する
+   *
+   * @param userId ユーザーID
+   * @return デッキリスト
+   */
+  List<DeckEntity> findByUserId(int userId);
 
-  Page<DeckEntity> findAllByDeletedAtIsNull(Pageable pageable);
+  /**
+   * デッキを保存する
+   *
+   * @param deckRequest デッキリクエスト
+   */
+  void save(DeckCreateRequest deckCreateRequest);
 
-  long countByDeletedAtIsNull();
+  /**
+   * デッキを更新する
+   *
+   * @param deckUpdateRequest デッキ更新リクエスト
+   * @param deckId デッキID
+   */
+  void update(DeckUpdateRequest deckUpdateRequest, Long deckId);
 
-  Long findCountByDeckIdAndIsNormalModeCorrectFalseAndNextPracticeDate(Long deckId);
+  /**
+   * デッキを削除する
+   *
+   * @param deckId デッキID
+   */
+  void delete(Long deckId);
 
-  Long countByDeckIdAndIsNormalModeCorrectTrue(Long deckId);
-
-  Long findTodayQuestionCountByDeckId(Long deckId);
-
-  long countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(
-      Long deckId,
-      LocalDate nextPracticeDate,
-      Boolean isNormalModeCorrect);
-
-  DeckEntity save(DeckEntity deck);
-
-  DeckEntity update(DeckEntity deck);
+  /**
+   * デッキに紐づくユーザーIDを取得する
+   *
+   * @param deckId デッキID
+   */
+  int getUserIdByDeckId(Long deckId);
 }

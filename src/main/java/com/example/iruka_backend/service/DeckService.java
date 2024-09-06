@@ -1,32 +1,56 @@
 package com.example.iruka_backend.service;
 
-import java.util.List;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import com.example.iruka_backend.entity.DeckEntity;
+import com.example.iruka_backend.requestdto.DeckCreateRequest;
+import com.example.iruka_backend.requestdto.DeckUpdateRequest;
+import com.example.iruka_backend.responsedto.DeckListResponse;
 
 public interface DeckService {
-  List<DeckEntity> getAllDecks();
 
-  DeckEntity save(DeckEntity deck);
+  /**
+   * ユーザーIDに紐づくデッキを取得する
+   *
+   * @param userId ユーザーID
+   * @param page ページ番号
+   * @param limit ページサイズ
+   * @return デッキリスト
+   */
+  DeckListResponse getDecksByUserId(int userId, int page, int limit);
 
-  DeckEntity updateDeckName(Long id, String newDeckName);
+  /**
+   * デッキを保存する
+   *
+   * @param userId ユーザーID
+   * @param deckRequest デッキリクエスト
+   * @return 保存されたデッキ
+   */
+  void save(DeckCreateRequest deckCreateRequest);
 
-  void softDeleteDeck(Long id); // 物理削除から論理削除に変更
-  // ページネーション対応のメソッドを追加
+  /**
+   * デッキを更新する
+   *
+   * @param deckRequest デッキリクエスト
+   */
+  void update(DeckUpdateRequest deckUpdateRequest, Long deckId);
 
-  Page<DeckEntity> getDecks(Pageable pageable); // deleted_atがnullのデッキのみ取得
+  /**
+   * デッキを削除する
+   *
+   * @param deckId デッキID
+   */
+  void delete(Long deckId);
 
-  long countActiveDecks(); // 追加: 有効なデッキのカウントメソッド
+  /**
+   * ユーザーIDをチェックする
+   *
+   * @param userId ユーザーID
+   * @param chkUserId チェックするユーザーID
+   */
+  void checkUserId(int userId, int chkUserId);
 
-  void deleteDeck(Long id);
-
-  // 追加: クイズサービスの依存関係を追加
-  void setQuizService(QuizService quizService);
-
-  List<DeckEntity> getAllDecksSortedByCorrectQuestions(); // 追加:
-                                                          // correctQuestionsでソートされた全デッキを取得するメソッド
-
-  List<DeckEntity> getAllDecksSortedByDueTodayAndIncorrectWords(); // 追加:
-                                                                   // next_practice_dateが当日で、is_normal_mode_correctが0のWordが多い順に並べ替え
+  /**
+   * デッキに紐づくユーザーIDを取得する
+   *
+   * @param deckId デッキID
+   */
+  int getUserIdByDeckId(Long deckId);
 }

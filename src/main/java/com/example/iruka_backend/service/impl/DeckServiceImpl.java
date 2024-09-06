@@ -1,17 +1,19 @@
 package com.example.iruka_backend.service.impl;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.example.iruka_backend.entity.DeckEntity;
 import com.example.iruka_backend.repository.DeckRepository;
+import com.example.iruka_backend.repository.WordRepository;
+import com.example.iruka_backend.requestdto.DeckCreateRequest;
+import com.example.iruka_backend.requestdto.DeckUpdateRequest;
+import com.example.iruka_backend.responsedto.DeckInfo;
+import com.example.iruka_backend.responsedto.DeckListResponse;
 import com.example.iruka_backend.service.DeckService;
-import com.example.iruka_backend.service.QuizService;
 
 @Service
 public class DeckServiceImpl implements DeckService {
@@ -20,75 +22,99 @@ public class DeckServiceImpl implements DeckService {
   private DeckRepository deckRepository;
 
   @Autowired
-  private QuizService quizService; // Added: dependency on QuizService
+  private WordRepository wordRepository;
 
+  /**
+   * ユーザーIDに紐づくデッキを取得する
+   *
+   * @param userId ユーザーID
+   * @return デッキリスト
+   */
   @Override
-  public List<DeckEntity> getAllDecks() {
-    return deckRepository.findByDeletedAtIsNull(); // ソフトデリートされたデッキを除外
+  public DeckListResponse getDecksByUserId(int userId, int page, int size) {
+
+    // デッキを取得
+    List<DeckEntity> decks = deckRepository.findByUserId(userId);
+
+    List<DeckInfo> deckInfoList = new ArrayList<>();
+
+    for (DeckEntity deck : decks) {
+      DeckInfo deckInfo = new DeckInfo();
+      deckInfo.setId(deck.getId());
+      deckInfo.setDeckName(deck.getDeckName());
+      int progress = wordRepository.getProgressByDeckId(deck.getId());
+      deckInfo.setProgress(progress);
+      deckInfoList.add(deckInfo);
+    }
+
+    DeckListResponse response = new DeckListResponse(deckInfoList);
+
+    // progressの値が多い順に並び替え
+    response.getDeckInfo().sort(Comparator.comparingInt(DeckInfo::getProgress).reversed());
+
+    // ページネーション
+    int offset = page * size;
+    int limit = size;
+    List<DeckInfo> paginatedDeckInfo =
+        response.getDeckInfo().stream().skip(offset).limit(limit).collect(Collectors.toList());
+
+    response.setDeckInfo(paginatedDeckInfo);
+
+    return response;
   }
 
+  /**
+   * デッキを保存する
+   *
+   * @param deckCreateRequest デッキリクエスト
+   */
   @Override
-  public DeckEntity save(DeckEntity deck) {
-    return deckRepository.save(deck);
+  public void save(DeckCreateRequest deckCreateRequest) {
+    deckRepository.save(deckCreateRequest);
   }
 
+  /**
+   * デッキを更新する
+   *
+   * @param deckUpdateRequest デッキ更新リクエスト
+   */
   @Override
-  public DeckEntity updateDeckName(Long id, String newDeckName) {
-    DeckEntity deck =
-        deckRepository.findById(id).orElseThrow(() -> new RuntimeException("Deck not found"));
-    deck.setDeckName(newDeckName);
-    return deckRepository.update(deck);
+  public void update(DeckUpdateRequest deckUpdateRequest, Long deckId) {
+    deckRepository.update(deckUpdateRequest, deckId);
   }
 
+  /**
+   * デッキを削除する
+   *
+   * @param deckId デッキID
+   */
   @Override
-  public void deleteDeck(Long id) {
-    DeckEntity deck =
-        deckRepository.findById(id).orElseThrow(() -> new RuntimeException("Deck not found"));
-    deck.setDeletedAt(Timestamp.valueOf(LocalDateTime.now())); // 削除フラグを設定
-    deckRepository.save(deck);
+  public void delete(Long deckId) {
+    deckRepository.delete(deckId);
   }
 
-  // ページネーション対応のメソッドを実装
+  /**
+   * ユーザーIDをチェックする
+   *
+   * @param userId ユーザーID
+   * @param chkUserId チェックするユーザーID
+   */
   @Override
-  public Page<DeckEntity> getDecks(Pageable pageable) {
-    return deckRepository.findAllByDeletedAtIsNull(pageable); // ソフトデリートされたデッキを除外
+  public void checkUserId(int userId, int chkUserId) {
+
+    // ユーザーIDが一致しない場合はエラーをスロー
+    if (userId != chkUserId) {
+      throw new IllegalArgumentException("ユーザーIDが一致しません");
+    }
   }
 
+  /**
+   * デッキに紐づくユーザーIDを取得する
+   *
+   * @param deckId デッキID
+   */
   @Override
-  public void softDeleteDeck(Long id) {
-    DeckEntity deck =
-        deckRepository.findById(id).orElseThrow(() -> new RuntimeException("Deck not found"));
-    deck.setDeletedAt(Timestamp.valueOf(LocalDateTime.now())); // 削除フラグを設定
-    deckRepository.save(deck);
-  }
-
-  @Override
-  public long countActiveDecks() {
-    return deckRepository.countByDeletedAtIsNull(); // 追加: 有効なデッキのカウント
-  }
-
-  @Override
-  public void setQuizService(QuizService quizService) {
-    this.quizService = quizService;
-  }
-
-  @Override
-  public List<DeckEntity> getAllDecksSortedByCorrectQuestions() {
-    List<DeckEntity> allDecks = deckRepository.findByDeletedAtIsNull(); // ソフトデリートされたデッキを除外
-    return allDecks.stream().sorted((d1, d2) -> {
-      long correctQuestions1 = quizService.getCorrectWordCountByDeckId(d1.getId());
-      long correctQuestions2 = quizService.getCorrectWordCountByDeckId(d2.getId());
-      return Long.compare(correctQuestions1, correctQuestions2);
-    }).collect(Collectors.toList());
-  }
-
-  @Override
-  public List<DeckEntity> getAllDecksSortedByDueTodayAndIncorrectWords() {
-    List<DeckEntity> allDecks = deckRepository.findByDeletedAtIsNull();
-    return allDecks.stream().sorted((d1, d2) -> {
-      long incorrectWords1 = quizService.getIncorrectWordCountByDeckIdDueToday(d1.getId());
-      long incorrectWords2 = quizService.getIncorrectWordCountByDeckIdDueToday(d2.getId());
-      return Long.compare(incorrectWords2, incorrectWords1); // 降順にソート
-    }).collect(Collectors.toList());
+  public int getUserIdByDeckId(Long deckId) {
+    return deckRepository.getUserIdByDeckId(deckId);
   }
 }
