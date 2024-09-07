@@ -1,16 +1,15 @@
 package com.example.iruka_backend.service.impl;
 
-import java.sql.Timestamp; // Added import for Timestamp class
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.QuizRepository;
-import com.example.iruka_backend.repository.ReviewIntervalRepository;
-import com.example.iruka_backend.repository.WordRepository;
+import com.example.iruka_backend.repository.UserRepository;
+import com.example.iruka_backend.responsedto.WordResponse;
 import com.example.iruka_backend.service.QuizService;
+import com.example.iruka_backend.util.SecurityUtil;
 
 @Service
 public class QuizServiceImpl implements QuizService {
@@ -19,105 +18,44 @@ public class QuizServiceImpl implements QuizService {
   private QuizRepository quizRepository;
 
   @Autowired
-  private ReviewIntervalRepository reviewIntervalRepository;
+  private UserRepository userRepository;
 
-  @Autowired
-  private WordRepository wordRepository;
-
+  /**
+   * ユーザーIDをチェックする
+   *
+   * @param requestedUserId リクエストされたユーザーID
+   */
   @Override
-  public Optional<WordEntity> getRandomQuestionByDeckId(Long deckId) {
-    List<WordEntity> words = quizRepository.findRandomWordByDeckIdAndDate(deckId);
-    return words.isEmpty() ? Optional.empty() : Optional.of(words.get(0));
-  }
+  public void verifyUser(Long requestedUserId) {
 
-  @Override
-  public List<WordEntity> getQuestionsByDeckId(Long deckId) {
-    return quizRepository.findWordsByDeckId(deckId);
-  }
+    // ログインユーザーのメールアドレスを取得
+    String username = SecurityUtil.getAuthenticatedUsername();
 
-  @Override
-  public void updateWordIsNormalModeCorrect(Long wordId, Boolean isNormalModeCorrect) {
-    Optional<WordEntity> wordOpt = quizRepository.findById(wordId);
-    if (wordOpt.isPresent()) {
-      WordEntity word = wordOpt.get();
-      word.setIsNormalModeCorrect(isNormalModeCorrect);
+    // ログインユーザーを取得
+    UserEntity user = userRepository.findByEmail(username);
 
-      if (isNormalModeCorrect) {
-        word.setCorrectCount(word.getCorrectCount() + 1);
-        if (word.getReviewIntervalId() < 9) {
-          word.setReviewIntervalId(word.getReviewIntervalId() + 1);
-        }
-        int intervalDays = reviewIntervalRepository.findById(word.getReviewIntervalId()) // インスタンスメソッドとして呼び出す
-            .map(interval -> interval.getIntervalDays()).orElse(1);
-        word.setNextPracticeDate(LocalDate.now().plusDays(intervalDays)); // LocalDateに変更
-        word.setIsNormalModeCorrect(false); // isNormalModeCorrectをFalseに戻す
-      } else {
-        word.setIncorrectCount(word.getIncorrectCount() + 1);
-        word.setReviewIntervalId(1L);
-        word.setIsNormalModeCorrect(false); // isNormalModeCorrectをFalseに戻す
-      }
-
-      quizRepository.save(word);
+    // ログインユーザーがリクエストされたユーザーと一致しない場合はエラーをスロー
+    if (user == null || !user.getId().equals(requestedUserId)) {
+      throw new AccessDeniedException("ユーザーにこのリソースへのアクセス権がありません");
     }
   }
 
   @Override
-  public void updateWordIsExtraModeCorrect(Long wordId, Boolean isExtraModeCorrect) {
-    Optional<WordEntity> wordOpt = quizRepository.findById(wordId);
-    if (wordOpt.isPresent()) {
-      WordEntity word = wordOpt.get();
-      word.setIsExtraModeCorrect(isExtraModeCorrect);
-      word.setUpdatedAt(Timestamp.valueOf(LocalDate.now().atStartOfDay())); // Set updated_at to
-                                                                            // current time
+  public WordResponse getNormalQuiz(Long deckId) {
 
-      quizRepository.save(word);
-    }
+    // クイズを取得
+    WordEntity word = quizRepository.findNormalQuizByDeckId(deckId);
+
+    // 単語をWordResponseに変換
+    WordResponse response = new WordResponse();
+    response.setId(word.getId());
+    response.setOriginalText(word.getOriginalText());
+    response.setTranslatedText(word.getTranslatedText());
+    response.setNuanceText(word.getNuanceText());
+    response.setImageUrl(word.getImageUrl());
+
+    return response;
   }
 
-  @Override
-  public void resetExtraModeCorrectByDeckId(Long deckId) {
-    List<WordEntity> words = quizRepository.findWordsByDeckId(deckId);
-    for (WordEntity word : words) {
-      word.setIsExtraModeCorrect(false);
-      quizRepository.update(word); // 1件ずつupdateするように修正
-    }
-  }
-
-  @Override
-  public Long getTodayNormalQuestionCountByDeckId(Long deckId) {
-    return quizRepository.findTodayNormalQuestionCountByDeckId(deckId); // Changed
-  }
-
-  @Override
-  public Long getTodayExtraQuestionCountByDeckId(Long deckId) {
-    return quizRepository.findTodayExtraQuestionCountByDeckId(deckId); // Added
-  }
-
-  @Override
-  public Long getCorrectWordCountByDeckId(Long deckId) {
-    return quizRepository.findCountByDeckIdAndIsNormalModeCorrectTrueAndNextPracticeDate(deckId);
-  }
-
-  @Override
-  public long getIncorrectWordCountByDeckIdDueToday(Long deckId) {
-    return wordRepository.countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(deckId,
-        LocalDate.now(), false);
-  }
-
-  @Override
-  public Optional<WordEntity> getExtraQuestionByDeckId(Long deckId) {
-    List<WordEntity> words = quizRepository.findExtraWordByDeckId(deckId);
-    return words.isEmpty() ? Optional.empty() : Optional.of(words.get(0));
-  }
-
-  @Override
-  public Optional<WordEntity> getRandomExtraQuestionByDeckId(Long deckId) {
-    List<WordEntity> words = quizRepository.findExtraWordByDeckId(deckId);
-    if (words.isEmpty()) {
-      return Optional.empty();
-    }
-    int randomIndex = (int) (Math.random() * words.size());
-    return Optional.of(words.get(randomIndex));
-  }
 
 }
