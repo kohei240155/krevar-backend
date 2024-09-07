@@ -14,7 +14,7 @@ public interface DeckService {
    * @param limit ページサイズ
    * @return デッキリスト
    */
-  DeckListResponse getDecksByUserId(int userId, int page, int limit);
+  DeckListResponse getDecksByUserId(Long userId, Long page, Long limit);
 
   /**
    * デッキを保存する

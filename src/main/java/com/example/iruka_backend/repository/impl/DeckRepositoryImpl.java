@@ -34,7 +34,7 @@ public class DeckRepositoryImpl implements DeckRepository {
             """;
 
     @Override
-    public List<DeckEntity> findByUserId(int userId) {
+    public List<DeckEntity> findByUserId(Long userId) {
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
         List<DeckEntity> deck =

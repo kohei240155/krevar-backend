@@ -38,7 +38,7 @@ public class DeckServiceImpl implements DeckService {
    * @return デッキリスト
    */
   @Override
-  public DeckListResponse getDecksByUserId(int userId, int page, int size) {
+  public DeckListResponse getDecksByUserId(Long userId, Long page, Long size) {
 
     // デッキを取得
     List<DeckEntity> decks = deckRepository.findByUserId(userId);
@@ -60,8 +60,8 @@ public class DeckServiceImpl implements DeckService {
     response.getDeckInfo().sort(Comparator.comparingInt(DeckInfo::getProgress).reversed());
 
     // ページネーション
-    int offset = page * size;
-    int limit = size;
+    Long offset = page * size;
+    Long limit = size;
     List<DeckInfo> paginatedDeckInfo =
         response.getDeckInfo().stream().skip(offset).limit(limit).collect(Collectors.toList());
 
