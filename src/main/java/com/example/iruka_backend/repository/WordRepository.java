@@ -36,4 +36,12 @@ public interface WordRepository {
    * @param wordUpdateRequest 単語更新リクエスト
    */
   void update(WordUpdateRequest wordUpdateRequest);
+
+  /**
+   * 単語を取得する
+   *
+   * @param wordId 単語ID
+   * @return 単語
+   */
+  WordEntity findById(Long wordId);
 }

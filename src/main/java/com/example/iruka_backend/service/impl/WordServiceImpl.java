@@ -19,6 +19,7 @@ import com.example.iruka_backend.requestdto.WordRegisterRequest;
 import com.example.iruka_backend.requestdto.WordUpdateRequest;
 import com.example.iruka_backend.responsedto.WordInfo;
 import com.example.iruka_backend.responsedto.WordListResponse;
+import com.example.iruka_backend.responsedto.WordResponse;
 import com.example.iruka_backend.service.WordService;
 import com.example.iruka_backend.util.SecurityUtil;
 
@@ -33,6 +34,14 @@ public class WordServiceImpl implements WordService {
 
   private static final String LOCAL_IMAGE_DIR = "C:/Git/iruka-frontend/public/images/testImages/";
 
+  /**
+   * デッキに紐づく単語を取得する
+   *
+   * @param deckId デッキID
+   * @param page ページ
+   * @param size サイズ
+   * @return 単語リスト
+   */
   @Override
   public WordListResponse getWordListByDeckId(Long deckId, Long page, Long size) {
 
@@ -63,9 +72,27 @@ public class WordServiceImpl implements WordService {
     return response;
   }
 
+  /**
+   * 単語を取得する
+   *
+   * @param wordId 単語ID
+   * @return 単語
+   */
   @Override
-  public WordEntity getWordById(Long wordId) {
-    return null;
+  public WordResponse getWordById(Long wordId) {
+
+    // 単語を取得
+    WordEntity word = wordRepository.findById(wordId);
+
+    // 単語をWordResponseに変換
+    WordResponse response = new WordResponse();
+    response.setId(word.getId());
+    response.setOriginalText(word.getOriginalText());
+    response.setTranslatedText(word.getTranslatedText());
+    response.setNuanceText(word.getNuanceText());
+    response.setImageUrl(word.getImageUrl());
+
+    return response;
   }
 
   /**

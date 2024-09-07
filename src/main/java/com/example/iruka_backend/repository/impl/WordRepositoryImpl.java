@@ -126,4 +126,25 @@ public class WordRepositoryImpl implements WordRepository {
         // クエリを実行
         namedParameterJdbcTemplate.update(UPDATE_WORD_SQL, params);
     }
+
+    private static final String FIND_WORD_BY_ID_SQL = """
+            SELECT
+                *
+            FROM
+                words
+            WHERE
+                id = :wordId
+            """;
+
+    @Override
+    public WordEntity findById(Long wordId) {
+
+        // パラメータを設定
+        Map<String, Object> params = new HashMap<>();
+        params.put("wordId", wordId);
+
+        // クエリを実行
+        return namedParameterJdbcTemplate.queryForObject(FIND_WORD_BY_ID_SQL, params,
+                new WordEntityRowMapper());
+    }
 }

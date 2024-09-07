@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.iruka_backend.requestdto.WordRegisterRequest;
 import com.example.iruka_backend.responsedto.WordListResponse;
+import com.example.iruka_backend.responsedto.WordResponse;
 import com.example.iruka_backend.service.WordService;
 import com.example.iruka_backend.requestdto.WordUpdateRequest;
 
@@ -27,7 +28,7 @@ public class WordController {
 
   private static final Logger logger = LoggerFactory.getLogger(WordController.class);
 
-  @GetMapping("/{userId}/{deckId}")
+  @GetMapping("/list/{userId}/{deckId}")
   public WordListResponse getWordsByDeckId(
       @RequestParam(name = "page", defaultValue = "0") Long page,
       @RequestParam(name = "size", defaultValue = "10") Long size,
@@ -67,6 +68,21 @@ public class WordController {
     wordService.update(wordUpdateRequest);
 
     logger.info("------------- 単語更新API終了 -------------");
+  }
+
+  @GetMapping("/{userId}/{wordId}")
+  public WordResponse getWordById(@PathVariable("userId") Long userId,
+      @PathVariable("wordId") Long wordId) {
+
+    logger.info("------------- 単語取得API開始 -------------");
+
+    wordService.verifyUser(userId);
+
+    WordResponse wordResponse = wordService.getWordById(wordId);
+
+    logger.info("------------- 単語取得API終了 -------------");
+
+    return wordResponse;
   }
 
   // @DeleteMapping("/{wordId}")

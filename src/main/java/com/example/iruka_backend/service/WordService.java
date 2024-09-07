@@ -1,10 +1,10 @@
 package com.example.iruka_backend.service;
 
 import java.io.IOException;
-import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.requestdto.WordRegisterRequest;
 import com.example.iruka_backend.requestdto.WordUpdateRequest;
 import com.example.iruka_backend.responsedto.WordListResponse;
+import com.example.iruka_backend.responsedto.WordResponse;
 
 public interface WordService {
 
@@ -22,7 +22,7 @@ public interface WordService {
    * @param wordId 単語ID
    * @return 単語
    */
-  WordEntity getWordById(Long wordId);
+  WordResponse getWordById(Long wordId);
 
   /**
    * ユーザーIDをチェックする
