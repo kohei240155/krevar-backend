@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.iruka_backend.requestdto.QuizResultUpdateRequest;
 import com.example.iruka_backend.responsedto.QuizResponse;
 import com.example.iruka_backend.service.QuizService;
 
@@ -61,9 +62,18 @@ public class QuizController {
    * @param wordId
    * @param isNormalModeCorrect
    */
-  @PutMapping("/normal/{wordId}")
-  public void updateNormalQuiz(@PathVariable("wordId") Long wordId,
-      @RequestBody Map<String, Boolean> request) {}
+  @PutMapping("/normal-quiz")
+  public void updateNormalQuiz(@RequestBody QuizResultUpdateRequest request) {
+
+    logger.info("------------- ノーマルクイズ更新API開始 -------------");
+
+    quizService.verifyUser(request.getUserId());
+
+    quizService.updateNormalQuiz(request);
+
+    logger.info("------------- ノーマルクイズ更新API終了 -------------");
+
+  }
 
   /**
    * エクストラクイズ更新

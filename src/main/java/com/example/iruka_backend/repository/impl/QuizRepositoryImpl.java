@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import com.example.iruka_backend.entity.QuizResultEntity;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.QuizRepository;
 import com.example.iruka_backend.repository.mapper.WordEntityRowMapper;
@@ -16,20 +17,6 @@ public class QuizRepositoryImpl implements QuizRepository {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    private static final String SQL_FIND_BY_DECK_ID = """
-                SELECT
-                    *
-                FROM
-                    words
-                WHERE
-                    deck_id = :deckId AND
-                    next_practice_date <= NOW() AND
-                    deleted_at IS NULL
-                ORDER BY
-                    RAND()
-                LIMIT 1
-            """;
 
     /**
      * デッキIDを指定してクイズを取得する
@@ -49,15 +36,18 @@ public class QuizRepositoryImpl implements QuizRepository {
         return word;
     }
 
-    private static final String SQL_GET_LEFT_NORMAL_QUIZ_COUNT = """
-            SELECT
-                COUNT(*)
-            FROM
-                words
-            WHERE
-                deck_id = :deckId AND
-                next_practice_date <= NOW() AND
-                deleted_at IS NULL
+    private static final String SQL_FIND_BY_DECK_ID = """
+                SELECT
+                    *
+                FROM
+                    words
+                WHERE
+                    deck_id = :deckId AND
+                    next_practice_date <= NOW() AND
+                    deleted_at IS NULL
+                ORDER BY
+                    RAND()
+                LIMIT 1
             """;
 
     /**
@@ -77,4 +67,102 @@ public class QuizRepositoryImpl implements QuizRepository {
 
         return count != null ? count : 0;
     }
+
+    private static final String SQL_GET_LEFT_NORMAL_QUIZ_COUNT = """
+            SELECT
+                COUNT(*)
+            FROM
+                words
+            WHERE
+                deck_id = :deckId AND
+                next_practice_date <= NOW() AND
+                deleted_at IS NULL
+            """;
+
+    /**
+     * ノーマルクイズ更新
+     *
+     * @param wordId
+     * @param isExtraModeCorrect
+     */
+    @Override
+    public void updateNormalQuiz(QuizResultEntity quizResult) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("wordId", quizResult.getId());
+        params.put("reviewIntervalId", quizResult.getReviewIntervalId());
+        params.put("nextPracticeDate", quizResult.getNextPracticeDate());
+        params.put("correctCount", quizResult.getCorrectCount());
+        params.put("incorrectCount", quizResult.getIncorrectCount());
+        params.put("updatedAt", quizResult.getUpdatedAt());
+
+        namedParameterJdbcTemplate.update(SQL_UPDATE_NORMAL_QUIZ, params);
+    }
+
+    private static final String SQL_UPDATE_NORMAL_QUIZ = """
+            UPDATE
+                words
+            SET
+                review_interval_id = :reviewIntervalId,
+                next_practice_date = :nextPracticeDate,
+                correct_count = correct_count + :correctCount,
+                incorrect_count = incorrect_count + :incorrectCount,
+                updated_at = :updatedAt
+            WHERE
+                id = :wordId
+            """;
+
+    /**
+     * レビュー間隔を取得する
+     *
+     * @param wordId
+     * @return レビュー間隔
+     */
+    @Override
+    public int getReviewIntervalId(Long wordId) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("wordId", wordId);
+
+        Integer reviewIntervalId = namedParameterJdbcTemplate
+                .queryForObject(SQL_GET_REVIEW_INTERVAL_ID, params, Integer.class);
+
+        return reviewIntervalId != null ? reviewIntervalId : 0;
+    }
+
+    private static final String SQL_GET_REVIEW_INTERVAL_ID = """
+            SELECT
+                review_interval_id
+            FROM
+                words
+            WHERE
+                id = :wordId
+            """;
+
+    /**
+     * レビュー間隔を取得する
+     *
+     * @param reviewIntervalId
+     * @return レビュー間隔
+     */
+    @Override
+    public int getIntervalDay(int reviewIntervalId) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("reviewIntervalId", reviewIntervalId);
+
+        Integer intervalDay = namedParameterJdbcTemplate.queryForObject(SQL_GET_INTERVAL_DAY,
+                params, Integer.class);
+
+        return intervalDay != null ? intervalDay : 0;
+    }
+
+    private static final String SQL_GET_INTERVAL_DAY = """
+            SELECT
+                interval_days
+            FROM
+                review_intervals
+            WHERE
+                id = :reviewIntervalId
+            """;
 }

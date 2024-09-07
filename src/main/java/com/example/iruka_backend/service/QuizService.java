@@ -1,5 +1,6 @@
 package com.example.iruka_backend.service;
 
+import com.example.iruka_backend.requestdto.QuizResultUpdateRequest;
 import com.example.iruka_backend.responsedto.QuizResponse;
 
 public interface QuizService {
@@ -19,6 +20,13 @@ public interface QuizService {
      * @return
      */
     public int getLeftNormalQuizCount(Long deckId);
+
+    /**
+     * ノーマルクイズ更新
+     *
+     * @param request
+     */
+    public void updateNormalQuiz(QuizResultUpdateRequest request);
 
     /**
      * ユーザーIDをチェックする
