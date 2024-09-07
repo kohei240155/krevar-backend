@@ -10,11 +10,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import com.example.iruka_backend.entity.WordCreateEntity;
 import com.example.iruka_backend.entity.WordEntity;
+import com.example.iruka_backend.entity.WordUpdateEntity;
 import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.repository.mapper.WordEntityRowMapper;
-import com.example.iruka_backend.requestdto.WordCreateRequest;
-import com.example.iruka_backend.requestdto.WordUpdateRequest;
 
 @Transactional
 @Repository
@@ -89,15 +89,15 @@ public class WordRepositoryImpl implements WordRepository {
             """;
 
     @Override
-    public void save(WordCreateRequest wordCreateRequest) {
+    public void save(WordCreateEntity wordCreateEntity) {
 
         // パラメータを設定
         Map<String, Object> params = new HashMap<>();
-        params.put("deckId", wordCreateRequest.getDeckId());
-        params.put("originalText", wordCreateRequest.getOriginalText());
-        params.put("translatedText", wordCreateRequest.getTranslatedText());
-        params.put("nuanceText", wordCreateRequest.getNuanceText());
-        params.put("imageUrl", wordCreateRequest.getImageUrl());
+        params.put("deckId", wordCreateEntity.getDeckId());
+        params.put("originalText", wordCreateEntity.getOriginalText());
+        params.put("translatedText", wordCreateEntity.getTranslatedText());
+        params.put("nuanceText", wordCreateEntity.getNuanceText());
+        params.put("imageUrl", wordCreateEntity.getImageUrl());
 
         // クエリを実行
         namedParameterJdbcTemplate.update(SAVE_WORD_SQL, params);
@@ -115,14 +115,14 @@ public class WordRepositoryImpl implements WordRepository {
             """;
 
     @Override
-    public void update(WordUpdateRequest wordUpdateRequest) {
+    public void update(WordUpdateEntity wordUpdateEntity) {
 
         // パラメータを設定
         Map<String, Object> params = new HashMap<>();
-        params.put("originalText", wordUpdateRequest.getOriginalText());
-        params.put("translatedText", wordUpdateRequest.getTranslatedText());
-        params.put("nuanceText", wordUpdateRequest.getNuanceText());
-        params.put("wordId", wordUpdateRequest.getWordId());
+        params.put("originalText", wordUpdateEntity.getOriginalText());
+        params.put("translatedText", wordUpdateEntity.getTranslatedText());
+        params.put("nuanceText", wordUpdateEntity.getNuanceText());
+        params.put("wordId", wordUpdateEntity.getWordId());
 
         // クエリを実行
         namedParameterJdbcTemplate.update(UPDATE_WORD_SQL, params);

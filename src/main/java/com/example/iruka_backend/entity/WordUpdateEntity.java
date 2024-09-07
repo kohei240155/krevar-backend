@@ -1,15 +1,16 @@
-package com.example.iruka_backend.requestdto;
+package com.example.iruka_backend.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
-public class WordCreateRequest {
+public class WordUpdateEntity {
+
+    /** 単語ID */
+    private Long wordId;
 
     /** ユーザーID */
     private Long userId;
@@ -22,9 +23,6 @@ public class WordCreateRequest {
 
     /** ニュアンス */
     private String nuanceText;
-
-    /** 画像URL */
-    private String imageUrl;
 
     /** デッキID */
     private Long deckId;

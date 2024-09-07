@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import com.example.iruka_backend.entity.UserEntity;
+import com.example.iruka_backend.entity.WordCreateEntity;
 import com.example.iruka_backend.entity.WordEntity;
+import com.example.iruka_backend.entity.WordUpdateEntity;
 import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.requestdto.WordCreateRequest;
@@ -123,17 +125,27 @@ public class WordServiceImpl implements WordService {
   @Override
   public void save(WordCreateRequest wordCreateRequest) {
 
+    Long userId = wordCreateRequest.getUserId();
+    String originalText = wordCreateRequest.getOriginalText();
+    String translatedText = wordCreateRequest.getTranslatedText();
+    String nuanceText = wordCreateRequest.getNuanceText();
+    String imageUrl = wordCreateRequest.getImageUrl();
+    Long deckId = wordCreateRequest.getDeckId();
+
+    WordCreateEntity wordCreateEntity =
+        new WordCreateEntity(userId, originalText, translatedText, nuanceText, imageUrl, deckId);
+
     // 画像を保存
-    String imagePath = wordCreateRequest.getImageUrl();
+    String imagePath = wordCreateEntity.getImageUrl();
 
     try {
       String savedImagePath = saveImage(imagePath);
-      wordCreateRequest.setImageUrl(savedImagePath);
+      wordCreateEntity.setImageUrl(savedImagePath);
     } catch (IOException e) {
       throw new RuntimeException("画像の保存に失敗しました", e);
     }
     // 単語を保存
-    wordRepository.save(wordCreateRequest);
+    wordRepository.save(wordCreateEntity);
   }
 
   /**
@@ -164,7 +176,18 @@ public class WordServiceImpl implements WordService {
    */
   @Override
   public void update(WordUpdateRequest wordUpdateRequest) {
-    wordRepository.update(wordUpdateRequest);
+
+    Long wordId = wordUpdateRequest.getWordId();
+    Long userId = wordUpdateRequest.getUserId();
+    String originalText = wordUpdateRequest.getOriginalText();
+    String translatedText = wordUpdateRequest.getTranslatedText();
+    String nuanceText = wordUpdateRequest.getNuanceText();
+    Long deckId = wordUpdateRequest.getDeckId();
+
+    WordUpdateEntity wordUpdateEntity =
+        new WordUpdateEntity(wordId, userId, originalText, translatedText, nuanceText, deckId);
+
+    wordRepository.update(wordUpdateEntity);
   }
 
   /**

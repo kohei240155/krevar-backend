@@ -1,15 +1,13 @@
-package com.example.iruka_backend.requestdto;
+package com.example.iruka_backend.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
-public class WordCreateRequest {
+public class WordCreateEntity {
 
     /** ユーザーID */
     private Long userId;
