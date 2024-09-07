@@ -3,9 +3,6 @@ package com.example.iruka_backend.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.iruka_backend.entity.UserEntity;
-import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.requestdto.DeckCreateRequest;
 import com.example.iruka_backend.requestdto.DeckUpdateRequest;
 import com.example.iruka_backend.responsedto.DeckListResponse;
@@ -31,25 +26,16 @@ public class DeckController {
   @Autowired
   private DeckService deckService;
 
-  @Autowired
-  private UserRepository userRepository;
-
   private static final Logger logger = LoggerFactory.getLogger(DeckController.class);
 
-  @GetMapping
-  public DeckListResponse getAllDecks(@RequestParam(name = "page", defaultValue = "0") int page,
-      @RequestParam(name = "size", defaultValue = "10") int size) {
+  @GetMapping("/{userId}")
+  public DeckListResponse getAllDecks(@PathVariable("userId") Long userId,
+      @RequestParam(name = "page", defaultValue = "0") Long page,
+      @RequestParam(name = "size", defaultValue = "10") Long size) {
 
     logger.info("------------- デッキ取得API開始 -------------");
 
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    String username = null;
-    if (authentication.getPrincipal() instanceof UserDetails) {
-      username = ((UserDetails) authentication.getPrincipal()).getUsername();
-    }
-
-    UserEntity user = userRepository.findByEmail(username);
-    int userId = user.getId().intValue();
+    deckService.verifyUser(userId);
 
     DeckListResponse decks = deckService.getDecksByUserId(userId, page, size);
 
