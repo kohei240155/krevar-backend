@@ -1,31 +1,23 @@
 package com.example.iruka_backend.repository;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import com.example.iruka_backend.entity.WordEntity;
 
 public interface WordRepository {
-  List<WordEntity> findWordsByDeckId(Long deckId);
 
-  WordEntity save(WordEntity word);
+  /**
+   * デッキIDに紐づくクイズの進捗を取得する
+   *
+   * @param deckId デッキID
+   * @return クイズの進捗
+   */
+  int getProgressByDeckId(Long deckId);
 
-  Optional<WordEntity> findById(Long wordId);
-
-  WordEntity update(WordEntity word);
-
-  long countByDeletedAtIsNull();
-
-  Long findCountByDeckIdAndIsNormalModeCorrectFalseAndNextPracticeDate(Long deckId);
-
-  Long countByDeckIdAndIsNormalModeCorrectTrue(Long deckId);
-
-  Long findTodayQuestionCountByDeckId(Long deckId);
-
-  long countByDeckIdAndNextPracticeDateAndIsNormalModeCorrect(Long deckId,
-      LocalDate nextPracticeDate, Boolean isNormalModeCorrect);
-
-  Page<WordEntity> findAllByDeletedAtIsNull(Pageable pageable);
+  /**
+   * デッキIDに紐づく単語を取得する
+   *
+   * @param deckId デッキID
+   * @return 単語リスト
+   */
+  List<WordEntity> findByDeckId(Long deckId);
 }

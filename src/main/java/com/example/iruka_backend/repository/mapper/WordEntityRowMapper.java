@@ -2,7 +2,8 @@ package com.example.iruka_backend.repository.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.lang.NonNull;
 
@@ -12,22 +13,26 @@ public class WordEntityRowMapper implements RowMapper<WordEntity> {
 
     @Override
     public WordEntity mapRow(@NonNull ResultSet rs, int rowNum) throws SQLException {
-        WordEntity word = new WordEntity();
-        word.setId(rs.getLong("id"));
-        word.setOriginalText(rs.getString("original_text"));
-        word.setTranslatedText(rs.getString("translated_text"));
-        word.setNuanceText(rs.getString("nuance_text"));
-        word.setImageUrl(rs.getString("image_url"));
-        word.setReviewIntervalId(rs.getLong("review_interval_id"));
-        word.setNextPracticeDate(rs.getDate("next_practice_date").toLocalDate());
-        word.setCorrectCount(rs.getLong("correct_count"));
-        word.setIncorrectCount(rs.getLong("incorrect_count"));
-        word.setIsNormalModeCorrect(rs.getBoolean("is_normal_mode_correct"));
-        word.setIsExtraModeCorrect(rs.getBoolean("is_extra_mode_correct"));
-        word.setDeckId(rs.getLong("deck_id"));
-        word.setCreatedAt(rs.getTimestamp("created_at"));
-        word.setUpdatedAt(rs.getTimestamp("updated_at"));
-        word.setDeletedAt(rs.getTimestamp("deleted_at"));
+
+        long id = rs.getLong("id");
+        String originalText = rs.getString("original_text");
+        String translatedText = rs.getString("translated_text");
+        String nuanceText = rs.getString("nuance_text");
+        String imageUrl = rs.getString("image_url");
+        long reviewIntervalId = rs.getLong("review_interval_id");
+        LocalDate nextPracticeDate = rs.getDate("next_practice_date").toLocalDate();
+        long correctCount = rs.getLong("correct_count");
+        long incorrectCount = rs.getLong("incorrect_count");
+        long isExtraModeCorrect = rs.getLong("is_extra_mode_correct");
+        long deckId = rs.getLong("deck_id");
+        LocalDateTime createdAt = rs.getObject("created_at", LocalDateTime.class);
+        LocalDateTime updatedAt = rs.getObject("updated_at", LocalDateTime.class);
+        LocalDateTime deletedAt = rs.getObject("deleted_at", LocalDateTime.class);
+
+        WordEntity word = new WordEntity(id, originalText, translatedText, nuanceText, imageUrl,
+                deckId, reviewIntervalId, nextPracticeDate, correctCount, incorrectCount,
+                isExtraModeCorrect, createdAt, updatedAt, deletedAt);
+
         return word;
     }
 }
