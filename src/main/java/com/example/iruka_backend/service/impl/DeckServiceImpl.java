@@ -119,14 +119,4 @@ public class DeckServiceImpl implements DeckService {
       throw new AccessDeniedException("ユーザーにこのリソースへのアクセス権がありません");
     }
   }
-
-  /**
-   * デッキに紐づくユーザーIDを取得する
-   *
-   * @param deckId デッキID
-   */
-  @Override
-  public Long getUserIdByDeckId(Long deckId) {
-    return deckRepository.getUserIdByDeckId(deckId);
-  }
 }

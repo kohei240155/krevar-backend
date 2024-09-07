@@ -45,11 +45,4 @@ public interface DeckService {
    * @param userId ユーザーID
    */
   void verifyUser(Long requestedUserId);
-
-  /**
-   * デッキに紐づくユーザーIDを取得する
-   *
-   * @param deckId デッキID
-   */
-  Long getUserIdByDeckId(Long deckId);
 }

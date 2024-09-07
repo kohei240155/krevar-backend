@@ -20,7 +20,7 @@ import com.example.iruka_backend.service.WordService;
 import com.example.iruka_backend.requestdto.WordUpdateRequest;
 
 @RestController
-@RequestMapping("/api/word")
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class WordController {
 
@@ -29,7 +29,16 @@ public class WordController {
 
   private static final Logger logger = LoggerFactory.getLogger(WordController.class);
 
-  @GetMapping("/list/{userId}/{deckId}")
+  /**
+   * デッキに紐づく単語一覧取得
+   *
+   * @param page
+   * @param size
+   * @param userId
+   * @param deckId
+   * @return 単語一覧
+   */
+  @GetMapping("/user/{userId}/deck/{deckId}")
   public WordListResponse getWordsByDeckId(
       @RequestParam(name = "page", defaultValue = "0") Long page,
       @RequestParam(name = "size", defaultValue = "10") Long size,
@@ -46,7 +55,12 @@ public class WordController {
     return wordListResponse;
   }
 
-  @PostMapping
+  /**
+   * 単語登録
+   *
+   * @param wordRegisterRequest
+   */
+  @PostMapping("/word")
   public void registerWord(@RequestBody WordRegisterRequest wordRegisterRequest) {
 
     logger.info("------------- 単語登録API開始 -------------");
@@ -58,9 +72,13 @@ public class WordController {
     logger.info("------------- 単語登録API終了 -------------");
   }
 
-  @PutMapping
-  public void updateWord(@PathVariable("wordId") Long wordId,
-      @RequestBody WordUpdateRequest wordUpdateRequest) {
+  /**
+   * 単語更新
+   *
+   * @param wordUpdateRequest
+   */
+  @PutMapping("/word")
+  public void updateWord(@RequestBody WordUpdateRequest wordUpdateRequest) {
 
     logger.info("------------- 単語更新API開始 -------------");
 
@@ -71,7 +89,14 @@ public class WordController {
     logger.info("------------- 単語更新API終了 -------------");
   }
 
-  @GetMapping("/{userId}/{wordId}")
+  /**
+   * 単語取得
+   *
+   * @param userId
+   * @param wordId
+   * @return
+   */
+  @GetMapping("/user/{userId}/word/{wordId}")
   public WordResponse getWordById(@PathVariable("userId") Long userId,
       @PathVariable("wordId") Long wordId) {
 
@@ -86,7 +111,13 @@ public class WordController {
     return wordResponse;
   }
 
-  @DeleteMapping("/{userId}/{wordId}")
+  /**
+   * 単語削除
+   *
+   * @param userId
+   * @param wordId
+   */
+  @DeleteMapping("/user/{userId}/word/{wordId}")
   public void deleteWord(@PathVariable("userId") Long userId, @PathVariable("wordId") Long wordId) {
 
     logger.info("------------- 単語削除API開始 -------------");

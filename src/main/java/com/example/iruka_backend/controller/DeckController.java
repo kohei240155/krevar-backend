@@ -19,7 +19,7 @@ import com.example.iruka_backend.responsedto.DeckListResponse;
 import com.example.iruka_backend.service.DeckService;
 
 @RestController
-@RequestMapping("/api/deck")
+@RequestMapping("/api")
 @CrossOrigin(origins = "http://localhost:3000")
 public class DeckController {
 
@@ -28,23 +28,37 @@ public class DeckController {
 
   private static final Logger logger = LoggerFactory.getLogger(DeckController.class);
 
-  @GetMapping("/{userId}")
-  public DeckListResponse getAllDecks(@PathVariable("userId") Long userId,
+  /**
+   * デッキ一覧取得
+   *
+   * @param userId
+   * @param page
+   * @param size
+   * @return デッキ一覧
+   */
+  @GetMapping("/user/{userId}/deck")
+  public DeckListResponse getDeckList(@PathVariable("userId") Long userId,
       @RequestParam(name = "page", defaultValue = "0") Long page,
       @RequestParam(name = "size", defaultValue = "10") Long size) {
 
-    logger.info("------------- デッキ取得API開始 -------------");
+    logger.info("------------- デッキ一覧取得API開始 -------------");
 
     deckService.verifyUser(userId);
 
     DeckListResponse decks = deckService.getDecksByUserId(userId, page, size);
 
-    logger.info("------------- デッキ取得API終了 -------------");
+    logger.info("------------- デッキ一覧取得API終了 -------------");
 
     return decks;
   }
 
-  @PostMapping
+  /**
+   * デッキ作成
+   *
+   * @param deckCreateRequest
+   * @return デッキ作成成功メッセージ
+   */
+  @PostMapping("/deck")
   public String createDeck(@RequestBody DeckCreateRequest deckCreateRequest) {
 
     logger.info("------------- デッキ作成API開始 -------------");
@@ -58,7 +72,14 @@ public class DeckController {
     return "デッキの作成に成功しました";
   }
 
-  @PutMapping("/{deckId}")
+  /**
+   * デッキ更新
+   *
+   * @param deckId
+   * @param deckUpdateRequest
+   * @return デッキ更新成功メッセージ
+   */
+  @PutMapping("/deck/{deckId}")
   public String updateDeck(@PathVariable("deckId") Long deckId,
       @RequestBody DeckUpdateRequest deckUpdateRequest) {
 
@@ -73,12 +94,18 @@ public class DeckController {
     return "デッキの更新に成功しました";
   }
 
-  @DeleteMapping("/{deckId}")
-  public String deleteDeck(@PathVariable("deckId") Long deckId) {
+  /**
+   * デッキ削除
+   *
+   * @param deckId
+   * @return デッキ削除成功メッセージ
+   */
+  @DeleteMapping("/user/{userId}/deck/{deckId}")
+  public String deleteDeck(@PathVariable("userId") Long userId,
+      @PathVariable("deckId") Long deckId) {
 
     logger.info("------------- デッキ削除API開始 -------------");
 
-    Long userId = deckService.getUserIdByDeckId(deckId);
     deckService.verifyUser(userId);
 
     deckService.delete(deckId);
