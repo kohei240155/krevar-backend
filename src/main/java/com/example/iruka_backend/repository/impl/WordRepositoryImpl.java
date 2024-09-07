@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.repository.mapper.WordEntityRowMapper;
+import com.example.iruka_backend.requestdto.WordRegisterRequest;
 
 @Transactional
 @Repository
@@ -69,4 +70,34 @@ public class WordRepositoryImpl implements WordRepository {
                 new WordEntityRowMapper());
     }
 
+    private static final String SAVE_WORD_SQL = """
+            INSERT INTO words (
+                deck_id,
+                original_text,
+                translated_text,
+                nuance_text,
+                image_url
+            ) VALUES (
+                :deckId,
+                :originalText,
+                :translatedText,
+                :nuanceText,
+                :imageUrl
+            )
+            """;
+
+    @Override
+    public void save(WordRegisterRequest wordRegisterRequest) {
+
+        // パラメータを設定
+        Map<String, Object> params = new HashMap<>();
+        params.put("deckId", wordRegisterRequest.getDeckId());
+        params.put("originalText", wordRegisterRequest.getOriginalText());
+        params.put("translatedText", wordRegisterRequest.getTranslatedText());
+        params.put("nuanceText", wordRegisterRequest.getNuanceText());
+        params.put("imageUrl", wordRegisterRequest.getImageUrl());
+
+        // クエリを実行
+        namedParameterJdbcTemplate.update(SAVE_WORD_SQL, params);
+    }
 }

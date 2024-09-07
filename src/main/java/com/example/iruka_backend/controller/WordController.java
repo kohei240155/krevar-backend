@@ -6,11 +6,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import com.example.iruka_backend.requestdto.WordRegisterRequest;
 import com.example.iruka_backend.responsedto.WordListResponse;
-import com.example.iruka_backend.service.ImageService;
 import com.example.iruka_backend.service.WordService;
 
 @RestController
@@ -20,9 +22,6 @@ public class WordController {
 
   @Autowired
   private WordService wordService;
-
-  @Autowired
-  private ImageService imageService;
 
   private static final Logger logger = LoggerFactory.getLogger(WordController.class);
 
@@ -36,30 +35,24 @@ public class WordController {
 
     wordService.verifyUser(userId);
 
+    WordListResponse wordListResponse = wordService.getWordListByDeckId(deckId, page, size);
+
     logger.info("------------- 単語一覧取得API終了 -------------");
-    return wordService.getWordListByDeckId(deckId, page, size);
+
+    return wordListResponse;
   }
 
-  // @PostMapping
-  // public WordEntity createWord(@RequestBody WordEntity word) {
+  @PostMapping
+  public void registerWord(@RequestBody WordRegisterRequest wordRegisterRequest) {
 
-  // logger.info("------------- 単語作成API開始 -------------");
+    logger.info("------------- 単語登録API開始 -------------");
 
-  // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-  // String username = null;
-  // if (authentication.getPrincipal() instanceof UserDetails) {
-  // username = ((UserDetails) authentication.getPrincipal()).getUsername();
-  // }
+    wordService.verifyUser(wordRegisterRequest.getUserId());
 
-  // UserEntity user = userRepository.findByEmail(username);
-  // int userId = user.getId().intValue();
+    wordService.save(wordRegisterRequest);
 
-  // wordService.checkUserId(userId, word.getDeckId());
-
-  // logger.info("------------- 単語作成API終了 -------------");
-
-  // return wordService.save(word);
-  // }
+    logger.info("------------- 単語登録API終了 -------------");
+  }
 
   // @PutMapping("/{wordId}")
   // public WordEntity updateWord(@PathVariable("wordId") Long wordId, @RequestBody WordEntity word)
@@ -113,62 +106,6 @@ public class WordController {
 
   // return imageService.uploadImage(imageUploadRequest);
   // }
-
-  // @GetMapping("/deck/{deckId}")
-  // public WordListResponse getAllWords(@RequestParam(name = "page", defaultValue = "0") int page,
-  // @RequestParam(name = "size", defaultValue = "10") int size) {
-  // Pageable pageable = PageRequest.of(page, size);
-  // Page<WordEntity> words = wordService.getWords(pageable);
-  // long count = wordService.countActiveWords();
-  // return new WordListResponse(words.getContent(), count);
-  // }
-
-  // @GetMapping("/{wordId}")
-  // public WordEntity getWordById(@PathVariable("wordId") Long wordId) {
-  // return wordService.getWordById(wordId).orElse(null);
-  // }
-
-  // @PostMapping("/{deckId}")
-  // public WordCreatedResponse createWord(@PathVariable("deckId") Long deckId,
-  // @RequestBody WordEntity word) {
-  // word.setDeckId(deckId);
-  // word.setReviewIntervalId(1L);
-  // word.setNextPracticeDate(LocalDate.now());
-  // word.setCorrectCount(0L);
-  // word.setIncorrectCount(0L);
-  // word.setIsNormalModeCorrect(false);
-  // word.setIsExtraModeCorrect(false);
-  // word.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-  // word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-  // WordEntity createdWord = wordService.save(word);
-  // return new WordCreatedResponse(createdWord.getId(), "Word created successfully");
-  // }
-
-  // @PostMapping("/upload-image")
-  // public String uploadImage(@RequestBody ImageUploadRequest imageUploadRequest) {
-  // try {
-  // String imagePath = imageUploadRequest.getImagePath();
-  // Long wordId = imageUploadRequest.getWordId();
-
-  // if (imagePath == null) {
-  // throw new IllegalArgumentException("imagePath must be provided");
-  // }
-
-  // // OpenAI APIで生成された画像をローカルディレクトリに保存する
-  // String savedImagePath = imageService.saveImageFromOpenAI(imagePath);
-
-  // // 画像の保存パスを更新
-  // WordEntity word =
-  // wordService.getWordById(wordId).orElseThrow(() -> new RuntimeException("Word not found"));
-  // word.setImageUrl(savedImagePath);
-  // wordService.save(word);
-
-  // return "Image uploaded successfully: " + savedImagePath;
-  // } catch (Exception e) {
-  // return "Failed to upload image: " + e.getMessage();
-  // }
-  // }
-
   // @PutMapping("/{wordId}")
   // public WordUpdatedResponse updateWord(@PathVariable("wordId") Long wordId,
   // @RequestBody WordUpdateRequest wordUpdateRequest) {

@@ -1,6 +1,8 @@
 package com.example.iruka_backend.service;
 
+import java.io.IOException;
 import com.example.iruka_backend.entity.WordEntity;
+import com.example.iruka_backend.requestdto.WordRegisterRequest;
 import com.example.iruka_backend.responsedto.WordListResponse;
 
 public interface WordService {
@@ -27,4 +29,19 @@ public interface WordService {
    * @param userId ユーザーID
    */
   void verifyUser(Long requestedUserId);
+
+  /**
+   * 単語を登録する
+   *
+   * @param wordRegisterRequest 単語登録リクエスト
+   */
+  void save(WordRegisterRequest wordRegisterRequest);
+
+  /**
+   * 画像を保存する
+   *
+   * @param imagePath 画像パス
+   * @return 保存された画像パス
+   */
+  String saveImage(String imagePath) throws IOException;
 }

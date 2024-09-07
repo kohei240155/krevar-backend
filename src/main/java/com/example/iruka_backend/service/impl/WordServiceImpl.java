@@ -1,5 +1,10 @@
 package com.example.iruka_backend.service.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,6 +15,7 @@ import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.repository.WordRepository;
+import com.example.iruka_backend.requestdto.WordRegisterRequest;
 import com.example.iruka_backend.responsedto.WordInfo;
 import com.example.iruka_backend.responsedto.WordListResponse;
 import com.example.iruka_backend.service.WordService;
@@ -23,6 +29,8 @@ public class WordServiceImpl implements WordService {
 
   @Autowired
   private UserRepository userRepository;
+
+  private static final String LOCAL_IMAGE_DIR = "C:/Git/iruka-frontend/public/images/testImages/";
 
   @Override
   public WordListResponse getWordListByDeckId(Long deckId, Long page, Long size) {
@@ -82,36 +90,45 @@ public class WordServiceImpl implements WordService {
     }
   }
 
-  // @Autowired
-  // private WordRepository wordRepository;
+  /**
+   * 単語を登録する
+   *
+   * @param wordRegisterRequest 単語登録リクエスト
+   */
+  @Override
+  public void save(WordRegisterRequest wordRegisterRequest) {
 
-  // @Override
-  // public List<WordEntity> getWordsByDeckId(Long deckId) {
-  // return wordRepository.findWordsByDeckId(deckId); // 修正
-  // }
+    // 画像を保存
+    String imagePath = wordRegisterRequest.getImageUrl();
 
-  // @Override
-  // public WordEntity save(WordEntity word) {
-  // return wordRepository.save(word);
-  // }
+    try {
+      String savedImagePath = saveImage(imagePath);
+      wordRegisterRequest.setImageUrl(savedImagePath);
+    } catch (IOException e) {
+      throw new RuntimeException("画像の保存に失敗しました", e);
+    }
+    // 単語を保存
+    wordRepository.save(wordRegisterRequest);
+  }
 
-  // @Override
-  // public Optional<WordEntity> getWordById(Long wordId) {
-  // return wordRepository.findById(wordId);
-  // }
+  /**
+   * 画像を保存する
+   *
+   * @param imagePath 画像パス
+   * @return 保存された画像パス
+   */
+  @Override
+  public String saveImage(String imagePath) throws IOException {
+    String fileName = Paths.get(URI.create(imagePath).getPath()).getFileName().toString();
 
-  // @Override
-  // public WordEntity update(WordEntity word) {
-  // return wordRepository.update(word);
-  // }
+    // ファイル名の正規化
+    fileName = fileName.replaceAll("[^a-zA-Z0-9\\.\\-]", "_");
 
-  // @Override
-  // public Page<WordEntity> getWords(Pageable pageable) {
-  // return wordRepository.findAllByDeletedAtIsNull(pageable);
-  // }
+    // URLからファイルをダウンロードしてローカルに保存
+    try (InputStream in = URI.create(imagePath).toURL().openStream()) {
+      Files.copy(in, Paths.get(LOCAL_IMAGE_DIR + fileName));
+    }
 
-  // @Override
-  // public long countActiveWords() {
-  // return wordRepository.countByDeletedAtIsNull();
-  // }
+    return LOCAL_IMAGE_DIR + fileName;
+  }
 }
