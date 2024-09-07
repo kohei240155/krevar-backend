@@ -1,7 +1,7 @@
 package com.example.iruka_backend.service;
 
 import java.io.IOException;
-import com.example.iruka_backend.requestdto.WordRegisterRequest;
+import com.example.iruka_backend.requestdto.WordCreateRequest;
 import com.example.iruka_backend.requestdto.WordUpdateRequest;
 import com.example.iruka_backend.responsedto.WordListResponse;
 import com.example.iruka_backend.responsedto.WordResponse;
@@ -34,9 +34,9 @@ public interface WordService {
   /**
    * 単語を登録する
    *
-   * @param wordRegisterRequest 単語登録リクエスト
+   * @param wordCreateRequest 単語登録リクエスト
    */
-  void save(WordRegisterRequest wordRegisterRequest);
+  void save(WordCreateRequest wordCreateRequest);
 
   /**
    * 画像を保存する

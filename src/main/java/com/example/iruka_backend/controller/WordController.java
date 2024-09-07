@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.iruka_backend.requestdto.WordRegisterRequest;
+import com.example.iruka_backend.requestdto.WordCreateRequest;
 import com.example.iruka_backend.responsedto.WordListResponse;
 import com.example.iruka_backend.responsedto.WordResponse;
 import com.example.iruka_backend.service.WordService;
@@ -61,13 +61,13 @@ public class WordController {
    * @param wordRegisterRequest
    */
   @PostMapping("/word")
-  public void registerWord(@RequestBody WordRegisterRequest wordRegisterRequest) {
+  public void createWord(@RequestBody WordCreateRequest wordCreateRequest) {
 
     logger.info("------------- 単語登録API開始 -------------");
 
-    wordService.verifyUser(wordRegisterRequest.getUserId());
+    wordService.verifyUser(wordCreateRequest.getUserId());
 
-    wordService.save(wordRegisterRequest);
+    wordService.save(wordCreateRequest);
 
     logger.info("------------- 単語登録API終了 -------------");
   }

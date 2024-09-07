@@ -2,7 +2,7 @@ package com.example.iruka_backend.repository;
 
 import java.util.List;
 import com.example.iruka_backend.entity.WordEntity;
-import com.example.iruka_backend.requestdto.WordRegisterRequest;
+import com.example.iruka_backend.requestdto.WordCreateRequest;
 import com.example.iruka_backend.requestdto.WordUpdateRequest;
 
 public interface WordRepository {
@@ -26,9 +26,9 @@ public interface WordRepository {
   /**
    * 単語を登録する
    *
-   * @param wordRegisterRequest 単語登録リクエスト
+   * @param wordCreateRequest 単語登録リクエスト
    */
-  void save(WordRegisterRequest wordRegisterRequest);
+  void save(WordCreateRequest wordCreateRequest);
 
   /**
    * 単語を更新する

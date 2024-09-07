@@ -15,7 +15,7 @@ import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.repository.WordRepository;
-import com.example.iruka_backend.requestdto.WordRegisterRequest;
+import com.example.iruka_backend.requestdto.WordCreateRequest;
 import com.example.iruka_backend.requestdto.WordUpdateRequest;
 import com.example.iruka_backend.responsedto.WordInfo;
 import com.example.iruka_backend.responsedto.WordListResponse;
@@ -121,19 +121,19 @@ public class WordServiceImpl implements WordService {
    * @param wordRegisterRequest 単語登録リクエスト
    */
   @Override
-  public void save(WordRegisterRequest wordRegisterRequest) {
+  public void save(WordCreateRequest wordCreateRequest) {
 
     // 画像を保存
-    String imagePath = wordRegisterRequest.getImageUrl();
+    String imagePath = wordCreateRequest.getImageUrl();
 
     try {
       String savedImagePath = saveImage(imagePath);
-      wordRegisterRequest.setImageUrl(savedImagePath);
+      wordCreateRequest.setImageUrl(savedImagePath);
     } catch (IOException e) {
       throw new RuntimeException("画像の保存に失敗しました", e);
     }
     // 単語を保存
-    wordRepository.save(wordRegisterRequest);
+    wordRepository.save(wordCreateRequest);
   }
 
   /**

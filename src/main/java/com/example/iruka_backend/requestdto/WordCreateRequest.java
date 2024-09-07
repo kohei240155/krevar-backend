@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WordRegisterRequest {
+public class WordCreateRequest {
 
     /** ユーザーID */
     private Long userId;

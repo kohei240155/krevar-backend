@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.repository.mapper.WordEntityRowMapper;
-import com.example.iruka_backend.requestdto.WordRegisterRequest;
+import com.example.iruka_backend.requestdto.WordCreateRequest;
 import com.example.iruka_backend.requestdto.WordUpdateRequest;
 
 @Transactional
@@ -89,15 +89,15 @@ public class WordRepositoryImpl implements WordRepository {
             """;
 
     @Override
-    public void save(WordRegisterRequest wordRegisterRequest) {
+    public void save(WordCreateRequest wordCreateRequest) {
 
         // パラメータを設定
         Map<String, Object> params = new HashMap<>();
-        params.put("deckId", wordRegisterRequest.getDeckId());
-        params.put("originalText", wordRegisterRequest.getOriginalText());
-        params.put("translatedText", wordRegisterRequest.getTranslatedText());
-        params.put("nuanceText", wordRegisterRequest.getNuanceText());
-        params.put("imageUrl", wordRegisterRequest.getImageUrl());
+        params.put("deckId", wordCreateRequest.getDeckId());
+        params.put("originalText", wordCreateRequest.getOriginalText());
+        params.put("translatedText", wordCreateRequest.getTranslatedText());
+        params.put("nuanceText", wordCreateRequest.getNuanceText());
+        params.put("imageUrl", wordCreateRequest.getImageUrl());
 
         // クエリを実行
         namedParameterJdbcTemplate.update(SAVE_WORD_SQL, params);
