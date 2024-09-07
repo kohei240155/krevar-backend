@@ -16,6 +16,7 @@ import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.requestdto.WordRegisterRequest;
+import com.example.iruka_backend.requestdto.WordUpdateRequest;
 import com.example.iruka_backend.responsedto.WordInfo;
 import com.example.iruka_backend.responsedto.WordListResponse;
 import com.example.iruka_backend.service.WordService;
@@ -46,9 +47,6 @@ public class WordServiceImpl implements WordService {
       wordInfo.setId(word.getId());
       wordInfo.setOriginalText(word.getOriginalText());
       wordInfo.setTranslatedText(word.getTranslatedText());
-      wordInfo.setNuanceText(word.getNuanceText());
-      wordInfo.setImageUrl(word.getImageUrl());
-      wordInfo.setDeckId(word.getDeckId());
       wordInfoList.add(wordInfo);
     }
 
@@ -130,5 +128,15 @@ public class WordServiceImpl implements WordService {
     }
 
     return LOCAL_IMAGE_DIR + fileName;
+  }
+
+  /**
+   * 単語を更新する
+   *
+   * @param wordUpdateRequest 単語更新リクエスト
+   */
+  @Override
+  public void update(WordUpdateRequest wordUpdateRequest) {
+    wordRepository.update(wordUpdateRequest);
   }
 }

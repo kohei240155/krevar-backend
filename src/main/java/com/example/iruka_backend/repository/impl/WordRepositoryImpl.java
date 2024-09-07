@@ -13,6 +13,7 @@ import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.repository.mapper.WordEntityRowMapper;
 import com.example.iruka_backend.requestdto.WordRegisterRequest;
+import com.example.iruka_backend.requestdto.WordUpdateRequest;
 
 @Transactional
 @Repository
@@ -99,5 +100,30 @@ public class WordRepositoryImpl implements WordRepository {
 
         // クエリを実行
         namedParameterJdbcTemplate.update(SAVE_WORD_SQL, params);
+    }
+
+    private static final String UPDATE_WORD_SQL = """
+            UPDATE
+                words
+            SET
+                original_text = :originalText,
+                translated_text = :translatedText,
+                nuance_text = :nuanceText,
+            WHERE
+                id = :wordId
+            """;
+
+    @Override
+    public void update(WordUpdateRequest wordUpdateRequest) {
+
+        // パラメータを設定
+        Map<String, Object> params = new HashMap<>();
+        params.put("originalText", wordUpdateRequest.getOriginalText());
+        params.put("translatedText", wordUpdateRequest.getTranslatedText());
+        params.put("nuanceText", wordUpdateRequest.getNuanceText());
+        params.put("wordId", wordUpdateRequest.getWordId());
+
+        // クエリを実行
+        namedParameterJdbcTemplate.update(UPDATE_WORD_SQL, params);
     }
 }

@@ -1,55 +1,32 @@
 package com.example.iruka_backend.requestdto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class WordUpdateRequest {
 
+  /** 単語ID */
+  private Long wordId;
+
+  /** ユーザーID */
+  private Long userId;
+
+  /** 単語 */
   private String originalText;
 
+  /** 翻訳 */
   private String translatedText;
 
-  private String imageUrl;
-
-  private Long deckId;
-
+  /** ニュアンス */
   private String nuanceText;
 
-  // Getters and Setters
-  public String getOriginalText() {
-    return originalText;
-  }
+  /** デッキID */
+  private Long deckId;
 
-  public void setOriginalText(String originalText) {
-    this.originalText = originalText;
-  }
-
-  public String getTranslatedText() {
-    return translatedText;
-  }
-
-  public void setTranslatedText(String translatedText) {
-    this.translatedText = translatedText;
-  }
-
-  public String getImageUrl() {
-    return imageUrl;
-  }
-
-  public void setImageUrl(String imageUrl) {
-    this.imageUrl = imageUrl;
-  }
-
-  public Long getDeckId() {
-    return deckId;
-  }
-
-  public void setDeckId(Long deckId) {
-    this.deckId = deckId;
-  }
-
-  public String getNuanceText() {
-    return nuanceText;
-  }
-
-  public void setNuanceText(String nuanceText) {
-    this.nuanceText = nuanceText;
-  }
 }

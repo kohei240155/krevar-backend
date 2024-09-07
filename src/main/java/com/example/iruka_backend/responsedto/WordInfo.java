@@ -15,13 +15,4 @@ public class WordInfo {
 
     /** 翻訳 */
     private String translatedText;
-
-    /** ニュアンス */
-    private String nuanceText;
-
-    /** 画像URL */
-    private String imageUrl;
-
-    /** デッキID */
-    private Long deckId;
 }

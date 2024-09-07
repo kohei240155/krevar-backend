@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.iruka_backend.requestdto.WordRegisterRequest;
 import com.example.iruka_backend.responsedto.WordListResponse;
 import com.example.iruka_backend.service.WordService;
+import com.example.iruka_backend.requestdto.WordUpdateRequest;
 
 @RestController
 @RequestMapping("/api/word")
@@ -54,21 +56,18 @@ public class WordController {
     logger.info("------------- 単語登録API終了 -------------");
   }
 
-  // @PutMapping("/{wordId}")
-  // public WordEntity updateWord(@PathVariable("wordId") Long wordId, @RequestBody WordEntity word)
-  // {
+  @PutMapping
+  public void updateWord(@PathVariable("wordId") Long wordId,
+      @RequestBody WordUpdateRequest wordUpdateRequest) {
 
-  // logger.info("------------- 単語更新API開始 -------------");
+    logger.info("------------- 単語更新API開始 -------------");
 
-  // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-  // String username = null;
-  // if (authentication.getPrincipal() instanceof UserDetails) {
-  // username = ((UserDetails) authentication.getPrincipal()).getUsername();
-  // }
+    wordService.verifyUser(wordUpdateRequest.getUserId());
 
-  // logger.info("------------- 単語更新API終了 -------------");
-  // return wordService.update(word);
-  // }
+    wordService.update(wordUpdateRequest);
+
+    logger.info("------------- 単語更新API終了 -------------");
+  }
 
   // @DeleteMapping("/{wordId}")
   // public void deleteWord(@PathVariable("wordId") Long wordId) {
