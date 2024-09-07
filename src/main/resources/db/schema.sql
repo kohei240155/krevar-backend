@@ -48,7 +48,7 @@ CREATE TABLE words (
     nuance_text TEXT NOT NULL,
     image_url TEXT NOT NULL,
     deck_id INT NOT NULL,
-    review_interval_id INT NOT NULL,
+    review_interval_id INT DEFAULT 1,
     next_practice_date DATE DEFAULT (CURRENT_DATE),
     correct_count INT DEFAULT 0,
     incorrect_count INT DEFAULT 0,
