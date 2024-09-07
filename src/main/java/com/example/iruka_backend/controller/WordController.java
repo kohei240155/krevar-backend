@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -85,54 +86,16 @@ public class WordController {
     return wordResponse;
   }
 
-  // @DeleteMapping("/{wordId}")
-  // public void deleteWord(@PathVariable("wordId") Long wordId) {
+  @DeleteMapping("/{userId}/{wordId}")
+  public void deleteWord(@PathVariable("userId") Long userId, @PathVariable("wordId") Long wordId) {
 
-  // logger.info("------------- 単語削除API開始 -------------");
+    logger.info("------------- 単語削除API開始 -------------");
 
-  // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-  // String username = null;
-  // if (authentication.getPrincipal() instanceof UserDetails) {
-  // username = ((UserDetails) authentication.getPrincipal()).getUsername();
-  // }
+    wordService.verifyUser(userId);
 
-  // logger.info("------------- 単語削除API終了 -------------");
+    wordService.delete(wordId);
 
-  // wordService.delete(wordId);
-  // }
+    logger.info("------------- 単語削除API終了 -------------");
+  }
 
-  // @PostMapping("/upload-image")
-  // public String uploadImage(@RequestBody ImageUploadRequest imageUploadRequest) {
-
-  // logger.info("------------- 画像アップロードAPI開始 -------------");
-
-  // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-  // String username = null;
-  // if (authentication.getPrincipal() instanceof UserDetails) {
-  // username = ((UserDetails) authentication.getPrincipal()).getUsername();
-  // }
-
-  // UserEntity user = userRepository.findByEmail(username);
-  // int userId = user.getId().intValue();
-
-  // wordService.checkUserId(userId, word.getDeckId());
-
-  // logger.info("------------- 画像アップロードAPI終了 -------------");
-
-  // return imageService.uploadImage(imageUploadRequest);
-  // }
-  // @PutMapping("/{wordId}")
-  // public WordUpdatedResponse updateWord(@PathVariable("wordId") Long wordId,
-  // @RequestBody WordUpdateRequest wordUpdateRequest) {
-  // WordEntity word =
-  // wordService.getWordById(wordId).orElseThrow(() -> new RuntimeException("Word not found"));
-  // word.setOriginalText(wordUpdateRequest.getOriginalText());
-  // word.setTranslatedText(wordUpdateRequest.getTranslatedText());
-  // word.setImageUrl(wordUpdateRequest.getImageUrl());
-  // word.setDeckId(wordUpdateRequest.getDeckId());
-  // word.setNuanceText(wordUpdateRequest.getNuanceText());
-  // word.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-  // WordEntity updatedWord = wordService.update(word);
-  // return new WordUpdatedResponse(updatedWord.getId(), "Word updated successfully");
-  // }
 }

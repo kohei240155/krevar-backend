@@ -44,4 +44,11 @@ public interface WordRepository {
    * @return 単語
    */
   WordEntity findById(Long wordId);
+
+  /**
+   * 単語を削除する
+   *
+   * @param wordId 単語ID
+   */
+  void delete(Long wordId);
 }

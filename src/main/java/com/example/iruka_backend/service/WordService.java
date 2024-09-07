@@ -52,4 +52,11 @@ public interface WordService {
    * @param wordUpdateRequest 単語更新リクエスト
    */
   void update(WordUpdateRequest wordUpdateRequest);
+
+  /**
+   * 単語を削除する
+   *
+   * @param wordId 単語ID
+   */
+  void delete(Long wordId);
 }

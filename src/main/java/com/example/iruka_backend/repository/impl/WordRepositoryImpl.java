@@ -1,6 +1,7 @@
 package com.example.iruka_backend.repository.impl;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -146,5 +147,26 @@ public class WordRepositoryImpl implements WordRepository {
         // クエリを実行
         return namedParameterJdbcTemplate.queryForObject(FIND_WORD_BY_ID_SQL, params,
                 new WordEntityRowMapper());
+    }
+
+    private static final String DELETE_WORD_SQL = """
+            UPDATE
+                words
+            SET
+                deleted_at = :deletedAt
+            WHERE
+                id = :wordId
+            """;
+
+    @Override
+    public void delete(Long wordId) {
+
+        // パラメータを設定
+        Map<String, Object> params = new HashMap<>();
+        params.put("wordId", wordId);
+        params.put("deletedAt", LocalDateTime.now());
+
+        // クエリを実行
+        namedParameterJdbcTemplate.update(DELETE_WORD_SQL, params);
     }
 }

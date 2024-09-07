@@ -166,4 +166,14 @@ public class WordServiceImpl implements WordService {
   public void update(WordUpdateRequest wordUpdateRequest) {
     wordRepository.update(wordUpdateRequest);
   }
+
+  /**
+   * 単語を削除する
+   *
+   * @param wordId 単語ID
+   */
+  @Override
+  public void delete(Long wordId) {
+    wordRepository.delete(wordId);
+  }
 }
