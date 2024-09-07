@@ -8,11 +8,11 @@ DROP TABLE `iruka_db`.`users`;
 -- users table
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) DEFAULT '',  -- Added default value
+    name VARCHAR(100) DEFAULT '',
     email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL, -- Added password column
-    google_id VARCHAR(255), -- Google authentication column added
-    role VARCHAR(255) NOT NULL, -- Added role column
+    password VARCHAR(255) NOT NULL,
+    google_id VARCHAR(255),
+    role VARCHAR(255) NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at DATETIME DEFAULT NULL
@@ -40,7 +40,7 @@ CREATE TABLE decks (
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
--- words table (統合版)
+-- words table
 CREATE TABLE words (
     id INT AUTO_INCREMENT PRIMARY KEY,
     original_text TEXT NOT NULL,
@@ -48,16 +48,16 @@ CREATE TABLE words (
     nuance_text TEXT NOT NULL,
     image_url TEXT NOT NULL,
     deck_id INT NOT NULL,
-    review_interval_id INT NOT NULL, -- 統合されたカラム
-    next_practice_date DATE DEFAULT (CURRENT_DATE), -- 統合されたカラム
-    correct_count INT DEFAULT 0, -- 統合されたカラム
-    incorrect_count INT DEFAULT 0, -- 統合されたカラム
-    is_extra_mode_correct BOOLEAN DEFAULT FALSE, -- 統合されたカラム
+    review_interval_id INT NOT NULL,
+    next_practice_date DATE DEFAULT (CURRENT_DATE),
+    correct_count INT DEFAULT 0,
+    incorrect_count INT DEFAULT 0,
+    is_extra_mode_correct INT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     deleted_at DATETIME DEFAULT NULL,
     FOREIGN KEY (deck_id) REFERENCES decks(id),
-    FOREIGN KEY (review_interval_id) REFERENCES review_intervals(id) -- 統合された外部キー制約
+    FOREIGN KEY (review_interval_id) REFERENCES review_intervals(id)
 );
 
 -- Spring Session用のテーブル
@@ -79,7 +79,7 @@ CREATE INDEX SPRING_SESSION_IX3 ON SPRING_SESSION (PRINCIPAL_NAME);
 CREATE TABLE SPRING_SESSION_ATTRIBUTES (
     SESSION_PRIMARY_ID CHAR(36) NOT NULL,
     ATTRIBUTE_NAME VARCHAR(200) NOT NULL,
-    ATTRIBUTE_BYTES BLOB NOT NULL,  -- BYTEAをBLOBに変更
+    ATTRIBUTE_BYTES BLOB NOT NULL,
     CONSTRAINT SPRING_SESSION_ATTRIBUTES_PK PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
     CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SPRING_SESSION(PRIMARY_ID) ON DELETE CASCADE
 );
