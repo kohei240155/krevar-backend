@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.iruka_backend.responsedto.WordResponse;
+import com.example.iruka_backend.responsedto.QuizResponse;
 import com.example.iruka_backend.service.QuizService;
 
 @RestController
@@ -30,18 +30,18 @@ public class QuizController {
    * @return
    */
   @GetMapping("/user/{userId}/normal-quiz/deck/{deckId}")
-  public WordResponse getNormalQuiz(@PathVariable("userId") Long userId,
+  public QuizResponse getNormalQuiz(@PathVariable("userId") Long userId,
       @PathVariable("deckId") Long deckId) {
 
     logger.info("------------- ノーマルクイズ取得API開始 -------------");
 
     quizService.verifyUser(userId);
 
-    WordResponse wordResponse = quizService.getNormalQuiz(deckId);
+    QuizResponse quizResponse = quizService.getNormalQuiz(deckId);
 
     logger.info("------------- ノーマルクイズ取得API終了 -------------");
 
-    return wordResponse;
+    return quizResponse;
   }
 
   /**

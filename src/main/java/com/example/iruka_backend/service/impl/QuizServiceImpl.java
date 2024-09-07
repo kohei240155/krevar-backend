@@ -7,6 +7,7 @@ import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.QuizRepository;
 import com.example.iruka_backend.repository.UserRepository;
+import com.example.iruka_backend.responsedto.QuizResponse;
 import com.example.iruka_backend.responsedto.WordResponse;
 import com.example.iruka_backend.service.QuizService;
 import com.example.iruka_backend.util.SecurityUtil;
@@ -40,21 +41,39 @@ public class QuizServiceImpl implements QuizService {
     }
   }
 
+  /**
+   * デッキIDを指定してクイズを取得する
+   *
+   * @param deckId デッキID
+   * @return クイズ
+   */
   @Override
-  public WordResponse getNormalQuiz(Long deckId) {
+  public QuizResponse getNormalQuiz(Long deckId) {
 
     // クイズを取得
     WordEntity word = quizRepository.findNormalQuizByDeckId(deckId);
 
-    // 単語をWordResponseに変換
-    WordResponse response = new WordResponse();
+    // 単語をQuizResponseに変換
+    QuizResponse response = new QuizResponse();
     response.setId(word.getId());
     response.setOriginalText(word.getOriginalText());
     response.setTranslatedText(word.getTranslatedText());
     response.setNuanceText(word.getNuanceText());
     response.setImageUrl(word.getImageUrl());
+    response.setLeftQuizCount(quizRepository.getLeftNormalQuizCount(deckId));
 
     return response;
+  }
+
+  /**
+   * デッキIDを指定してクイズの残数を取得する
+   *
+   * @param deckId デッキID
+   * @return クイズの残数
+   */
+  @Override
+  public int getLeftNormalQuizCount(Long deckId) {
+    return quizRepository.getLeftNormalQuizCount(deckId);
   }
 
 

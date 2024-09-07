@@ -23,7 +23,9 @@ public class QuizRepositoryImpl implements QuizRepository {
                 FROM
                     words
                 WHERE
-                    deck_id = :deckId
+                    deck_id = :deckId AND
+                    next_practice_date <= NOW() AND
+                    deleted_at IS NULL
                 ORDER BY
                     RAND()
                 LIMIT 1
@@ -45,5 +47,34 @@ public class QuizRepositoryImpl implements QuizRepository {
                 new WordEntityRowMapper());
 
         return word;
+    }
+
+    private static final String SQL_GET_LEFT_NORMAL_QUIZ_COUNT = """
+            SELECT
+                COUNT(*)
+            FROM
+                words
+            WHERE
+                deck_id = :deckId AND
+                next_practice_date <= NOW() AND
+                deleted_at IS NULL
+            """;
+
+    /**
+     * デッキIDを指定してクイズの残数を取得する
+     *
+     * @param deckId デッキID
+     * @return クイズの残数
+     */
+    @Override
+    public int getLeftNormalQuizCount(Long deckId) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("deckId", deckId);
+
+        Integer count = namedParameterJdbcTemplate.queryForObject(SQL_GET_LEFT_NORMAL_QUIZ_COUNT,
+                params, Integer.class);
+
+        return count != null ? count : 0;
     }
 }

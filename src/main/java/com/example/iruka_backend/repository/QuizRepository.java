@@ -11,4 +11,12 @@ public interface QuizRepository {
    * @return クイズ
    */
   WordEntity findNormalQuizByDeckId(Long deckId);
+
+  /**
+   * デッキIDを指定してクイズの残数を取得する
+   *
+   * @param deckId デッキID
+   * @return クイズの残数
+   */
+  int getLeftNormalQuizCount(Long deckId);
 }
