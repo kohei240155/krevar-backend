@@ -36,12 +36,4 @@ public interface QuizRepository {
    * @return レビュー間隔
    */
   int getReviewIntervalId(Long wordId);
-
-  /**
-   * レビュー間隔を取得する
-   *
-   * @param reviewIntervalId
-   * @return レビュー間隔
-   */
-  int getIntervalDay(int reviewIntervalId);
 }

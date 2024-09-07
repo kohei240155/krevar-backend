@@ -9,6 +9,7 @@ import com.example.iruka_backend.entity.QuizResultEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.QuizRepository;
+import com.example.iruka_backend.repository.ReviewIntervalRepository;
 import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.requestdto.QuizResultUpdateRequest;
 import com.example.iruka_backend.responsedto.QuizResponse;
@@ -20,6 +21,9 @@ public class QuizServiceImpl implements QuizService {
 
   @Autowired
   private QuizRepository quizRepository;
+
+  @Autowired
+  private ReviewIntervalRepository reviewIntervalRepository;
 
   @Autowired
   private UserRepository userRepository;
@@ -103,7 +107,7 @@ public class QuizServiceImpl implements QuizService {
       reviewIntervalId = incrementReviewIntervalId(reviewIntervalId);
 
       // 次の練習日を設定
-      int intervalDay = quizRepository.getIntervalDay(reviewIntervalId);
+      int intervalDay = reviewIntervalRepository.getIntervalDay(reviewIntervalId);
       nextPracticeDate = nextPracticeDate.plusDays(intervalDay);
 
       // インクリメント用の正解数を設定

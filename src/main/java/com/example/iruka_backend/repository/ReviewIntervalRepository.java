@@ -1,9 +1,12 @@
 package com.example.iruka_backend.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import com.example.iruka_backend.entity.ReviewIntervalEntity;
+public interface ReviewIntervalRepository {
 
-@Repository
-public interface ReviewIntervalRepository extends JpaRepository<ReviewIntervalEntity, Long> {
+    /**
+     * レビュー間隔を取得する
+     *
+     * @param reviewIntervalId
+     * @return レビュー間隔
+     */
+    int getIntervalDay(int reviewIntervalId);
 }
