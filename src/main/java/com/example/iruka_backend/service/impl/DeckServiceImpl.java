@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import com.example.iruka_backend.entity.DeckCreateEntity;
 import com.example.iruka_backend.entity.DeckEntity;
+import com.example.iruka_backend.entity.DeckUpdateEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.repository.DeckRepository;
 import com.example.iruka_backend.repository.UserRepository;
@@ -77,7 +79,13 @@ public class DeckServiceImpl implements DeckService {
    */
   @Override
   public void save(DeckCreateRequest deckCreateRequest) {
-    deckRepository.save(deckCreateRequest);
+
+    // デッキエンティティを作成
+    DeckCreateEntity deckCreateEntity =
+        new DeckCreateEntity(deckCreateRequest.getUserId(), deckCreateRequest.getDeckName());
+
+    // デッキを保存
+    deckRepository.save(deckCreateEntity);
   }
 
   /**
@@ -87,7 +95,12 @@ public class DeckServiceImpl implements DeckService {
    */
   @Override
   public void update(DeckUpdateRequest deckUpdateRequest, Long deckId) {
-    deckRepository.update(deckUpdateRequest, deckId);
+
+    // デッキエンティティを作成
+    DeckUpdateEntity deckUpdateEntity =
+        new DeckUpdateEntity(deckUpdateRequest.getUserId(), deckUpdateRequest.getDeckName());
+
+    deckRepository.update(deckUpdateEntity, deckId);
   }
 
   /**

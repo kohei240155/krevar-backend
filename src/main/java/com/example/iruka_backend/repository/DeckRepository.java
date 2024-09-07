@@ -1,9 +1,9 @@
 package com.example.iruka_backend.repository;
 
 import java.util.List;
+import com.example.iruka_backend.entity.DeckCreateEntity;
 import com.example.iruka_backend.entity.DeckEntity;
-import com.example.iruka_backend.requestdto.DeckCreateRequest;
-import com.example.iruka_backend.requestdto.DeckUpdateRequest;
+import com.example.iruka_backend.entity.DeckUpdateEntity;
 
 public interface DeckRepository {
 
@@ -20,7 +20,7 @@ public interface DeckRepository {
    *
    * @param deckRequest デッキリクエスト
    */
-  void save(DeckCreateRequest deckCreateRequest);
+  void save(DeckCreateEntity deckCreateEntity);
 
   /**
    * デッキを更新する
@@ -28,7 +28,7 @@ public interface DeckRepository {
    * @param deckUpdateRequest デッキ更新リクエスト
    * @param deckId デッキID
    */
-  void update(DeckUpdateRequest deckUpdateRequest, Long deckId);
+  void update(DeckUpdateEntity deckUpdateEntity, Long deckId);
 
   /**
    * デッキを削除する

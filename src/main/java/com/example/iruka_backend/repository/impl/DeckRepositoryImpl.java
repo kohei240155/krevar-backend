@@ -9,11 +9,11 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
+import com.example.iruka_backend.entity.DeckCreateEntity;
 import com.example.iruka_backend.entity.DeckEntity;
+import com.example.iruka_backend.entity.DeckUpdateEntity;
 import com.example.iruka_backend.repository.DeckRepository;
 import com.example.iruka_backend.repository.mapper.DeckEntityRowMapper;
-import com.example.iruka_backend.requestdto.DeckCreateRequest;
-import com.example.iruka_backend.requestdto.DeckUpdateRequest;
 
 @Transactional
 @Repository
@@ -50,12 +50,12 @@ public class DeckRepositoryImpl implements DeckRepository {
             """;
 
     @Override
-    public void save(DeckCreateRequest deckCreateRequest) {
+    public void save(DeckCreateEntity deckCreateEntity) {
 
         // パラメータをマップに格納
         Map<String, Object> params = new HashMap<>();
-        params.put("userId", deckCreateRequest.getUserId());
-        params.put("deckName", deckCreateRequest.getDeckName());
+        params.put("userId", deckCreateEntity.getUserId());
+        params.put("deckName", deckCreateEntity.getDeckName());
         params.put("createdAt", LocalDateTime.now());
         params.put("updatedAt", LocalDateTime.now());
 
@@ -76,13 +76,13 @@ public class DeckRepositoryImpl implements DeckRepository {
             """;
 
     @Override
-    public void update(DeckUpdateRequest deckUpdateRequest, Long deckId) {
+    public void update(DeckUpdateEntity deckUpdateEntity, Long deckId) {
 
         // パラメータをマップに格納
         Map<String, Object> params = new HashMap<>();
-        params.put("userId", deckUpdateRequest.getUserId());
+        params.put("userId", deckUpdateEntity.getUserId());
         params.put("deckId", deckId);
-        params.put("deckName", deckUpdateRequest.getDeckName());
+        params.put("deckName", deckUpdateEntity.getDeckName());
         params.put("updatedAt", LocalDateTime.now());
 
         // SQLを実行してデータを更新
