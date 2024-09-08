@@ -4,6 +4,8 @@ import org.springframework.http.ResponseEntity;
 import com.example.iruka_backend.requestdto.LoginRequest;
 import com.example.iruka_backend.requestdto.SignUpRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 public interface AuthService {
 
@@ -23,4 +25,13 @@ public interface AuthService {
      * @return ユーザー登録成功時のレスポンス
      */
     ResponseEntity<?> registerUser(SignUpRequest signUpRequest);
+
+    /**
+     * Googleログインを処理する
+     *
+     * @param payload Googleログインのペイロード
+     * @param request HTTPリクエスト
+     * @return Googleログイン成功時のレスポンス
+     */
+    ResponseEntity<?> googleLogin(Map<String, Object> payload, HttpServletRequest request);
 }

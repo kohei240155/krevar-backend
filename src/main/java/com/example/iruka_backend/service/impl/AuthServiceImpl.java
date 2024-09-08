@@ -20,6 +20,9 @@ import com.example.iruka_backend.requestdto.LoginRequest;
 import com.example.iruka_backend.requestdto.SignUpRequest;
 import com.example.iruka_backend.service.AuthService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -34,6 +37,13 @@ public class AuthServiceImpl implements AuthService {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
+    /**
+     * ログインする
+     *
+     * @param loginRequest ログインリクエスト
+     * @param session セッション
+     * @return ログイン成功時のレスポンス
+     */
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest, HttpSession session) {
         logger.info("Login request received for email: {}", loginRequest.getEmail());
@@ -61,6 +71,12 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
+    /**
+     * ユーザーを登録する
+     *
+     * @param signUpRequest ユーザー登録リクエスト
+     * @return ユーザー登録成功時のレスポンス
+     */
     @Override
     public ResponseEntity<?> registerUser(SignUpRequest signUpRequest) {
         if (userRepository.findByEmail(signUpRequest.getEmail()) != null) {
@@ -75,5 +91,45 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+    }
+
+    /**
+     * Googleログインを処理する
+     *
+     * @param payload Googleログインのペイロード
+     * @param request HTTPリクエスト
+     * @return Googleログイン成功時のレスポンス
+     */
+    @Override
+    public ResponseEntity<?> googleLogin(Map<String, Object> payload, HttpServletRequest request) {
+        String email = (String) payload.get("email");
+        String googleId = (String) payload.get("googleId");
+
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            // ユーザーが存在しない場合、新規登録
+            user = new UserEntity();
+            user.setEmail(email);
+            user.setRole("USER");
+            user.setPassword("default_password"); // デフォルトのパスワードを設定
+            user.setGoogleId(googleId); // Google IDを設定
+            userRepository.save(user);
+        }
+
+        // セッションを作成して認証情報を設定
+        Authentication authentication = new UsernamePasswordAuthenticationToken(email, null,
+                Collections.singletonList(new SimpleGrantedAuthority(user.getRole())));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        HttpSession session = request.getSession();
+        session.setAttribute("user", email);
+
+        logger.info("Google login successful for email: {}", email);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("email", user.getEmail());
+        response.put("role", user.getRole());
+
+        return ResponseEntity.ok(response);
     }
 }
