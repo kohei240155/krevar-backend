@@ -45,6 +45,14 @@ public interface QuizService {
     public void updateExtraQuiz(ExtraQuizResultUpdateRequest request);
 
     /**
+     * エクストラクイズの残数を取得
+     *
+     * @param deckId
+     * @return
+     */
+    public int getLeftExtraQuizCount(Long deckId);
+
+    /**
      * ユーザーIDをチェックする
      *
      * @param userId

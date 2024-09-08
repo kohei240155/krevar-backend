@@ -11,13 +11,13 @@ import lombok.Setter;
 @NoArgsConstructor
 public class ExtraQuizResultUpdateRequest {
 
-    /** ユーザーID */
-    private Long userId;
+  /** ユーザーID */
+  private Long userId;
 
-    /** 単語ID */
-    private Long wordId;
+  /** 単語ID */
+  private Long wordId;
 
-    /** エクストラモードの正誤フラグ */
-    private int isExtraModeCorrect;
+  /** エクストラモードの正誤フラグ */
+  private Boolean isCorrect;
 
 }

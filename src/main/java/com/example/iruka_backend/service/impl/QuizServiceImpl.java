@@ -59,17 +59,28 @@ public class QuizServiceImpl implements QuizService {
   @Override
   public QuizResponse getNormalQuiz(Long deckId) {
 
+    // レスポンスを生成
+    QuizResponse response = new QuizResponse();
+
+    // クイズの残数を取得
+    int leftQuizCount = getLeftNormalQuizCount(deckId);
+
+    // クイズの残数が0の場合はエラーをスロー
+    if (leftQuizCount == 0) {
+      response.setLeftQuizCount(0);
+      return response;
+    }
+
     // クイズを取得
     WordEntity word = quizRepository.findNormalQuizByDeckId(deckId);
 
-    // 単語をQuizResponseに変換
-    QuizResponse response = new QuizResponse();
+    // レスポンスに設定
     response.setId(word.getId());
     response.setOriginalText(word.getOriginalText());
     response.setTranslatedText(word.getTranslatedText());
     response.setNuanceText(word.getNuanceText());
     response.setImageUrl(word.getImageUrl());
-    response.setLeftQuizCount(getLeftNormalQuizCount(deckId));
+    response.setLeftQuizCount(leftQuizCount);
 
     return response;
   }
@@ -141,19 +152,41 @@ public class QuizServiceImpl implements QuizService {
   @Override
   public QuizResponse getExtraQuiz(Long deckId) {
 
+    // レスポンスを生成
+    QuizResponse response = new QuizResponse();
+
+    // クイズの残数を取得
+    int leftQuizCount = getLeftExtraQuizCount(deckId);
+
+    // クイズの残数が0の場合はエラーをスロー
+    if (leftQuizCount == 0) {
+      response.setLeftQuizCount(0);
+      return response;
+    }
+
     // クイズを取得
     WordEntity word = quizRepository.findExtraQuizByDeckId(deckId);
 
-    // 単語をQuizResponseに変換
-    QuizResponse response = new QuizResponse();
+    // レスポンスに設定
     response.setId(word.getId());
     response.setOriginalText(word.getOriginalText());
     response.setTranslatedText(word.getTranslatedText());
     response.setNuanceText(word.getNuanceText());
     response.setImageUrl(word.getImageUrl());
-    response.setLeftQuizCount(quizRepository.getLeftExtraQuizCount(deckId));
+    response.setLeftQuizCount(leftQuizCount);
 
     return response;
+  }
+
+  /**
+   * エクストラクイズの残数を取得
+   *
+   * @param deckId デッキID
+   * @return クイズの残数
+   */
+  @Override
+  public int getLeftExtraQuizCount(Long deckId) {
+    return quizRepository.getLeftExtraQuizCount(deckId);
   }
 
   /**
@@ -165,11 +198,11 @@ public class QuizServiceImpl implements QuizService {
   public void updateExtraQuiz(ExtraQuizResultUpdateRequest request) {
 
     Long wordId = request.getWordId();
-    int isExtraModeCorrect = request.getIsExtraModeCorrect();
+    Boolean isCorrect = request.getIsCorrect();
     LocalDateTime updatedAt = LocalDateTime.now();
 
     ExtraQuizResultEntity quizResult =
-        new ExtraQuizResultEntity(wordId, isExtraModeCorrect, updatedAt);
+        new ExtraQuizResultEntity(wordId, isCorrect ? 1 : 0, updatedAt);
 
     // クイズ結果を更新
     quizRepository.updateExtraQuiz(quizResult);
