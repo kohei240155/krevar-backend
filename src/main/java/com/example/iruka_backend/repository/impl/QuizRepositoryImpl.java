@@ -19,7 +19,7 @@ public class QuizRepositoryImpl implements QuizRepository {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     /**
-     * デッキIDを指定してクイズを取得する
+     * ノーマルクイズ取得
      *
      * @param deckId デッキID
      * @return クイズ
@@ -37,21 +37,21 @@ public class QuizRepositoryImpl implements QuizRepository {
     }
 
     private static final String SQL_FIND_BY_DECK_ID = """
-                SELECT
-                    *
-                FROM
-                    words
-                WHERE
-                    deck_id = :deckId AND
-                    next_practice_date <= NOW() AND
-                    deleted_at IS NULL
-                ORDER BY
-                    RAND()
-                LIMIT 1
+            SELECT
+                *
+            FROM
+                words
+            WHERE
+                deck_id = :deckId AND
+                next_practice_date <= NOW() AND
+                deleted_at IS NULL
+            ORDER BY
+                RAND()
+            LIMIT 1
             """;
 
     /**
-     * デッキIDを指定してクイズの残数を取得する
+     * ノーマルクイズの残数取得
      *
      * @param deckId デッキID
      * @return クイズの残数
@@ -137,5 +137,66 @@ public class QuizRepositoryImpl implements QuizRepository {
                 words
             WHERE
                 id = :wordId
+            """;
+
+    /**
+     * エクストラクイズ取得
+     *
+     * @param deckId デッキID
+     * @return クイズ
+     */
+    @Override
+    public WordEntity findExtraQuizByDeckId(Long deckId) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("deckId", deckId);
+
+        WordEntity word = namedParameterJdbcTemplate.queryForObject(SQL_FIND_EXTRA_QUIZ_BY_DECK_ID,
+                params, new WordEntityRowMapper());
+
+        return word;
+    }
+
+    private static final String SQL_FIND_EXTRA_QUIZ_BY_DECK_ID = """
+            SELECT
+                *
+            FROM
+                words
+            WHERE
+                deck_id = :deckId AND
+                is_extra_mode_correct = 0 AND
+                deleted_at IS NULL
+            ORDER BY
+                RAND()
+            LIMIT 1
+            """;
+
+    /**
+     * エクストラクイズの残数取得
+     *
+     * @param deckId デッキID
+     * @return クイズの残数
+     */
+    @Override
+    public int getLeftExtraQuizCount(Long deckId) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("deckId", deckId);
+
+        Integer count = namedParameterJdbcTemplate.queryForObject(SQL_GET_LEFT_EXTRA_QUIZ_COUNT,
+                params, Integer.class);
+
+        return count != null ? count : 0;
+    }
+
+    private static final String SQL_GET_LEFT_EXTRA_QUIZ_COUNT = """
+            SELECT
+                COUNT(*)
+            FROM
+                words
+            WHERE
+                deck_id = :deckId AND
+                is_extra_mode_correct = 0 AND
+                deleted_at IS NULL
             """;
 }

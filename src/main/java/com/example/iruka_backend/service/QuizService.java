@@ -29,6 +29,14 @@ public interface QuizService {
     public void updateNormalQuiz(QuizResultUpdateRequest request);
 
     /**
+     * エクストラクイズ取得
+     *
+     * @param deckId
+     * @return
+     */
+    public QuizResponse getExtraQuiz(Long deckId);
+
+    /**
      * ユーザーIDをチェックする
      *
      * @param userId

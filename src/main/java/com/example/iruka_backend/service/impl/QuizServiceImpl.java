@@ -49,7 +49,7 @@ public class QuizServiceImpl implements QuizService {
   }
 
   /**
-   * デッキIDを指定してクイズを取得する
+   * ノーマルクイズ取得
    *
    * @param deckId デッキID
    * @return クイズ
@@ -130,6 +130,31 @@ public class QuizServiceImpl implements QuizService {
     quizRepository.updateNormalQuiz(quizResult);
 
   }
+
+  /**
+   * エクストラクイズ取得
+   *
+   * @param deckId デッキID
+   * @return クイズ
+   */
+  @Override
+  public QuizResponse getExtraQuiz(Long deckId) {
+
+    // クイズを取得
+    WordEntity word = quizRepository.findExtraQuizByDeckId(deckId);
+
+    // 単語をQuizResponseに変換
+    QuizResponse response = new QuizResponse();
+    response.setId(word.getId());
+    response.setOriginalText(word.getOriginalText());
+    response.setTranslatedText(word.getTranslatedText());
+    response.setNuanceText(word.getNuanceText());
+    response.setImageUrl(word.getImageUrl());
+    response.setLeftQuizCount(quizRepository.getLeftExtraQuizCount(deckId));
+
+    return response;
+  }
+
 
   /**
    * レビュー間隔IDをインクリメントする

@@ -46,17 +46,6 @@ public class QuizController {
   }
 
   /**
-   * エクストラクイズ取得
-   *
-   * @param deckId
-   * @return
-   */
-  @GetMapping("/extra/{deckId}")
-  public Map<String, Object> getExtraQuiz(@PathVariable("deckId") Long deckId) {
-    return null;
-  }
-
-  /**
    * ノーマルクイズ更新
    *
    * @param wordId
@@ -74,6 +63,29 @@ public class QuizController {
     logger.info("------------- ノーマルクイズ更新API終了 -------------");
 
   }
+
+  /**
+   * エクストラクイズ取得
+   *
+   * @param deckId
+   * @return
+   */
+  @GetMapping("/user/{userId}/extra-quiz/deck/{deckId}")
+  public QuizResponse getExtraQuiz(@PathVariable("userId") Long userId,
+      @PathVariable("deckId") Long deckId) {
+
+    logger.info("------------- エクストラクイズ取得API開始 -------------");
+
+    quizService.verifyUser(userId);
+
+    QuizResponse quizResponse = quizService.getExtraQuiz(deckId);
+
+    logger.info("------------- エクストラクイズ取得API終了 -------------");
+
+    return quizResponse;
+  }
+
+
 
   /**
    * エクストラクイズ更新
