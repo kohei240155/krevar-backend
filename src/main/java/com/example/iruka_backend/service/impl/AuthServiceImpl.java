@@ -46,27 +46,39 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public ResponseEntity<?> login(LoginRequest loginRequest, HttpSession session) {
+
         logger.info("Login request received for email: {}", loginRequest.getEmail());
 
         try {
+            // ログイン認証
             Authentication authentication =
                     authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(), loginRequest.getPassword()));
 
+            // 認証情報をセッションに保存
             SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // セッションにユーザー情報を保存
             session.setAttribute("user", loginRequest.getEmail());
+
             logger.info("Login successful for email: {}", loginRequest.getEmail());
 
+            // ユーザー情報を取得
             UserEntity user = userRepository.findByEmail(loginRequest.getEmail());
+
+            // ログイン成功時のレスポンスを作成
             Map<String, Object> response = new HashMap<>();
             response.put("id", user.getId());
             response.put("email", user.getEmail());
             response.put("role", user.getRole());
 
+            // ログイン成功時のレスポンスを返す
             return ResponseEntity.ok(response);
 
         } catch (BadCredentialsException e) {
+            // ログイン失敗時のエラーログを出力
             logger.error("Invalid credentials for email: {}", loginRequest.getEmail());
+            // ログイン失敗時のレスポンスを返す
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
@@ -79,17 +91,23 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public ResponseEntity<?> registerUser(SignUpRequest signUpRequest) {
+
+        // メールアドレスが既に登録されているかチェック
         if (userRepository.findByEmail(signUpRequest.getEmail()) != null) {
+            logger.error("メールアドレスが既に登録されています: {}", signUpRequest.getEmail());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Email is already taken");
         }
 
+        // ユーザーを新規登録
         UserEntity user = new UserEntity();
         user.setEmail(signUpRequest.getEmail());
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRole("USER");
 
+        // ユーザーを保存
         userRepository.save(user);
 
+        // ユーザー登録成功時のレスポンスを返す
         return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
     }
 
