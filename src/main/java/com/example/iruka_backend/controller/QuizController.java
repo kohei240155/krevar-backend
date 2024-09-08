@@ -106,6 +106,16 @@ public class QuizController {
    *
    * @param deckId
    */
-  @PutMapping("/extra/{deckId}/reset")
-  public void resetExtraQuiz(@PathVariable("deckId") Long deckId) {}
+  @PutMapping("/user/{userId}/extra-quiz/reset/deck/{deckId}")
+  public void resetExtraQuiz(@PathVariable("userId") Long userId,
+      @PathVariable("deckId") Long deckId) {
+
+    logger.info("------------- エクストラクイズリセットAPI開始 -------------");
+
+    quizService.verifyUser(userId);
+
+    quizService.resetExtraQuiz(deckId);
+
+    logger.info("------------- エクストラクイズリセットAPI終了 -------------");
+  }
 }

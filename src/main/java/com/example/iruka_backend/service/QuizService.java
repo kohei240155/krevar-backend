@@ -53,6 +53,13 @@ public interface QuizService {
     public int getLeftExtraQuizCount(Long deckId);
 
     /**
+     * エクストラクイズリセット
+     *
+     * @param deckId
+     */
+    public void resetExtraQuiz(Long deckId);
+
+    /**
      * ユーザーIDをチェックする
      *
      * @param userId

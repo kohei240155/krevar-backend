@@ -55,6 +55,13 @@ public interface QuizRepository {
   int getLeftExtraQuizCount(Long deckId);
 
   /**
+   * エクストラクイズリセット
+   *
+   * @param deckId
+   */
+  void resetExtraQuiz(Long deckId);
+
+  /**
    * レビュー間隔を取得する
    *
    * @param wordId

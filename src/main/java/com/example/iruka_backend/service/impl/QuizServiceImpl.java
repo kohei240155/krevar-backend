@@ -210,6 +210,18 @@ public class QuizServiceImpl implements QuizService {
   }
 
   /**
+   * エクストラクイズリセット
+   *
+   * @param deckId
+   */
+  @Override
+  public void resetExtraQuiz(Long deckId) {
+
+    // エクストラクイズの結果をリセット
+    quizRepository.resetExtraQuiz(deckId);
+  }
+
+  /**
    * レビュー間隔IDをインクリメントする
    *
    * @param reviewIntervalId レビュー間隔ID

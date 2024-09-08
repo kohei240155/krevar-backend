@@ -1,5 +1,6 @@
 package com.example.iruka_backend.repository.impl;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import jakarta.transaction.Transactional;
@@ -226,5 +227,29 @@ public class QuizRepositoryImpl implements QuizRepository {
                 deck_id = :deckId AND
                 is_extra_mode_correct = 0 AND
                 deleted_at IS NULL
+            """;
+
+    /**
+     * エクストラクイズの結果をリセット
+     *
+     * @param deckId
+     */
+    @Override
+    public void resetExtraQuiz(Long deckId) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("deckId", deckId);
+        params.put("updatedAt", LocalDateTime.now());
+        namedParameterJdbcTemplate.update(SQL_RESET_EXTRA_QUIZ, params);
+    }
+
+    private static final String SQL_RESET_EXTRA_QUIZ = """
+            UPDATE
+                words
+            SET
+                is_extra_mode_correct = 0,
+                updated_at = :updatedAt
+            WHERE
+                deck_id = :deckId
             """;
 }
