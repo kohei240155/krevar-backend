@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.3.1'
+	id 'org.springframework.boot' version '3.3.3'
 	id 'io.spring.dependency-management' version '1.1.5'
 }
 
@@ -23,16 +23,14 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'javax.xml.bind:jaxb-api:2.3.1' // JAXB API dependency added
-	implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1' // JAXB Runtime dependency added
-	implementation 'org.springframework.session:spring-session-jdbc' // Spring Session JDBC dependency added
-	implementation 'javax.servlet:javax.servlet-api:4.0.1' // Added this line
+	implementation 'javax.xml.bind:jaxb-api:2.3.1'
+	implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.1'
+	implementation 'org.springframework.session:spring-session-jdbc'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	runtimeOnly 'com.mysql:mysql-connector-j'
-	implementation 'org.projectlombok:lombok:1.18.24' // Lombok dependency added
-	annotationProcessor 'org.projectlombok:lombok:1.18.24' // Lombok annotation processor added
+	implementation 'org.projectlombok:lombok:1.18.24'
+	annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
 tasks.named('test') {
