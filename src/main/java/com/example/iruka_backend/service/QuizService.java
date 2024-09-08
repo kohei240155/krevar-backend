@@ -1,6 +1,7 @@
 package com.example.iruka_backend.service;
 
-import com.example.iruka_backend.requestdto.QuizResultUpdateRequest;
+import com.example.iruka_backend.requestdto.ExtraQuizResultUpdateRequest;
+import com.example.iruka_backend.requestdto.NormalQuizResultUpdateRequest;
 import com.example.iruka_backend.responsedto.QuizResponse;
 
 public interface QuizService {
@@ -26,7 +27,7 @@ public interface QuizService {
      *
      * @param request
      */
-    public void updateNormalQuiz(QuizResultUpdateRequest request);
+    public void updateNormalQuiz(NormalQuizResultUpdateRequest request);
 
     /**
      * エクストラクイズ取得
@@ -35,6 +36,13 @@ public interface QuizService {
      * @return
      */
     public QuizResponse getExtraQuiz(Long deckId);
+
+    /**
+     * エクストラクイズ更新
+     *
+     * @param request
+     */
+    public void updateExtraQuiz(ExtraQuizResultUpdateRequest request);
 
     /**
      * ユーザーIDをチェックする

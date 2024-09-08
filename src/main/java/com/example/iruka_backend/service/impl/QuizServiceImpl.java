@@ -5,13 +5,15 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import com.example.iruka_backend.entity.QuizResultEntity;
+import com.example.iruka_backend.entity.ExtraQuizResultEntity;
+import com.example.iruka_backend.entity.NormalQuizResultEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.QuizRepository;
 import com.example.iruka_backend.repository.ReviewIntervalRepository;
 import com.example.iruka_backend.repository.UserRepository;
-import com.example.iruka_backend.requestdto.QuizResultUpdateRequest;
+import com.example.iruka_backend.requestdto.ExtraQuizResultUpdateRequest;
+import com.example.iruka_backend.requestdto.NormalQuizResultUpdateRequest;
 import com.example.iruka_backend.responsedto.QuizResponse;
 import com.example.iruka_backend.service.QuizService;
 import com.example.iruka_backend.util.SecurityUtil;
@@ -67,13 +69,13 @@ public class QuizServiceImpl implements QuizService {
     response.setTranslatedText(word.getTranslatedText());
     response.setNuanceText(word.getNuanceText());
     response.setImageUrl(word.getImageUrl());
-    response.setLeftQuizCount(quizRepository.getLeftNormalQuizCount(deckId));
+    response.setLeftQuizCount(getLeftNormalQuizCount(deckId));
 
     return response;
   }
 
   /**
-   * デッキIDを指定してクイズの残数を取得する
+   * ノーマルクイズの残数を取得
    *
    * @param deckId デッキID
    * @return クイズの残数
@@ -89,7 +91,7 @@ public class QuizServiceImpl implements QuizService {
    * @param request
    */
   @Override
-  public void updateNormalQuiz(QuizResultUpdateRequest request) {
+  public void updateNormalQuiz(NormalQuizResultUpdateRequest request) {
 
     Long wordId = request.getWordId();
     Boolean isCorrect = request.getIsCorrect();
@@ -123,12 +125,11 @@ public class QuizServiceImpl implements QuizService {
     LocalDateTime updatedAt = LocalDateTime.now();
 
     // クイズ結果を生成
-    QuizResultEntity quizResult = new QuizResultEntity(wordId, reviewIntervalId, nextPracticeDate,
-        correctCount, incorrectCount, updatedAt);
+    NormalQuizResultEntity quizResult = new NormalQuizResultEntity(wordId, reviewIntervalId,
+        nextPracticeDate, correctCount, incorrectCount, updatedAt);
 
     // クイズ結果を更新
     quizRepository.updateNormalQuiz(quizResult);
-
   }
 
   /**
@@ -155,6 +156,25 @@ public class QuizServiceImpl implements QuizService {
     return response;
   }
 
+  /**
+   * エクストラクイズ更新
+   *
+   * @param request
+   */
+  @Override
+  public void updateExtraQuiz(ExtraQuizResultUpdateRequest request) {
+
+    Long wordId = request.getWordId();
+    int isExtraModeCorrect = request.getIsExtraModeCorrect();
+    LocalDateTime updatedAt = LocalDateTime.now();
+
+    ExtraQuizResultEntity quizResult =
+        new ExtraQuizResultEntity(wordId, isExtraModeCorrect, updatedAt);
+
+    // クイズ結果を更新
+    quizRepository.updateExtraQuiz(quizResult);
+
+  }
 
   /**
    * レビュー間隔IDをインクリメントする

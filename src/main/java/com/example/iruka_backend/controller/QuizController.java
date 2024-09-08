@@ -1,6 +1,5 @@
 package com.example.iruka_backend.controller;
 
-import java.util.Map;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -10,7 +9,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.iruka_backend.requestdto.QuizResultUpdateRequest;
+import com.example.iruka_backend.requestdto.ExtraQuizResultUpdateRequest;
+import com.example.iruka_backend.requestdto.NormalQuizResultUpdateRequest;
 import com.example.iruka_backend.responsedto.QuizResponse;
 import com.example.iruka_backend.service.QuizService;
 
@@ -27,8 +27,8 @@ public class QuizController {
   /**
    * ノーマルクイズ取得
    *
-   * @param deckId
-   * @return
+   * @param request
+   * @return ノーマルクイズ
    */
   @GetMapping("/user/{userId}/normal-quiz/deck/{deckId}")
   public QuizResponse getNormalQuiz(@PathVariable("userId") Long userId,
@@ -48,11 +48,10 @@ public class QuizController {
   /**
    * ノーマルクイズ更新
    *
-   * @param wordId
-   * @param isNormalModeCorrect
+   * @param request
    */
   @PutMapping("/normal-quiz")
-  public void updateNormalQuiz(@RequestBody QuizResultUpdateRequest request) {
+  public void updateNormalQuiz(@RequestBody NormalQuizResultUpdateRequest request) {
 
     logger.info("------------- ノーマルクイズ更新API開始 -------------");
 
@@ -67,8 +66,8 @@ public class QuizController {
   /**
    * エクストラクイズ取得
    *
-   * @param deckId
-   * @return
+   * @param request
+   * @return エクストラクイズ
    */
   @GetMapping("/user/{userId}/extra-quiz/deck/{deckId}")
   public QuizResponse getExtraQuiz(@PathVariable("userId") Long userId,
@@ -85,17 +84,22 @@ public class QuizController {
     return quizResponse;
   }
 
-
-
   /**
    * エクストラクイズ更新
    *
-   * @param wordId
-   * @param isExtraModeCorrect
+   * @param request
    */
-  @PutMapping("/extra/{wordId}")
-  public void updateExtraQuiz(@PathVariable("wordId") Long wordId,
-      @RequestBody Map<String, Boolean> request) {}
+  @PutMapping("/extra-quiz")
+  public void updateExtraQuiz(@RequestBody ExtraQuizResultUpdateRequest request) {
+
+    logger.info("------------- エクストラクイズ更新API開始 -------------");
+
+    quizService.verifyUser(request.getUserId());
+
+    quizService.updateExtraQuiz(request);
+
+    logger.info("------------- エクストラクイズ更新API終了 -------------");
+  }
 
   /**
    * エクストラクイズリセット

@@ -9,18 +9,15 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuizResultUpdateRequest {
+public class ExtraQuizResultUpdateRequest {
 
     /** ユーザーID */
     private Long userId;
 
-    /** デッキID */
-    private Long deckId;
-
     /** 単語ID */
     private Long wordId;
 
-    /** クイズ結果 */
-    private Boolean isCorrect;
+    /** エクストラモードの正誤フラグ */
+    private int isExtraModeCorrect;
 
 }

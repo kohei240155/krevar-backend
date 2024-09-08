@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class QuizResultEntity {
+public class NormalQuizResultEntity {
 
     /** 単語ID */
     private Long id;

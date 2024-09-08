@@ -6,7 +6,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
-import com.example.iruka_backend.entity.QuizResultEntity;
+import com.example.iruka_backend.entity.ExtraQuizResultEntity;
+import com.example.iruka_backend.entity.NormalQuizResultEntity;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.QuizRepository;
 import com.example.iruka_backend.repository.mapper.WordEntityRowMapper;
@@ -86,7 +87,7 @@ public class QuizRepositoryImpl implements QuizRepository {
      * @param isExtraModeCorrect
      */
     @Override
-    public void updateNormalQuiz(QuizResultEntity quizResult) {
+    public void updateNormalQuiz(NormalQuizResultEntity quizResult) {
 
         Map<String, Object> params = new HashMap<>();
         params.put("wordId", quizResult.getId());
@@ -169,6 +170,33 @@ public class QuizRepositoryImpl implements QuizRepository {
             ORDER BY
                 RAND()
             LIMIT 1
+            """;
+
+    /**
+     * エクストラクイズ更新
+     *
+     * @param wordId
+     * @param isExtraModeCorrect
+     */
+    @Override
+    public void updateExtraQuiz(ExtraQuizResultEntity quizResult) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("wordId", quizResult.getId());
+        params.put("isExtraModeCorrect", quizResult.getIsExtraModeCorrect());
+        params.put("updatedAt", quizResult.getUpdatedAt());
+
+        namedParameterJdbcTemplate.update(SQL_UPDATE_EXTRA_QUIZ, params);
+    }
+
+    private static final String SQL_UPDATE_EXTRA_QUIZ = """
+            UPDATE
+                words
+            SET
+                is_extra_mode_correct = :isExtraModeCorrect,
+                updated_at = :updatedAt
+            WHERE
+                id = :wordId
             """;
 
     /**

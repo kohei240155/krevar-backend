@@ -1,6 +1,7 @@
 package com.example.iruka_backend.repository;
 
-import com.example.iruka_backend.entity.QuizResultEntity;
+import com.example.iruka_backend.entity.ExtraQuizResultEntity;
+import com.example.iruka_backend.entity.NormalQuizResultEntity;
 import com.example.iruka_backend.entity.WordEntity;
 
 public interface QuizRepository {
@@ -27,7 +28,7 @@ public interface QuizRepository {
    * @param wordId
    * @param isCorrect
    */
-  void updateNormalQuiz(QuizResultEntity quizResult);
+  void updateNormalQuiz(NormalQuizResultEntity quizResult);
 
   /**
    * エクストラクイズ取得
@@ -36,6 +37,14 @@ public interface QuizRepository {
    * @return クイズ
    */
   WordEntity findExtraQuizByDeckId(Long deckId);
+
+  /**
+   * エクストラクイズ更新
+   *
+   * @param wordId
+   * @param isCorrect
+   */
+  void updateExtraQuiz(ExtraQuizResultEntity quizResult);
 
   /**
    * エクストラクイズの残数取得
