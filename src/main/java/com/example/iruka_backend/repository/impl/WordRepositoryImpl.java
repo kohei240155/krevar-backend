@@ -110,6 +110,7 @@ public class WordRepositoryImpl implements WordRepository {
                 original_text = :originalText,
                 translated_text = :translatedText,
                 nuance_text = :nuanceText,
+                updated_at = :updatedAt
             WHERE
                 id = :wordId
             """;
@@ -123,7 +124,7 @@ public class WordRepositoryImpl implements WordRepository {
         params.put("translatedText", wordUpdateEntity.getTranslatedText());
         params.put("nuanceText", wordUpdateEntity.getNuanceText());
         params.put("wordId", wordUpdateEntity.getWordId());
-
+        params.put("updatedAt", wordUpdateEntity.getUpdatedAt());
         // クエリを実行
         namedParameterJdbcTemplate.update(UPDATE_WORD_SQL, params);
     }

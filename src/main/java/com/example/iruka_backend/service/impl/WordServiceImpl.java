@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -183,9 +184,10 @@ public class WordServiceImpl implements WordService {
     String translatedText = wordUpdateRequest.getTranslatedText();
     String nuanceText = wordUpdateRequest.getNuanceText();
     Long deckId = wordUpdateRequest.getDeckId();
+    LocalDateTime updatedAt = LocalDateTime.now();
 
-    WordUpdateEntity wordUpdateEntity =
-        new WordUpdateEntity(wordId, userId, originalText, translatedText, nuanceText, deckId);
+    WordUpdateEntity wordUpdateEntity = new WordUpdateEntity(wordId, userId, originalText,
+        translatedText, nuanceText, deckId, updatedAt);
 
     wordRepository.update(wordUpdateEntity);
   }
