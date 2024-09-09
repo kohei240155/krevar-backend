@@ -128,6 +128,9 @@ public class QuizServiceImpl implements QuizService {
 
     } else {
 
+      // レビュー間隔をデクリメント
+      reviewIntervalId = decrementReviewIntervalId(reviewIntervalId);
+
       // インクリメント用の不正解数を設定
       incorrectCount = 1;
     }
@@ -231,6 +234,20 @@ public class QuizServiceImpl implements QuizService {
 
     if (reviewIntervalId < 10) {
       reviewIntervalId++;
+    }
+    return reviewIntervalId;
+  }
+
+  /**
+   * レビュー間隔IDをデクリメントする
+   *
+   * @param reviewIntervalId レビュー間隔ID
+   * @return デクリメント後のレビュー間隔ID
+   */
+  private int decrementReviewIntervalId(int reviewIntervalId) {
+
+    if (reviewIntervalId > 1) {
+      reviewIntervalId--;
     }
     return reviewIntervalId;
   }
