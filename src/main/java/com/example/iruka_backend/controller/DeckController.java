@@ -17,6 +17,8 @@ import com.example.iruka_backend.requestdto.DeckCreateRequest;
 import com.example.iruka_backend.requestdto.DeckUpdateRequest;
 import com.example.iruka_backend.responsedto.DeckListResponse;
 import com.example.iruka_backend.service.DeckService;
+import jakarta.servlet.http.HttpServletRequest;
+import com.example.iruka_backend.security.JwtTokenProvider;
 
 @RestController
 @RequestMapping("/api")
@@ -26,24 +28,29 @@ public class DeckController {
   @Autowired
   private DeckService deckService;
 
+  @Autowired
+  private JwtTokenProvider jwtTokenProvider;
+
   private static final Logger logger = LoggerFactory.getLogger(DeckController.class);
 
   /**
    * デッキ一覧取得
    *
+   * @param httpServletRequest
    * @param userId
    * @param page
    * @param size
    * @return デッキ一覧
    */
   @GetMapping("/user/{userId}/deck")
-  public DeckListResponse getDeckList(@PathVariable("userId") Long userId,
+  public DeckListResponse getDeckList(HttpServletRequest httpServletRequest,
+      @PathVariable("userId") Long userId,
       @RequestParam(name = "page", defaultValue = "0") Long page,
       @RequestParam(name = "size", defaultValue = "10") Long size) {
 
     logger.info("------------- デッキ一覧取得API開始 -------------");
 
-    deckService.verifyUser(userId);
+    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     DeckListResponse decks = deckService.getDecksByUserId(userId, page, size);
 
@@ -55,15 +62,17 @@ public class DeckController {
   /**
    * デッキ作成
    *
+   * @param httpServletRequest
    * @param deckCreateRequest
    * @return デッキ作成成功メッセージ
    */
   @PostMapping("/deck")
-  public String createDeck(@RequestBody DeckCreateRequest deckCreateRequest) {
+  public String createDeck(HttpServletRequest httpServletRequest,
+      @RequestBody DeckCreateRequest deckCreateRequest) {
 
     logger.info("------------- デッキ作成API開始 -------------");
 
-    deckService.verifyUser(deckCreateRequest.getUserId());
+    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     deckService.save(deckCreateRequest);
 
@@ -75,17 +84,18 @@ public class DeckController {
   /**
    * デッキ更新
    *
+   * @param httpServletRequest
    * @param deckId
    * @param deckUpdateRequest
    * @return デッキ更新成功メッセージ
    */
   @PutMapping("/deck/{deckId}")
-  public String updateDeck(@PathVariable("deckId") Long deckId,
-      @RequestBody DeckUpdateRequest deckUpdateRequest) {
+  public String updateDeck(HttpServletRequest httpServletRequest,
+      @PathVariable("deckId") Long deckId, @RequestBody DeckUpdateRequest deckUpdateRequest) {
 
     logger.info("------------- デッキ更新API開始 -------------");
 
-    deckService.verifyUser(deckUpdateRequest.getUserId());
+    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     deckService.update(deckUpdateRequest, deckId);
 
@@ -97,16 +107,17 @@ public class DeckController {
   /**
    * デッキ削除
    *
+   * @param httpServletRequest
    * @param deckId
    * @return デッキ削除成功メッセージ
    */
   @DeleteMapping("/user/{userId}/deck/{deckId}")
-  public String deleteDeck(@PathVariable("userId") Long userId,
-      @PathVariable("deckId") Long deckId) {
+  public String deleteDeck(HttpServletRequest httpServletRequest,
+      @PathVariable("userId") Long userId, @PathVariable("deckId") Long deckId) {
 
     logger.info("------------- デッキ削除API開始 -------------");
 
-    deckService.verifyUser(userId);
+    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     deckService.delete(deckId);
 

@@ -14,10 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.iruka_backend.requestdto.WordCreateRequest;
+import com.example.iruka_backend.requestdto.WordUpdateRequest;
 import com.example.iruka_backend.responsedto.WordListResponse;
 import com.example.iruka_backend.responsedto.WordResponse;
+import com.example.iruka_backend.security.JwtTokenProvider;
 import com.example.iruka_backend.service.WordService;
-import com.example.iruka_backend.requestdto.WordUpdateRequest;
+import jakarta.servlet.http.HttpServletRequest;
+
 
 @RestController
 @RequestMapping("/api")
@@ -27,11 +30,15 @@ public class WordController {
   @Autowired
   private WordService wordService;
 
+  @Autowired
+  private JwtTokenProvider jwtTokenProvider;
+
   private static final Logger logger = LoggerFactory.getLogger(WordController.class);
 
   /**
    * デッキに紐づく単語一覧取得
    *
+   * @param httpServletRequest
    * @param page
    * @param size
    * @param userId
@@ -39,14 +46,14 @@ public class WordController {
    * @return 単語一覧
    */
   @GetMapping("/user/{userId}/deck/{deckId}")
-  public WordListResponse getWordsByDeckId(
+  public WordListResponse getWordsByDeckId(HttpServletRequest httpServletRequest,
       @RequestParam(name = "page", defaultValue = "0") Long page,
       @RequestParam(name = "size", defaultValue = "10") Long size,
       @PathVariable("userId") Long userId, @PathVariable("deckId") Long deckId) {
 
     logger.info("------------- 単語一覧取得API開始 -------------");
 
-    wordService.verifyUser(userId);
+    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     WordListResponse wordListResponse = wordService.getWordListByDeckId(deckId, page, size);
 
@@ -58,14 +65,16 @@ public class WordController {
   /**
    * 単語登録
    *
+   * @param httpServletRequest
    * @param wordRegisterRequest
    */
   @PostMapping("/word")
-  public void createWord(@RequestBody WordCreateRequest wordCreateRequest) {
+  public void createWord(HttpServletRequest httpServletRequest,
+      @RequestBody WordCreateRequest wordCreateRequest) {
 
     logger.info("------------- 単語登録API開始 -------------");
 
-    wordService.verifyUser(wordCreateRequest.getUserId());
+    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     wordService.save(wordCreateRequest);
 
@@ -75,14 +84,16 @@ public class WordController {
   /**
    * 単語更新
    *
+   * @param httpServletRequest
    * @param wordUpdateRequest
    */
   @PutMapping("/word")
-  public void updateWord(@RequestBody WordUpdateRequest wordUpdateRequest) {
+  public void updateWord(HttpServletRequest httpServletRequest,
+      @RequestBody WordUpdateRequest wordUpdateRequest) {
 
     logger.info("------------- 単語更新API開始 -------------");
 
-    wordService.verifyUser(wordUpdateRequest.getUserId());
+    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     wordService.update(wordUpdateRequest);
 
@@ -92,17 +103,18 @@ public class WordController {
   /**
    * 単語取得
    *
+   * @param httpServletRequest
    * @param userId
    * @param wordId
    * @return
    */
   @GetMapping("/user/{userId}/word/{wordId}")
-  public WordResponse getWordById(@PathVariable("userId") Long userId,
-      @PathVariable("wordId") Long wordId) {
+  public WordResponse getWordById(HttpServletRequest httpServletRequest,
+      @PathVariable("userId") Long userId, @PathVariable("wordId") Long wordId) {
 
     logger.info("------------- 単語取得API開始 -------------");
 
-    wordService.verifyUser(userId);
+    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     WordResponse wordResponse = wordService.getWordById(wordId);
 
@@ -114,15 +126,17 @@ public class WordController {
   /**
    * 単語削除
    *
+   * @param httpServletRequest
    * @param userId
    * @param wordId
    */
   @DeleteMapping("/user/{userId}/word/{wordId}")
-  public void deleteWord(@PathVariable("userId") Long userId, @PathVariable("wordId") Long wordId) {
+  public void deleteWord(HttpServletRequest httpServletRequest, @PathVariable("userId") Long userId,
+      @PathVariable("wordId") Long wordId) {
 
     logger.info("------------- 単語削除API開始 -------------");
 
-    wordService.verifyUser(userId);
+    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     wordService.delete(wordId);
 
