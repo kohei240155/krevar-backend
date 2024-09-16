@@ -48,8 +48,8 @@ public class AuthServiceImpl implements AuthService {
             user = new UserEntity();
             user.setEmail(email);
             user.setRole("USER");
-            user.setPassword("default_password"); // デフォルトのパスワードを設定
-            user.setGoogleId(googleId); // Google IDを設定
+            user.setPassword("default_password");
+            user.setGoogleId(googleId);
             userRepository.save(user);
         }
 
