@@ -65,8 +65,9 @@ public class AuthServiceImpl implements AuthService {
 
         logger.info("Google login successful for email: {}. JWT Token: {}", email, jwtToken);
 
-        // JWTをフロントエンドに返却
+        // レスポンスボディを作成
         Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
         response.put("token", jwtToken);
         response.put("email", user.getEmail());
         response.put("role", user.getRole());
