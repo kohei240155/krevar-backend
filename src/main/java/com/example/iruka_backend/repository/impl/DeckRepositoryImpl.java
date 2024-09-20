@@ -22,17 +22,6 @@ public class DeckRepositoryImpl implements DeckRepository {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private static final String FIND_BY_ID_SQL = """
-            SELECT
-                *
-            FROM
-                decks
-            WHERE
-                user_id = :userId
-            AND
-                deleted = 0
-            """;
-
     @Override
     public List<DeckEntity> findByUserId(Long userId) {
         Map<String, Object> params = new HashMap<>();
@@ -42,11 +31,15 @@ public class DeckRepositoryImpl implements DeckRepository {
         return deck;
     }
 
-    private static final String SAVE_SQL = """
-            INSERT INTO
-                decks (user_id, deck_name, created_at, updated_at)
-            VALUES
-                (:userId, :deckName, :createdAt, :updatedAt)
+    private static final String FIND_BY_ID_SQL = """
+            SELECT
+                *
+            FROM
+                decks
+            WHERE
+                user_id = :userId
+            AND
+                deleted = 0
             """;
 
     @Override
@@ -63,16 +56,11 @@ public class DeckRepositoryImpl implements DeckRepository {
         namedParameterJdbcTemplate.update(SAVE_SQL, params);
     }
 
-    private static final String UPDATE_SQL = """
-            UPDATE
-                decks
-            SET
-                deck_name = :deckName,
-                updated_at = :updatedAt
-            WHERE
-                id = :deckId
-            AND
-                user_id = :userId
+    private static final String SAVE_SQL = """
+            INSERT INTO
+                decks (user_id, deck_name, created_at, updated_at)
+            VALUES
+                (:userId, :deckName, :createdAt, :updatedAt)
             """;
 
     @Override
@@ -89,13 +77,16 @@ public class DeckRepositoryImpl implements DeckRepository {
         namedParameterJdbcTemplate.update(UPDATE_SQL, params);
     }
 
-    private static final String DELETE_SQL = """
+    private static final String UPDATE_SQL = """
             UPDATE
                 decks
             SET
-                deleted = :deleted
+                deck_name = :deckName,
+                updated_at = :updatedAt
             WHERE
                 id = :deckId
+            AND
+                user_id = :userId
             """;
 
     @Override
@@ -110,15 +101,13 @@ public class DeckRepositoryImpl implements DeckRepository {
         namedParameterJdbcTemplate.update(DELETE_SQL, params);
     }
 
-    private static final String GET_USER_ID_BY_DECK_ID_SQL = """
-            SELECT
-                user_id
-            FROM
+    private static final String DELETE_SQL = """
+            UPDATE
                 decks
+            SET
+                deleted = :deleted
             WHERE
                 id = :deckId
-            AND
-                deleted = 0
             """;
 
     @Override
@@ -134,4 +123,15 @@ public class DeckRepositoryImpl implements DeckRepository {
 
         return Optional.ofNullable(userId).orElse(null);
     }
+
+    private static final String GET_USER_ID_BY_DECK_ID_SQL = """
+            SELECT
+                user_id
+            FROM
+                decks
+            WHERE
+                id = :deckId
+            AND
+                deleted = 0
+            """;
 }
