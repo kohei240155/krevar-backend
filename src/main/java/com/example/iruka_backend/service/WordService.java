@@ -25,13 +25,6 @@ public interface WordService {
   WordResponse getWordById(Long wordId);
 
   /**
-   * ユーザーIDをチェックする
-   *
-   * @param userId ユーザーID
-   */
-  void verifyUser(Long requestedUserId);
-
-  /**
    * 単語を登録する
    *
    * @param wordCreateRequest 単語登録リクエスト

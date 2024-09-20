@@ -3,20 +3,16 @@ package com.example.iruka_backend.service.impl;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import com.example.iruka_backend.entity.ExtraQuizResultEntity;
 import com.example.iruka_backend.entity.NormalQuizResultEntity;
-import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.repository.QuizRepository;
 import com.example.iruka_backend.repository.ReviewIntervalRepository;
-import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.requestdto.ExtraQuizResultUpdateRequest;
 import com.example.iruka_backend.requestdto.NormalQuizResultUpdateRequest;
 import com.example.iruka_backend.responsedto.QuizResponse;
 import com.example.iruka_backend.service.QuizService;
-import com.example.iruka_backend.util.SecurityUtil;
 
 @Service
 public class QuizServiceImpl implements QuizService {
@@ -26,29 +22,6 @@ public class QuizServiceImpl implements QuizService {
 
   @Autowired
   private ReviewIntervalRepository reviewIntervalRepository;
-
-  @Autowired
-  private UserRepository userRepository;
-
-  /**
-   * ユーザーIDをチェックする
-   *
-   * @param requestedUserId リクエストされたユーザーID
-   */
-  @Override
-  public void verifyUser(Long requestedUserId) {
-
-    // ログインユーザーのメールアドレスを取得
-    String username = SecurityUtil.getAuthenticatedUsername();
-
-    // ログインユーザーを取得
-    UserEntity user = userRepository.findByEmail(username);
-
-    // ログインユーザーがリクエストされたユーザーと一致しない場合はエラーをスロー
-    if (user == null || !user.getId().equals(requestedUserId)) {
-      throw new AccessDeniedException("ユーザーにこのリソースへのアクセス権がありません");
-    }
-  }
 
   /**
    * ノーマルクイズ取得

@@ -38,11 +38,4 @@ public interface DeckService {
    * @param deckId デッキID
    */
   void delete(Long deckId);
-
-  /**
-   * ユーザーIDをチェックする
-   *
-   * @param userId ユーザーID
-   */
-  void verifyUser(Long requestedUserId);
 }

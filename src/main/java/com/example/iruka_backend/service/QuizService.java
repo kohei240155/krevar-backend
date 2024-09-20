@@ -58,12 +58,4 @@ public interface QuizService {
      * @param deckId
      */
     public void resetExtraQuiz(Long deckId);
-
-    /**
-     * ユーザーIDをチェックする
-     *
-     * @param userId
-     */
-    public void verifyUser(Long userId);
-
 }

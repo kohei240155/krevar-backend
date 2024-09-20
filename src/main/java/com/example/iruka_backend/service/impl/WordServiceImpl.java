@@ -10,13 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.WordCreateEntity;
 import com.example.iruka_backend.entity.WordEntity;
 import com.example.iruka_backend.entity.WordUpdateEntity;
-import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.repository.WordRepository;
 import com.example.iruka_backend.requestdto.WordCreateRequest;
 import com.example.iruka_backend.requestdto.WordUpdateRequest;
@@ -24,16 +21,12 @@ import com.example.iruka_backend.responsedto.WordInfo;
 import com.example.iruka_backend.responsedto.WordListResponse;
 import com.example.iruka_backend.responsedto.WordResponse;
 import com.example.iruka_backend.service.WordService;
-import com.example.iruka_backend.util.SecurityUtil;
 
 @Service
 public class WordServiceImpl implements WordService {
 
   @Autowired
   private WordRepository wordRepository;
-
-  @Autowired
-  private UserRepository userRepository;
 
   private static final String LOCAL_IMAGE_DIR = "C:/Git/iruka-frontend/public/images/testImages/";
 
@@ -96,26 +89,6 @@ public class WordServiceImpl implements WordService {
     response.setImageUrl(word.getImageUrl());
 
     return response;
-  }
-
-  /**
-   * ユーザーIDをチェックする
-   *
-   * @param requestedUserId リクエストされたユーザーID
-   */
-  @Override
-  public void verifyUser(Long requestedUserId) {
-
-    // ログインユーザーのメールアドレスを取得
-    String username = SecurityUtil.getAuthenticatedUsername();
-
-    // ログインユーザーを取得
-    UserEntity user = userRepository.findByEmail(username);
-
-    // ログインユーザーがリクエストされたユーザーと一致しない場合はエラーをスロー
-    if (user == null || !user.getId().equals(requestedUserId)) {
-      throw new AccessDeniedException("ユーザーにこのリソースへのアクセス権がありません");
-    }
   }
 
   /**
