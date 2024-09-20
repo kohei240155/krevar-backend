@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -24,7 +25,9 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http,
       AuthenticationManager authenticationManager) throws Exception {
-    http.cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS設定を追加
+    http.sessionManagement(
+        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // セッションをステートレスにする
+        .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS設定を追加
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll() // 認証なしでアクセス可能
             .anyRequest().authenticated() // それ以外は認証が必要
