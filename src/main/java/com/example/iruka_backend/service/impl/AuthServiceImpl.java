@@ -41,6 +41,11 @@ public class AuthServiceImpl implements AuthService {
         // メールアドレスとGoogleIDを取得
         String email = request.getEmail();
         String googleId = request.getGoogleId();
+        String highlightColor = request.getHighlightColor();
+        int defaultNativeLanguageId = request.getDefaultNativeLanguageId();
+        int defaultLearningLanguageId = request.getDefaultLearningLanguageId();
+        int imageGenerationRemaining = request.getImageGenerationRemaining();
+        int subscriptionStatusId = request.getSubscriptionStatusId();
 
         UserEntity user = userRepository.findByEmail(email);
         if (user == null) {
@@ -48,8 +53,12 @@ public class AuthServiceImpl implements AuthService {
             user = new UserEntity();
             user.setEmail(email);
             user.setRole("USER");
-            user.setPassword("default_password");
             user.setGoogleId(googleId);
+            user.setHighlightColor(highlightColor);
+            user.setDefaultNativeLanguageId(defaultNativeLanguageId);
+            user.setDefaultLearningLanguageId(defaultLearningLanguageId);
+            user.setImageGenerationRemaining(imageGenerationRemaining);
+            user.setSubscriptionStatusId(subscriptionStatusId);
             userRepository.save(user);
         }
 

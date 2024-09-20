@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -29,10 +28,7 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll() // 認証なしでアクセス可能
             .anyRequest().authenticated() // それ以外は認証が必要
-        )
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWTを使うのでステートレス
-        .addFilter(new JwtAuthorizationFilter(authenticationManager, jwtTokenProvider)); // JWTフィルタの追加
+        ).addFilter(new JwtAuthorizationFilter(authenticationManager, jwtTokenProvider)); // JWTフィルタの追加
 
     return http.build();
   }

@@ -19,4 +19,19 @@ public class GoogleLoginRequest {
 
     /** GoogleID */
     private String googleId;
+
+    /** ハイライトカラー */
+    private String highlightColor;
+
+    /** デフォルトの母語 */
+    private int defaultNativeLanguageId;
+
+    /** デフォルトの学習言語 */
+    private int defaultLearningLanguageId;
+
+    /** 画像生成リミット */
+    private int imageGenerationRemaining;
+
+    /** サブスクリプションステータス */
+    private int subscriptionStatusId;
 }

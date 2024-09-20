@@ -2,6 +2,7 @@ package com.example.iruka_backend.entity;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,9 +23,6 @@ public class UserEntity {
   private String email;
 
   @Column(nullable = false)
-  private String password;
-
-  @Column(nullable = false)
   private String role;
 
   @Column(name = "google_id")
@@ -36,8 +34,29 @@ public class UserEntity {
   @Column(name = "updated_at", nullable = false)
   private Timestamp updatedAt;
 
-  @Column(name = "deleted_at")
-  private Timestamp deletedAt;
+  @Column(name = "deleted")
+  private int deleted;
+
+  @Column(name = "name")
+  private String name;
+
+  @Column(name = "default_native_language_id", nullable = false)
+  private int defaultNativeLanguageId;
+
+  @Column(name = "default_learning_language_id", nullable = false)
+  private int defaultLearningLanguageId;
+
+  @Column(name = "image_generation_remaining", nullable = false)
+  private int imageGenerationRemaining;
+
+  @Column(name = "image_generation_reset_date")
+  private LocalDate imageGenerationResetDate;
+
+  @Column(name = "subscription_status_id", nullable = false)
+  private int subscriptionStatusId;
+
+  @Column(name = "highlight_color", nullable = false)
+  private String highlightColor = "#FFFF00";
 
   @PrePersist
   protected void onCreate() {
@@ -53,11 +72,15 @@ public class UserEntity {
 
   public UserEntity() {}
 
-  public UserEntity(String email, String password, String role, String googleId) {
+  public UserEntity(String email, String role, String googleId, int defaultNativeLanguageId,
+      int defaultLearningLanguageId, int imageGenerationRemaining, int subscriptionStatusId) {
     this.email = email;
-    this.password = password; // ここでエンコードされたパスワードを設定
     this.role = role;
     this.googleId = googleId;
+    this.defaultNativeLanguageId = defaultNativeLanguageId;
+    this.defaultLearningLanguageId = defaultLearningLanguageId;
+    this.imageGenerationRemaining = imageGenerationRemaining;
+    this.subscriptionStatusId = subscriptionStatusId;
   }
 
   public Long getId() {
@@ -74,14 +97,6 @@ public class UserEntity {
 
   public void setEmail(String email) {
     this.email = email;
-  }
-
-  public String getPassword() {
-    return password;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
   }
 
   public String getRole() {
@@ -117,14 +132,70 @@ public class UserEntity {
   }
 
   public void softDelete() {
-    deletedAt = Timestamp.valueOf(LocalDateTime.now());
+    deleted = 1;
   }
 
-  public Timestamp getDeletedAt() {
-    return deletedAt;
+  public int getDeleted() {
+    return deleted;
   }
 
-  public void setDeletedAt(Timestamp deletedAt) {
-    this.deletedAt = deletedAt;
+  public void setDeleted(int deleted) {
+    this.deleted = deleted;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public int getDefaultNativeLanguageId() {
+    return defaultNativeLanguageId;
+  }
+
+  public void setDefaultNativeLanguageId(int defaultNativeLanguageId) {
+    this.defaultNativeLanguageId = defaultNativeLanguageId;
+  }
+
+  public int getDefaultLearningLanguageId() {
+    return defaultLearningLanguageId;
+  }
+
+  public void setDefaultLearningLanguageId(int defaultLearningLanguageId) {
+    this.defaultLearningLanguageId = defaultLearningLanguageId;
+  }
+
+  public int getImageGenerationRemaining() {
+    return imageGenerationRemaining;
+  }
+
+  public void setImageGenerationRemaining(int imageGenerationRemaining) {
+    this.imageGenerationRemaining = imageGenerationRemaining;
+  }
+
+  public LocalDate getImageGenerationResetDate() {
+    return imageGenerationResetDate;
+  }
+
+  public void setImageGenerationResetDate(LocalDate imageGenerationResetDate) {
+    this.imageGenerationResetDate = imageGenerationResetDate;
+  }
+
+  public int getSubscriptionStatusId() {
+    return subscriptionStatusId;
+  }
+
+  public void setSubscriptionStatusId(int subscriptionStatusId) {
+    this.subscriptionStatusId = subscriptionStatusId;
+  }
+
+  public String getHighlightColor() {
+    return highlightColor;
+  }
+
+  public void setHighlightColor(String highlightColor) {
+    this.highlightColor = highlightColor;
   }
 }
