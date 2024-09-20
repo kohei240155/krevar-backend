@@ -1,31 +1,58 @@
-DROP TABLE `iruka_db`.`spring_session_attributes`;
-DROP TABLE `iruka_db`.`spring_session`;
-DROP TABLE `iruka_db`.`words`;
-DROP TABLE `iruka_db`.`review_intervals`;
-DROP TABLE `iruka_db`.`decks`;
-DROP TABLE `iruka_db`.`users`;
+-- DROP TABLE `iruka_db`.`words`;
+-- DROP TABLE `iruka_db`.`review_intervals`;
+-- DROP TABLE `iruka_db`.`decks`;
+-- DROP TABLE `iruka_db`.`users`;
+-- DROP TABLE `iruka_db`.`subscription_statuses`;
+-- DROP TABLE `iruka_db`.`languages`;
+
+-- languages table
+CREATE TABLE languages (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    language_name VARCHAR(50) NOT NULL UNIQUE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted INT DEFAULT 0
+);
+
+-- subscription_statuses table
+CREATE TABLE subscription_statuses (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    subscription_status VARCHAR(50) NOT NULL,
+    max_image_generation INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted INT DEFAULT 0
+);
 
 -- users table
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) DEFAULT '',
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    google_id VARCHAR(255),
-    role VARCHAR(255) NOT NULL,
+    name VARCHAR(100) DEFAULT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    google_id VARCHAR(100),
+    role VARCHAR(100) NOT NULL,
+    default_native_language_id INT NOT NULL,
+    default_learning_language_id INT NOT NULL,
+    image_generation_remaining INT DEFAULT 0,
+    image_generation_reset_date DATE,
+    subscription_status_id INT NOT NULL,
+    highlight_color VARCHAR(20) DEFAULT '#FFFF00',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
+    deleted INT DEFAULT 0,
+    FOREIGN KEY (default_native_language_id) REFERENCES languages(id),
+    FOREIGN KEY (default_learning_language_id) REFERENCES languages(id),
+    FOREIGN KEY (subscription_status_id) REFERENCES subscription_statuses(id)
 );
 
 -- review_intervals table
 CREATE TABLE review_intervals (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    interval_order INT NOT NULL,
     interval_days INT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL
+    deleted INT DEFAULT 0,
+    UNIQUE (interval_days)
 );
 
 -- decks table
@@ -33,20 +60,24 @@ CREATE TABLE decks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     deck_name VARCHAR(255) NOT NULL,
     user_id INT NOT NULL,
-    last_practiced_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_practiced_date DATETIME DEFAULT NULL,
+    native_language_id INT NOT NULL,
+    learning_language_id INT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    deleted INT DEFAULT 0,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (native_language_id) REFERENCES languages(id),
+    FOREIGN KEY (learning_language_id) REFERENCES languages(id)
 );
 
 -- words table
 CREATE TABLE words (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    original_text TEXT NOT NULL,
-    translated_text TEXT NOT NULL,
-    nuance_text TEXT NOT NULL,
-    image_url TEXT NOT NULL,
+    original_text VARCHAR(255) NOT NULL,
+    translated_text VARCHAR(255) NOT NULL,
+    nuance_text VARCHAR(255) NOT NULL,
+    image_url VARCHAR(255) NOT NULL,
     deck_id INT NOT NULL,
     review_interval_id INT DEFAULT 1,
     next_practice_date DATE DEFAULT (CURRENT_DATE),
@@ -55,31 +86,7 @@ CREATE TABLE words (
     is_extra_mode_correct INT DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    deleted_at DATETIME DEFAULT NULL,
+    deleted INT DEFAULT 0,
     FOREIGN KEY (deck_id) REFERENCES decks(id),
     FOREIGN KEY (review_interval_id) REFERENCES review_intervals(id)
-);
-
--- Spring Session用のテーブル
-CREATE TABLE SPRING_SESSION (
-    PRIMARY_ID CHAR(36) NOT NULL,
-    SESSION_ID CHAR(36) NOT NULL,
-    CREATION_TIME BIGINT NOT NULL,
-    LAST_ACCESS_TIME BIGINT NOT NULL,
-    MAX_INACTIVE_INTERVAL INT NOT NULL,
-    EXPIRY_TIME BIGINT NOT NULL,
-    PRINCIPAL_NAME VARCHAR(100),
-    CONSTRAINT SPRING_SESSION_PK PRIMARY KEY (PRIMARY_ID)
-);
-
-CREATE UNIQUE INDEX SPRING_SESSION_IX1 ON SPRING_SESSION (SESSION_ID);
-CREATE INDEX SPRING_SESSION_IX2 ON SPRING_SESSION (EXPIRY_TIME);
-CREATE INDEX SPRING_SESSION_IX3 ON SPRING_SESSION (PRINCIPAL_NAME);
-
-CREATE TABLE SPRING_SESSION_ATTRIBUTES (
-    SESSION_PRIMARY_ID CHAR(36) NOT NULL,
-    ATTRIBUTE_NAME VARCHAR(200) NOT NULL,
-    ATTRIBUTE_BYTES BLOB NOT NULL,
-    CONSTRAINT SPRING_SESSION_ATTRIBUTES_PK PRIMARY KEY (SESSION_PRIMARY_ID, ATTRIBUTE_NAME),
-    CONSTRAINT SPRING_SESSION_ATTRIBUTES_FK FOREIGN KEY (SESSION_PRIMARY_ID) REFERENCES SPRING_SESSION(PRIMARY_ID) ON DELETE CASCADE
 );
