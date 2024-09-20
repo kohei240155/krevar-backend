@@ -46,7 +46,7 @@ public class QuizRepositoryImpl implements QuizRepository {
             WHERE
                 deck_id = :deckId AND
                 next_practice_date <= NOW() AND
-                deleted_at IS NULL
+                deleted = 0
             ORDER BY
                 RAND()
             LIMIT 1
@@ -78,7 +78,7 @@ public class QuizRepositoryImpl implements QuizRepository {
             WHERE
                 deck_id = :deckId AND
                 next_practice_date <= NOW() AND
-                deleted_at IS NULL
+                deleted = 0
             """;
 
     /**
@@ -167,7 +167,7 @@ public class QuizRepositoryImpl implements QuizRepository {
             WHERE
                 deck_id = :deckId AND
                 is_extra_mode_correct = 0 AND
-                deleted_at IS NULL
+                deleted = 0
             ORDER BY
                 RAND()
             LIMIT 1
@@ -226,7 +226,7 @@ public class QuizRepositoryImpl implements QuizRepository {
             WHERE
                 deck_id = :deckId AND
                 is_extra_mode_correct = 0 AND
-                deleted_at IS NULL
+                deleted = 0
             """;
 
     /**

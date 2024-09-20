@@ -31,8 +31,8 @@ public class ReviewIntervalEntity {
   @Column(name = "updated_at", nullable = false)
   private Timestamp updatedAt;
 
-  @Column(name = "deleted_at")
-  private Timestamp deletedAt;
+  @Column(name = "deleted")
+  private int deleted;
 
   @PrePersist
   protected void onCreate() {
@@ -47,7 +47,7 @@ public class ReviewIntervalEntity {
   }
 
   public void softDelete() {
-    deletedAt = Timestamp.valueOf(LocalDateTime.now());
+    deleted = 1;
   }
 
   // Getters and Setters
@@ -91,11 +91,11 @@ public class ReviewIntervalEntity {
     this.updatedAt = updatedAt;
   }
 
-  public Timestamp getDeletedAt() {
-    return deletedAt;
+  public int getDeleted() {
+    return deleted;
   }
 
-  public void setDeletedAt(Timestamp deletedAt) {
-    this.deletedAt = deletedAt;
+  public void setDeleted(int deleted) {
+    this.deleted = deleted;
   }
 }

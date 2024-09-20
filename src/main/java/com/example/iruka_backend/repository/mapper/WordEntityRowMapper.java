@@ -27,11 +27,11 @@ public class WordEntityRowMapper implements RowMapper<WordEntity> {
         long deckId = rs.getLong("deck_id");
         LocalDateTime createdAt = rs.getObject("created_at", LocalDateTime.class);
         LocalDateTime updatedAt = rs.getObject("updated_at", LocalDateTime.class);
-        LocalDateTime deletedAt = rs.getObject("deleted_at", LocalDateTime.class);
+        int deleted = rs.getInt("deleted");
 
         WordEntity word = new WordEntity(id, originalText, translatedText, nuanceText, imageUrl,
                 deckId, reviewIntervalId, nextPracticeDate, correctCount, incorrectCount,
-                isExtraModeCorrect, createdAt, updatedAt, deletedAt);
+                isExtraModeCorrect, createdAt, updatedAt, deleted);
 
         return word;
     }

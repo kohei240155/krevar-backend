@@ -26,5 +26,5 @@ public class DeckEntity {
   private LocalDateTime updatedAt;
 
   /** 削除日時 */
-  private LocalDateTime deletedAt;
+  private int deleted;
 }

@@ -30,7 +30,7 @@ public class DeckRepositoryImpl implements DeckRepository {
             WHERE
                 user_id = :userId
             AND
-                deleted_at IS NULL
+                deleted = 0
             """;
 
     @Override
@@ -93,7 +93,7 @@ public class DeckRepositoryImpl implements DeckRepository {
             UPDATE
                 decks
             SET
-                deleted_at = :deletedAt
+                deleted = :deleted
             WHERE
                 id = :deckId
             """;
@@ -104,7 +104,7 @@ public class DeckRepositoryImpl implements DeckRepository {
         // パラメータをマップに格納
         Map<String, Object> params = new HashMap<>();
         params.put("deckId", deckId);
-        params.put("deletedAt", LocalDateTime.now());
+        params.put("deleted", 1);
 
         // SQLを実行してデータを削除
         namedParameterJdbcTemplate.update(DELETE_SQL, params);
@@ -118,7 +118,7 @@ public class DeckRepositoryImpl implements DeckRepository {
             WHERE
                 id = :deckId
             AND
-                deleted_at IS NULL
+                deleted = 0
             """;
 
     @Override

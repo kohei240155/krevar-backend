@@ -16,9 +16,9 @@ public class DeckEntityRowMapper implements RowMapper<DeckEntity> {
     String deckName = rs.getString("deck_name");
     LocalDateTime createdAt = rs.getObject("created_at", LocalDateTime.class);
     LocalDateTime updatedAt = rs.getObject("updated_at", LocalDateTime.class);
-    LocalDateTime deletedAt = rs.getObject("deleted_at", LocalDateTime.class);
+    int deleted = rs.getInt("deleted");
 
-    DeckEntity deckEntity = new DeckEntity(id, deckName, userId, createdAt, updatedAt, deletedAt);
+    DeckEntity deckEntity = new DeckEntity(id, deckName, userId, createdAt, updatedAt, deleted);
 
     return deckEntity;
   }

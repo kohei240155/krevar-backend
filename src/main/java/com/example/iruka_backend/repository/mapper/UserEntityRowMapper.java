@@ -15,12 +15,11 @@ public class UserEntityRowMapper implements RowMapper<UserEntity> {
         UserEntity user = new UserEntity();
         user.setId(rs.getLong("id"));
         user.setEmail(rs.getString("email"));
-        user.setPassword(rs.getString("password"));
         user.setRole(rs.getString("role"));
         user.setGoogleId(rs.getString("google_id"));
         user.setCreatedAt(rs.getTimestamp("created_at"));
         user.setUpdatedAt(rs.getTimestamp("updated_at"));
-        user.setDeletedAt(rs.getTimestamp("deleted_at"));
+        user.setDeleted(rs.getInt("deleted"));
         return user;
     }
 }

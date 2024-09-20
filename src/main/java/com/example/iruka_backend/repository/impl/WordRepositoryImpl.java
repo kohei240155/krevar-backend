@@ -31,7 +31,7 @@ public class WordRepositoryImpl implements WordRepository {
             WHERE
                 deck_id = :deckId
                 and next_practice_date <= :today
-                and deleted_at is null
+                and deleted = 0
             """;
 
     @Override
@@ -57,7 +57,7 @@ public class WordRepositoryImpl implements WordRepository {
                 words
             WHERE
                 deck_id = :deckId
-                and deleted_at is null
+                and deleted = 0
             """;
 
     @Override
@@ -154,7 +154,7 @@ public class WordRepositoryImpl implements WordRepository {
             UPDATE
                 words
             SET
-                deleted_at = :deletedAt
+                deleted = :deleted
             WHERE
                 id = :wordId
             """;
@@ -165,7 +165,7 @@ public class WordRepositoryImpl implements WordRepository {
         // パラメータを設定
         Map<String, Object> params = new HashMap<>();
         params.put("wordId", wordId);
-        params.put("deletedAt", LocalDateTime.now());
+        params.put("deleted", 1);
 
         // クエリを実行
         namedParameterJdbcTemplate.update(DELETE_WORD_SQL, params);
