@@ -1,5 +1,7 @@
 package com.example.iruka_backend.service;
 
+import java.util.List;
+import com.example.iruka_backend.entity.LanguageEntity;
 import com.example.iruka_backend.entity.UserSettingsEntity;
 
 public interface UserService {
@@ -18,4 +20,11 @@ public interface UserService {
      * @param user ユーザー
      */
     public void updateUserSettings(UserSettingsEntity userSettingsEntity);
+
+    /**
+     * 言語一覧を取得する
+     *
+     * @return 言語一覧
+     */
+    public List<LanguageEntity> getLanguageList();
 }

@@ -1,8 +1,10 @@
 package com.example.iruka_backend.service.impl;
 
 import java.time.LocalDate;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.iruka_backend.entity.LanguageEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserSettingsEntity;
 import com.example.iruka_backend.repository.UserRepository;
@@ -48,5 +50,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUserSettings(UserSettingsEntity userSettingsEntity) {
         userRepository.update(userSettingsEntity);
+    }
+
+    /**
+     * 言語一覧を取得する
+     *
+     * @return 言語一覧
+     */
+    @Override
+    public List<LanguageEntity> getLanguageList() {
+        return userRepository.findAllLanguage();
     }
 }

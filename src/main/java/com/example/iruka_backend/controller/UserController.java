@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.iruka_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import com.example.iruka_backend.entity.LanguageEntity;
 import com.example.iruka_backend.entity.UserSettingsEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import java.util.List;
 import org.slf4j.LoggerFactory;
 import com.example.iruka_backend.security.JwtTokenProvider;
 
@@ -48,5 +50,22 @@ public class UserController {
             @RequestBody UserSettingsEntity userSettingsEntity) {
         userService.updateUserSettings(userSettingsEntity);
         return ResponseEntity.ok("User settings saved successfully");
+    }
+
+    /**
+     * 言語一覧取得API
+     *
+     * @return 言語一覧
+     */
+    @GetMapping("/language-list")
+    public ResponseEntity<List<LanguageEntity>> getLanguageList() {
+
+        logger.info("------------- 言語一覧取得API開始 -------------");
+
+        List<LanguageEntity> languageList = userService.getLanguageList();
+
+        logger.info("------------- 言語一覧取得API終了 -------------");
+
+        return ResponseEntity.ok(languageList);
     }
 }

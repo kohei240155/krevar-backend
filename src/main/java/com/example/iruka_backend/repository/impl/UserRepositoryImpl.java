@@ -1,13 +1,16 @@
 package com.example.iruka_backend.repository.impl;
 
+import com.example.iruka_backend.entity.LanguageEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserLoginEntity;
 import com.example.iruka_backend.entity.UserSettingsEntity;
 import com.example.iruka_backend.repository.UserRepository;
+import com.example.iruka_backend.repository.mapper.LanguageEntityRowMapper;
 import com.example.iruka_backend.repository.mapper.UserEntityRowMapper;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -114,4 +117,18 @@ public class UserRepositoryImpl implements UserRepository {
                 AND deleted = 0
             """;
 
+    @Override
+    public List<LanguageEntity> findAllLanguage() {
+        return namedParameterJdbcTemplate.query(SQL_FIND_ALL_LANGUAGE,
+                new LanguageEntityRowMapper());
+    }
+
+    private static final String SQL_FIND_ALL_LANGUAGE = """
+            SELECT
+                *
+            FROM
+                languages
+            WHERE
+                deleted = 0
+            """;
 }

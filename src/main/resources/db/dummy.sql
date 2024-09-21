@@ -6,11 +6,11 @@ VALUES
 ('pro', 10);   -- プロプラン、1日10枚
 
 -- languagesテーブルにダミーデータを挿入
-INSERT INTO languages (language_name)
+INSERT INTO languages (language_code, language_name)
 VALUES
-('ja'), -- Japanese
-('en'), -- English
-('es'); -- Spanish
+('ja', 'Japanese'), -- Japanese
+('en', 'English'), -- English
+('es', 'Spanish'); -- Spanish
 
 -- usersテーブルにダミーデータを挿入
 INSERT INTO users (

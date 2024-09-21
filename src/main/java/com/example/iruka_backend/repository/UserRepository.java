@@ -1,5 +1,7 @@
 package com.example.iruka_backend.repository;
 
+import java.util.List;
+import com.example.iruka_backend.entity.LanguageEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserLoginEntity;
 import com.example.iruka_backend.entity.UserSettingsEntity;
@@ -35,4 +37,11 @@ public interface UserRepository {
    * @return ユーザー
    */
   UserEntity findUserByEmail(String email);
+
+  /**
+   * 言語一覧を取得する
+   *
+   * @return 言語一覧
+   */
+  List<LanguageEntity> findAllLanguage();
 }
