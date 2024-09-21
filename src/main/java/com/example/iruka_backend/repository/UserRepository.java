@@ -1,9 +1,32 @@
 package com.example.iruka_backend.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import com.example.iruka_backend.entity.UserEntity;
+import com.example.iruka_backend.entity.UserLoginEntity;
+import com.example.iruka_backend.entity.UserSettingsEntity;
 
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
+public interface UserRepository {
+
+  /**
+   * ユーザーの設定を取得する
+   *
+   * @param userId ユーザーのID
+   * @return ユーザーの設定
+   */
+  UserEntity findUserByUserId(Long userId);
+
+  /**
+   * ユーザを新規登録する
+   *
+   * @param user ユーザー
+   */
+  void saveNewUser(UserLoginEntity user);
+
+  /**
+   * ユーザー情報を更新する
+   *
+   * @param user ユーザー
+   */
+  void update(UserSettingsEntity userSettingsEntity);
 
   /**
    * ユーザーをメールアドレスで検索する
@@ -11,5 +34,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
    * @param email メールアドレス
    * @return ユーザー
    */
-  UserEntity findByEmail(String email);
+  UserEntity findUserByEmail(String email);
 }

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.example.iruka_backend.entity.UserEntity;
+import com.example.iruka_backend.entity.UserLoginEntity;
 import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.requestdto.GoogleLoginRequest;
 import com.example.iruka_backend.security.JwtTokenProvider;
@@ -32,7 +33,6 @@ public class AuthServiceImpl implements AuthService {
      * Googleログインを処理する
      *
      * @param request Googleログインのペイロード
-     * @param session セッション
      * @return Googleログイン成功時のレスポンス
      */
     @Override
@@ -41,29 +41,21 @@ public class AuthServiceImpl implements AuthService {
         // メールアドレスとGoogleIDを取得
         String email = request.getEmail();
         String googleId = request.getGoogleId();
-        String highlightColor = request.getHighlightColor();
-        int defaultNativeLanguageId = request.getDefaultNativeLanguageId();
-        int defaultLearningLanguageId = request.getDefaultLearningLanguageId();
-        int imageGenerationRemaining = request.getImageGenerationRemaining();
-        int subscriptionStatusId = request.getSubscriptionStatusId();
+        String name = request.getName();
 
-        UserEntity user = userRepository.findByEmail(email);
+        boolean isNewUser = false;
+
+        UserEntity user = userRepository.findUserByEmail(email);
         if (user == null) {
             // ユーザーが存在しない場合、新規登録
-            user = new UserEntity();
-            user.setEmail(email);
-            user.setRole("USER");
-            user.setGoogleId(googleId);
-            user.setHighlightColor(highlightColor);
-            user.setDefaultNativeLanguageId(defaultNativeLanguageId);
-            user.setDefaultLearningLanguageId(defaultLearningLanguageId);
-            user.setImageGenerationRemaining(imageGenerationRemaining);
-            user.setSubscriptionStatusId(subscriptionStatusId);
-            userRepository.save(user);
+            UserLoginEntity userLoginEntity = new UserLoginEntity(email, "USER", googleId, name);
+            userRepository.saveNewUser(userLoginEntity);
+            isNewUser = true;
+            user = userRepository.findUserByEmail(email); // 新規登録後にユーザーを再取得
         }
 
         // JWTを発行
-        String jwtToken = jwtTokenProvider.generateToken(user.getEmail());
+        String jwtToken = jwtTokenProvider.generateToken(email);
 
         // JWTをクッキーに設定
         ResponseCookie jwtCookie = ResponseCookie.from("JWT", jwtToken).path("/") // クッキーのパスを指定
@@ -76,10 +68,11 @@ public class AuthServiceImpl implements AuthService {
 
         // レスポンスボディを作成
         Map<String, Object> response = new HashMap<>();
-        response.put("id", user.getId());
+        response.put("userId", user.getId());
         response.put("token", jwtToken);
-        response.put("email", user.getEmail());
-        response.put("role", user.getRole());
+        response.put("email", email);
+        response.put("role", "USER");
+        response.put("isNewUser", isNewUser);
 
         // レスポンスヘッダーにJWTクッキーを追加
         HttpHeaders headers = new HttpHeaders();
