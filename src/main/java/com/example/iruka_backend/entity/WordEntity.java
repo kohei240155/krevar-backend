@@ -50,6 +50,6 @@ public class WordEntity {
   /** 更新日時 */
   private LocalDateTime updatedAt;
 
-  /** 削除日時 */
+  /** 削除フラグ */
   private int deleted;
 }
