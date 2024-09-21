@@ -26,9 +26,9 @@ INSERT INTO users (
     highlight_color
 )
 VALUES
-('John Doe', 'john.doe@example.com', NULL, 'USER', 1, 2, 1, 1, NULL, '#FFFF00'),
-('Jane Smith', 'jane.smith@example.com', NULL, 'USER', 1, 2, 1, 1, NULL, '#FFFF00'),
-('Alice Johnson', 'alice.johnson@example.com', 'google-id-alice', 'USER', 1, 2, 1, 1, NULL, '#FFFF00');
+('John Doe', 'john.doe@example.com', 'google-id-john', 'USER', 1, 2, 1, 1, CURDATE(), '#FFFF00'),
+('Jane Smith', 'jane.smith@example.com', 'google-id-jane', 'USER', 1, 2, 1, 1, CURDATE(), '#FFFF00'),
+('Alice Johnson', 'alice.johnson@example.com', 'google-id-alice', 'USER', 1, 2, 1, 1, CURDATE(), '#FFFF00');
 
 -- review_intervalsテーブルにダミーデータを挿入
 INSERT INTO review_intervals (interval_days)
