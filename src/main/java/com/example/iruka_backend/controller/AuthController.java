@@ -49,6 +49,7 @@ public class AuthController {
    */
   @PostMapping("/logout")
   public ResponseEntity<String> logout(HttpSession session) {
+
     logger.info("------------- ログアウトAPI開始 -------------");
 
     authService.logout(session);
