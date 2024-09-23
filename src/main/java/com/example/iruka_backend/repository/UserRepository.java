@@ -4,7 +4,7 @@ import java.util.List;
 import com.example.iruka_backend.entity.LanguageEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserLoginEntity;
-import com.example.iruka_backend.entity.UserSettingsEntity;
+import com.example.iruka_backend.requestdto.UserSettingsUpdateRequest;
 
 public interface UserRepository {
 
@@ -28,7 +28,7 @@ public interface UserRepository {
    *
    * @param user ユーザー
    */
-  void update(UserSettingsEntity userSettingsEntity);
+  void update(Long userId, UserSettingsUpdateRequest userSettingsUpdateRequest);
 
   /**
    * ユーザーをメールアドレスで検索する

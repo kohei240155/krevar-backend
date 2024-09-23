@@ -3,10 +3,10 @@ package com.example.iruka_backend.repository.impl;
 import com.example.iruka_backend.entity.LanguageEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserLoginEntity;
-import com.example.iruka_backend.entity.UserSettingsEntity;
 import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.repository.mapper.LanguageEntityRowMapper;
 import com.example.iruka_backend.repository.mapper.UserEntityRowMapper;
+import com.example.iruka_backend.requestdto.UserSettingsUpdateRequest;
 import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -73,26 +73,29 @@ public class UserRepositoryImpl implements UserRepository {
      * @param user ユーザー
      */
     @Override
-    public void update(UserSettingsEntity userSettingsEntity) {
+    public void update(Long userId, UserSettingsUpdateRequest userSettingsUpdateRequest) {
         // パラメータをマップに格納
         Map<String, Object> params = new HashMap<>();
-        params.put("defaultNativeLanguageId", userSettingsEntity.getDefaultNativeLanguageId());
-        params.put("defaultLearningLanguageId", userSettingsEntity.getDefaultLearningLanguageId());
-        params.put("highlightColor", userSettingsEntity.getHighlightColor());
+        params.put("userId", userId);
+        params.put("defaultNativeLanguageId", userSettingsUpdateRequest.getNativeLanguageId());
+        params.put("defaultLearningLanguageId", userSettingsUpdateRequest.getLearningLanguageId());
+        params.put("highlightColor", userSettingsUpdateRequest.getHighlightColor());
         params.put("updatedAt", LocalDateTime.now());
 
         namedParameterJdbcTemplate.update(SQL_UPDATE_USER, params);
     }
 
-    private static final String SQL_UPDATE_USER =
-            """
-                    UPDATE
-                        users
-                    SET
-                        default_native_language_id = :defaultNativeLanguageId, default_learning_language_id = :defaultLearningLanguageId, highlight_color = :highlightColor, updated_at = :updatedAt
-                    WHERE
-                        email = :email
-                    """;
+    private static final String SQL_UPDATE_USER = """
+            UPDATE
+                users
+            SET
+                default_native_language_id = :defaultNativeLanguageId,
+                default_learning_language_id = :defaultLearningLanguageId,
+                highlight_color = :highlightColor,
+                updated_at = :updatedAt
+            WHERE
+                id = :userId
+            """;
 
     @Override
     public UserEntity findUserByEmail(String email) {

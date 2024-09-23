@@ -3,13 +3,14 @@ package com.example.iruka_backend.controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.example.iruka_backend.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import com.example.iruka_backend.entity.LanguageEntity;
 import com.example.iruka_backend.entity.UserSettingsEntity;
+import com.example.iruka_backend.requestdto.UserSettingsUpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,10 +46,19 @@ public class UserController {
         return ResponseEntity.ok(userSettingsEntity);
     }
 
-    @PostMapping("/settings")
-    public ResponseEntity<String> saveUserSettings(
-            @RequestBody UserSettingsEntity userSettingsEntity) {
-        userService.updateUserSettings(userSettingsEntity);
+    @PutMapping("/{userId}/settings")
+    public ResponseEntity<String> saveUserSettings(HttpServletRequest httpServletRequest,
+            @PathVariable("userId") Long userId,
+            @RequestBody UserSettingsUpdateRequest userSettingsUpdateRequest) {
+
+        logger.info("------------- ユーザー設定更新API開始 -------------");
+
+        jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
+
+        userService.updateUserSettings(userId, userSettingsUpdateRequest);
+
+        logger.info("------------- ユーザー設定更新API終了 -------------");
+
         return ResponseEntity.ok("User settings saved successfully");
     }
 

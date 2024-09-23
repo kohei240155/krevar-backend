@@ -8,6 +8,7 @@ import com.example.iruka_backend.entity.LanguageEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserSettingsEntity;
 import com.example.iruka_backend.repository.UserRepository;
+import com.example.iruka_backend.requestdto.UserSettingsUpdateRequest;
 import com.example.iruka_backend.service.UserService;
 
 @Service
@@ -45,11 +46,13 @@ public class UserServiceImpl implements UserService {
     /**
      * ユーザーの情報を更新する
      *
-     * @param userSettingsEntity ユーザーの設定情報
+     * @param userId ユーザーのID
+     * @param userSettingsUpdateEntity ユーザーの設定情報
      */
     @Override
-    public void updateUserSettings(UserSettingsEntity userSettingsEntity) {
-        userRepository.update(userSettingsEntity);
+    public void updateUserSettings(Long userId,
+            UserSettingsUpdateRequest userSettingsUpdateRequest) {
+        userRepository.update(userId, userSettingsUpdateRequest);
     }
 
     /**
