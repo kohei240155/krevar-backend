@@ -49,6 +49,8 @@ public class DeckRepositoryImpl implements DeckRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("userId", deckCreateEntity.getUserId());
         params.put("deckName", deckCreateEntity.getDeckName());
+        params.put("nativeLanguageId", deckCreateEntity.getNativeLanguageId());
+        params.put("learningLanguageId", deckCreateEntity.getLearningLanguageId());
         params.put("createdAt", LocalDateTime.now());
         params.put("updatedAt", LocalDateTime.now());
 
@@ -56,12 +58,13 @@ public class DeckRepositoryImpl implements DeckRepository {
         namedParameterJdbcTemplate.update(SAVE_SQL, params);
     }
 
-    private static final String SAVE_SQL = """
-            INSERT INTO
-                decks (user_id, deck_name, created_at, updated_at)
-            VALUES
-                (:userId, :deckName, :createdAt, :updatedAt)
-            """;
+    private static final String SAVE_SQL =
+            """
+                    INSERT INTO
+                        decks (user_id, deck_name, native_language_id, learning_language_id, created_at, updated_at)
+                    VALUES
+                        (:userId, :deckName, :nativeLanguageId, :learningLanguageId, :createdAt, :updatedAt)
+                    """;
 
     @Override
     public void update(DeckUpdateEntity deckUpdateEntity, Long deckId) {
@@ -71,6 +74,8 @@ public class DeckRepositoryImpl implements DeckRepository {
         params.put("userId", deckUpdateEntity.getUserId());
         params.put("deckId", deckId);
         params.put("deckName", deckUpdateEntity.getDeckName());
+        params.put("nativeLanguageId", deckUpdateEntity.getNativeLanguageId());
+        params.put("learningLanguageId", deckUpdateEntity.getLearningLanguageId());
         params.put("updatedAt", LocalDateTime.now());
 
         // SQLを実行してデータを更新
@@ -82,11 +87,11 @@ public class DeckRepositoryImpl implements DeckRepository {
                 decks
             SET
                 deck_name = :deckName,
+                native_language_id = :nativeLanguageId,
+                learning_language_id = :learningLanguageId,
                 updated_at = :updatedAt
             WHERE
                 id = :deckId
-            AND
-                user_id = :userId
             """;
 
     @Override

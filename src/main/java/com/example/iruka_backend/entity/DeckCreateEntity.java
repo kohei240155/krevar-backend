@@ -15,4 +15,10 @@ public class DeckCreateEntity {
     /** デッキ名 */
     private String deckName;
 
+    /** デッキの母語 */
+    private String nativeLanguageId;
+
+    /** デッキの学習言語 */
+    private String learningLanguageId;
+
 }

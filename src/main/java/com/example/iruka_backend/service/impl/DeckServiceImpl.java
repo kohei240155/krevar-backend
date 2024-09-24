@@ -75,7 +75,8 @@ public class DeckServiceImpl implements DeckService {
 
     // デッキエンティティを作成
     DeckCreateEntity deckCreateEntity =
-        new DeckCreateEntity(deckCreateRequest.getUserId(), deckCreateRequest.getDeckName());
+        new DeckCreateEntity(deckCreateRequest.getUserId(), deckCreateRequest.getDeckName(),
+            deckCreateRequest.getNativeLanguageId(), deckCreateRequest.getLearningLanguageId());
 
     // デッキを保存
     deckRepository.save(deckCreateEntity);
@@ -91,7 +92,8 @@ public class DeckServiceImpl implements DeckService {
 
     // デッキエンティティを作成
     DeckUpdateEntity deckUpdateEntity =
-        new DeckUpdateEntity(deckUpdateRequest.getUserId(), deckUpdateRequest.getDeckName());
+        new DeckUpdateEntity(deckUpdateRequest.getUserId(), deckUpdateRequest.getDeckName(),
+            deckUpdateRequest.getNativeLanguageId(), deckUpdateRequest.getLearningLanguageId());
 
     deckRepository.update(deckUpdateEntity, deckId);
   }
