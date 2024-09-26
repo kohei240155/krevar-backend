@@ -31,6 +31,7 @@ public class SecurityConfig {
         .csrf(csrf -> csrf.disable())
         .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll() // 認証なしでアクセス可能
             .requestMatchers("/webhook").permitAll() // StripeのWebhookは認証なしでアクセス可能
+            .requestMatchers("/api/checkout/**").permitAll() // StripeのCheckoutは認証なしでアクセス可能
             .anyRequest().authenticated() // それ以外は認証が必要
         ).addFilter(new JwtAuthorizationFilter(authenticationManager, jwtTokenProvider)); // JWTフィルタの追加
 
