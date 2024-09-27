@@ -24,15 +24,33 @@ public class StripeCheckoutController {
         Stripe.apiKey = stripeSecretKey;
 
         String userId = (String) payload.get("userId"); // フロントエンドから受け取ったユーザーID
+        String plan = (String) payload.get("plan"); // フロントエンドから受け取ったプラン
+
+        // プランに応じてStripeの価格IDを設定
+        String priceId;
+        switch (plan) {
+            case "premium":
+                // プレミアムプランの価格ID
+                priceId = "price_1Q3eQ1P4n7axDIegapswLX9z";
+                break;
+            case "pro":
+                // プロプランの価格ID
+                priceId = "price_1Q3eQLP4n7axDIegvJI2U6F0";
+                break;
+            case "basic":
+            default:
+                // ベーシックプランの価格ID
+                priceId = "price_1Q2uJrP4n7axDIegizGOsO9Y";
+                break;
+        }
 
         // Stripeのセッションを作成
         SessionCreateParams params = SessionCreateParams.builder()
-                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD) // 修正箇所
+                .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
                 .setSuccessUrl("https://example.com/success") // 支払い成功後のリダイレクトURL
                 .setCancelUrl("https://example.com/cancel") // 支払いキャンセル後のリダイレクトURL
-                .addLineItem(SessionCreateParams.LineItem.builder()
-                        .setPrice("price_1Q2uJrP4n7axDIegizGOsO9Y") // Stripeダッシュボードで設定した価格ID
+                .addLineItem(SessionCreateParams.LineItem.builder().setPrice(priceId) // 選択されたプランに対応する価格IDを使用
                         .setQuantity(1L).build())
                 .putMetadata("user_id", userId) // メタデータにユーザーIDを設定
                 .build();
@@ -46,4 +64,3 @@ public class StripeCheckoutController {
         return responseData;
     }
 }
-
