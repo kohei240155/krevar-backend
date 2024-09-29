@@ -50,8 +50,8 @@ public class StripeCheckoutController {
         SessionCreateParams params = SessionCreateParams.builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.SUBSCRIPTION)
-                .setSuccessUrl("https://example.com/success") // 支払い成功後のリダイレクトURL
-                .setCancelUrl("https://example.com/cancel") // 支払いキャンセル後のリダイレクトURL
+                .setSuccessUrl("http://localhost:3000/deck") // 支払い成功後のリダイレクトURL
+                .setCancelUrl("http://localhost:3000/deck") // 支払いキャンセル後のリダイレクトURL
                 .addLineItem(SessionCreateParams.LineItem.builder().setPrice(priceId) // 選択されたプランに対応する価格IDを使用
                         .setQuantity(1L).build())
                 .putMetadata("user_id", userId) // メタデータにユーザーIDを設定
