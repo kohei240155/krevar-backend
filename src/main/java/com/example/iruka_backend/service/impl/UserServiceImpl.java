@@ -34,11 +34,12 @@ public class UserServiceImpl implements UserService {
         int imageGenerationRemaining = user.getImageGenerationRemaining();
         LocalDate imageGenerationResetDate = user.getImageGenerationResetDate();
         int subscriptionStatusId = user.getSubscriptionStatusId();
+        String subscriptionId = user.getSubscriptionId();
         String highlightColor = user.getHighlightColor();
 
         UserSettingsEntity userSettingsEntity = new UserSettingsEntity(userName,
                 defaultNativeLanguageId, defaultLearningLanguageId, imageGenerationRemaining,
-                imageGenerationResetDate, subscriptionStatusId, highlightColor);
+                imageGenerationResetDate, subscriptionStatusId, subscriptionId, highlightColor);
 
         return userSettingsEntity;
     }

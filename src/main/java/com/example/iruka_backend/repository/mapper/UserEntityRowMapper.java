@@ -24,6 +24,7 @@ public class UserEntityRowMapper implements RowMapper<UserEntity> {
         LocalDate imageGenerationResetDate =
                 rs.getObject("image_generation_reset_date", LocalDate.class);
         int subscriptionStatusId = rs.getInt("subscription_status_id");
+        String subscriptionId = rs.getString("subscription_id");
         String highlightColor = rs.getString("highlight_color");
         LocalDateTime createdAt = rs.getObject("created_at", LocalDateTime.class);
         LocalDateTime updatedAt = rs.getObject("updated_at", LocalDateTime.class);
@@ -31,7 +32,8 @@ public class UserEntityRowMapper implements RowMapper<UserEntity> {
 
         UserEntity user = new UserEntity(id, email, role, googleId, name, defaultNativeLanguageId,
                 defaultLearningLanguageId, imageGenerationRemaining, imageGenerationResetDate,
-                subscriptionStatusId, highlightColor, createdAt, updatedAt, deleted);
+                subscriptionStatusId, subscriptionId, highlightColor, createdAt, updatedAt,
+                deleted);
         return user;
     }
 }

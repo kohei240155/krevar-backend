@@ -41,6 +41,9 @@ public class UserEntity {
   /** サブスクリプションステータスID */
   private int subscriptionStatusId;
 
+  /** サブスクリプションID */
+  private String subscriptionId;
+
   /** ハイライト色 */
   private String highlightColor;
 
