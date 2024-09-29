@@ -1,8 +1,9 @@
 -- subscription_statusesテーブルにダミーデータを挿入
-INSERT INTO subscription_statuses (subscription_status, max_image_generation)
+INSERT INTO subscription_statuses (plan, max_image_generation)
 VALUES
 ('free', 1),   -- 無料プラン、1日1枚
-('normal', 5), -- 通常プラン、1日5枚
+('trial', 2),  -- トライアルプラン、1日2枚
+('basic', 5), -- ベーシックプラン、1日5枚
 ('pro', 10);   -- プロプラン、1日10枚
 
 -- languagesテーブルにダミーデータを挿入
@@ -23,12 +24,13 @@ INSERT INTO users (
     subscription_status_id,
     image_generation_remaining,
     image_generation_reset_date,
-    highlight_color
+    highlight_color,
+    subscription_id
 )
 VALUES
-('John Doe', 'john.doe@example.com', 'google-id-john', 'USER', 1, 2, 1, 1, CURDATE(), '#FFFF00'),
-('Jane Smith', 'jane.smith@example.com', 'google-id-jane', 'USER', 1, 2, 1, 1, CURDATE(), '#FFFF00'),
-('Alice Johnson', 'alice.johnson@example.com', 'google-id-alice', 'USER', 1, 2, 1, 1, CURDATE(), '#FFFF00');
+('John Doe', 'john.doe@example.com', 'google-id-john', 'USER', 1, 2, 1, 1, CURDATE(), '#FFFF00', 'subscription-id-john'),
+('Jane Smith', 'jane.smith@example.com', 'google-id-jane', 'USER', 1, 2, 1, 1, CURDATE(), '#FFFF00', 'subscription-id-jane'),
+('Alice Johnson', 'alice.johnson@example.com', 'google-id-alice', 'USER', 1, 2, 1, 1, CURDATE(), '#FFFF00', 'subscription-id-alice');
 
 -- review_intervalsテーブルにダミーデータを挿入
 INSERT INTO review_intervals (interval_days)

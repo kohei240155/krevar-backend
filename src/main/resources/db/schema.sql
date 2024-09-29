@@ -18,7 +18,7 @@ CREATE TABLE languages (
 -- subscription_statuses table
 CREATE TABLE subscription_statuses (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    subscription_status VARCHAR(50) NOT NULL,
+    plan VARCHAR(50) NOT NULL,
     max_image_generation INT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -34,6 +34,7 @@ CREATE TABLE users (
     role VARCHAR(100) NOT NULL,
     default_native_language_id INT NOT NULL DEFAULT 1,
     default_learning_language_id INT NOT NULL DEFAULT 2,
+    subscription_id VARCHAR(100),
     image_generation_remaining INT DEFAULT 1,
     image_generation_reset_date DATE DEFAULT (CURRENT_DATE) ,
     subscription_status_id INT NOT NULL DEFAULT 1,
