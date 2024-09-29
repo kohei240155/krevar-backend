@@ -29,19 +29,21 @@ public class StripeCheckoutController {
         // プランに応じてStripeの価格IDを設定
         String priceId;
         switch (plan) {
-            case "premium":
-                // プレミアムプランの価格ID
-                priceId = "price_1Q3eQ1P4n7axDIegapswLX9z";
+            case "trial":
+                // トライアルプランの価格ID
+                priceId = "price_1Q4CZDP4n7axDIegFeOCv21I";
+                break;
+            case "basic":
+                // ベーシックプランの価格ID
+                priceId = "price_1Q4CcIP4n7axDIegHrD4XjNb";
                 break;
             case "pro":
                 // プロプランの価格ID
-                priceId = "price_1Q3eQLP4n7axDIegvJI2U6F0";
+                priceId = "price_1Q4CcqP4n7axDIeg5ihiTUIh";
                 break;
-            case "basic":
             default:
-                // ベーシックプランの価格ID
-                priceId = "price_1Q2uJrP4n7axDIegizGOsO9Y";
-                break;
+                throw new IllegalArgumentException("Invalid plan");
+
         }
 
         // Stripeのセッションを作成

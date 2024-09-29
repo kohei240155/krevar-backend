@@ -1,5 +1,6 @@
 package com.example.iruka_backend.controller;
 
+import com.example.iruka_backend.service.StripeWebhookService;
 import com.stripe.model.Event;
 import com.stripe.model.Subscription;
 import com.stripe.model.checkout.Session;
@@ -10,8 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.slf4j.Logger;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
 // @RequestMapping("/api")
@@ -20,6 +20,9 @@ public class StripeWebhookController {
 
     private static final String STRIPE_ENDPOINT_SECRET =
             "whsec_55dd322250e8b885f05682f0cc39e8fe6018a77e7c19518ef245718d92f999e1"; // Webhookシークレット
+
+    @Autowired
+    private StripeWebhookService stripeWebhookService;
 
     private static final Logger logger = LoggerFactory.getLogger(StripeWebhookController.class);
 
@@ -40,7 +43,7 @@ public class StripeWebhookController {
                         (Session) event.getDataObjectDeserializer().getObject().orElse(null);
                 if (session != null) {
                     // メタデータからユーザーIDを取得
-                    String userId = session.getMetadata().get("user_id");
+                    Long userId = Long.parseLong(session.getMetadata().get("user_id"));
                     logger.info("Payment was successful for user: " + userId);
 
                     // サブスクリプションIDを取得
@@ -53,21 +56,24 @@ public class StripeWebhookController {
                     logger.info("Price ID (Plan): " + priceId);
 
                     // プランの価格IDに基づき、支払ったプランを判別
+                    String plan;
                     switch (priceId) {
-                        case "price_1Q2uJrP4n7axDIegizGOsO9Y":
-                            logger.info("User subscribed to Basic Plan.");
+                        case "price_1Q4CZDP4n7axDIegFeOCv21I":
+                            plan = "trial";
                             break;
-                        case "price_1Q3eQ1P4n7axDIegapswLX9z":
-                            logger.info("User subscribed to Premium Plan.");
+                        case "price_1Q4CcIP4n7axDIegHrD4XjNb":
+                            plan = "basic";
                             break;
-                        case "price_1Q3eQLP4n7axDIegvJI2U6F0":
-                            logger.info("User subscribed to Pro Plan.");
+                        case "price_1Q4CcqP4n7axDIeg5ihiTUIh":
+                            plan = "pro";
                             break;
                         default:
-                            logger.info("Unknown Plan.");
+                            plan = "unknown";
                     }
 
-                    // ユーザーIDを使って、支払い情報をデータベースに保存するなどの処理を行う
+                    // 支払い情報をデータベースに保存
+                    stripeWebhookService.savePaymentInfo(userId, plan, subscriptionId);
+
                 }
             }
 

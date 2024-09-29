@@ -4,6 +4,7 @@ import java.util.List;
 import com.example.iruka_backend.entity.LanguageEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserLoginEntity;
+import com.example.iruka_backend.entity.UserSubscriptionEntity;
 import com.example.iruka_backend.requestdto.UserSettingsUpdateRequest;
 
 public interface UserRepository {
@@ -44,4 +45,11 @@ public interface UserRepository {
    * @return 言語一覧
    */
   List<LanguageEntity> findAllLanguage();
+
+  /**
+   * ユーザーの支払い情報を保存する
+   *
+   * @param userSubscription ユーザーの支払い情報
+   */
+  void saveUserSubscription(UserSubscriptionEntity userSubscription);
 }

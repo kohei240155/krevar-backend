@@ -3,6 +3,7 @@ package com.example.iruka_backend.repository.impl;
 import com.example.iruka_backend.entity.LanguageEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserLoginEntity;
+import com.example.iruka_backend.entity.UserSubscriptionEntity;
 import com.example.iruka_backend.repository.UserRepository;
 import com.example.iruka_backend.repository.mapper.LanguageEntityRowMapper;
 import com.example.iruka_backend.repository.mapper.UserEntityRowMapper;
@@ -134,4 +135,30 @@ public class UserRepositoryImpl implements UserRepository {
             WHERE
                 deleted = 0
             """;
+
+    @Override
+    public void saveUserSubscription(UserSubscriptionEntity userSubscription) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userSubscription.getId());
+        params.put("subscriptionStatusId", userSubscription.getSubscriptionStatusId());
+        params.put("imageGenerationRemaining", userSubscription.getImageGenerationRemaining());
+        params.put("imageGenerationResetDate", userSubscription.getImageGenerationResetDate());
+        params.put("subscriptionId", userSubscription.getSubscriptionId());
+        params.put("updatedAt", LocalDateTime.now());
+
+        namedParameterJdbcTemplate.update(SQL_SAVE_USER_SUBSCRIPTION, params);
+    }
+
+    private static final String SQL_SAVE_USER_SUBSCRIPTION = """
+            UPDATE
+                 users
+             SET
+                 image_generation_remaining = :imageGenerationRemaining,
+                 image_generation_reset_date = :imageGenerationResetDate,
+                 subscription_id = :subscriptionId,
+                 subscription_status_id = :subscriptionStatusId,
+                 updated_at = :updatedAt
+             WHERE
+                 id = :userId
+             """;
 }
