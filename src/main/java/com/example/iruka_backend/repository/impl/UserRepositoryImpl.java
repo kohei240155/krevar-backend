@@ -1,6 +1,7 @@
 package com.example.iruka_backend.repository.impl;
 
 import com.example.iruka_backend.entity.LanguageEntity;
+import com.example.iruka_backend.entity.SubscriptionEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserLoginEntity;
 import com.example.iruka_backend.entity.UserSubscriptionEntity;
@@ -56,17 +57,20 @@ public class UserRepositoryImpl implements UserRepository {
         params.put("name", userLoginEntity.getName());
         params.put("googleId", userLoginEntity.getGoogleId());
         params.put("role", userLoginEntity.getRole());
+        params.put("subscriptionStatusId", userLoginEntity.getSubscriptionStatusId());
+        params.put("imageGenerationRemaining", userLoginEntity.getImageGenerationRemaining());
         params.put("createdAt", LocalDateTime.now());
         params.put("updatedAt", LocalDateTime.now());
         namedParameterJdbcTemplate.update(SQL_SAVE_NEW_USER, params);
     }
 
-    private static final String SQL_SAVE_NEW_USER = """
-            INSERT INTO
-                users (email, name, google_id, role, created_at, updated_at)
-            VALUES
-                (:email, :name, :googleId, :role, :createdAt, :updatedAt)
-            """;
+    private static final String SQL_SAVE_NEW_USER =
+            """
+                    INSERT INTO
+                        users (email, name, google_id, role, subscription_status_id, image_generation_remaining, created_at, updated_at)
+                    VALUES
+                        (:email, :name, :googleId, :role, :subscriptionStatusId, :imageGenerationRemaining, :createdAt, :updatedAt)
+                    """;
 
     /**
      * ユーザー情報を更新する
@@ -161,4 +165,28 @@ public class UserRepositoryImpl implements UserRepository {
              WHERE
                  id = :userId
              """;
+
+    @Override
+    public void cancelSubscription(Long userId, SubscriptionEntity subscription) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("updatedAt", LocalDateTime.now());
+        params.put("subscriptionStatusId", subscription.getId());
+        params.put("imageGenerationRemaining", 0);
+        params.put("imageGenerationResetDate", LocalDateTime.now());
+        namedParameterJdbcTemplate.update(SQL_CANCEL_SUBSCRIPTION, params);
+    }
+
+    private static final String SQL_CANCEL_SUBSCRIPTION = """
+            UPDATE
+                users
+            SET
+                subscription_id = null,
+                subscription_status_id = :subscriptionStatusId,
+                image_generation_remaining = :imageGenerationRemaining,
+                image_generation_reset_date = :imageGenerationResetDate,
+                updated_at = :updatedAt
+            WHERE
+                id = :userId
+            """;
 }

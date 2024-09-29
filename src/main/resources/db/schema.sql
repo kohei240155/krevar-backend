@@ -38,6 +38,7 @@ CREATE TABLE users (
     image_generation_remaining INT DEFAULT 1,
     image_generation_reset_date DATE DEFAULT (CURRENT_DATE) ,
     subscription_status_id INT NOT NULL DEFAULT 1,
+    is_trial_expired INT DEFAULT 0,
     highlight_color VARCHAR(20) DEFAULT '#FFFF00',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

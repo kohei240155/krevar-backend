@@ -2,6 +2,7 @@ package com.example.iruka_backend.repository;
 
 import java.util.List;
 import com.example.iruka_backend.entity.LanguageEntity;
+import com.example.iruka_backend.entity.SubscriptionEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserLoginEntity;
 import com.example.iruka_backend.entity.UserSubscriptionEntity;
@@ -52,4 +53,12 @@ public interface UserRepository {
    * @param userSubscription ユーザーの支払い情報
    */
   void saveUserSubscription(UserSubscriptionEntity userSubscription);
+
+  /**
+   * ユーザーの支払い情報を更新する
+   *
+   * @param userId ユーザーのID
+   * @param subscription サブスクリプション
+   */
+  void cancelSubscription(Long userId, SubscriptionEntity subscription);
 }

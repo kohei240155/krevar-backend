@@ -1,5 +1,6 @@
 package com.example.iruka_backend.controller;
 
+import com.example.iruka_backend.service.UserService;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
@@ -7,6 +8,7 @@ import com.stripe.model.Subscription;
 import com.stripe.param.checkout.SessionCreateParams;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -23,6 +25,9 @@ public class StripeCheckoutController {
     @Value("${stripe.api.secret-key}")
     private String stripeSecretKey;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/create-checkout-session")
     public Map<String, String> createCheckoutSession(@RequestBody Map<String, Object> payload)
             throws StripeException {
@@ -34,8 +39,8 @@ public class StripeCheckoutController {
         // プランに応じてStripeの価格IDを設定
         String priceId;
         switch (plan) {
-            case "trial":
-                // トライアルプランの価格ID
+            case "light":
+                // ライトプランの価格ID
                 priceId = "price_1Q4CZDP4n7axDIegFeOCv21I";
                 break;
             case "basic":
@@ -79,6 +84,7 @@ public class StripeCheckoutController {
 
         // フロントエンドから送信されたサブスクリプションIDを取得
         String subscriptionId = (String) payload.get("subscriptionId");
+        Long userId = Long.parseLong(payload.get("userId").toString());
 
         log.info("subscriptionId: {}", subscriptionId);
 
@@ -90,6 +96,8 @@ public class StripeCheckoutController {
         Map<String, Object> responseData = new HashMap<>();
         responseData.put("status", canceledSubscription.getStatus());
         responseData.put("id", canceledSubscription.getId());
+
+        userService.cancelSubscription(userId);
 
         return responseData;
     }

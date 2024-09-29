@@ -29,4 +29,11 @@ public interface UserService {
      * @return 言語一覧
      */
     public List<LanguageEntity> getLanguageList();
+
+    /**
+     * サブスクリプションをキャンセルする
+     *
+     * @param userId ユーザーID
+     */
+    public void cancelSubscription(Long userId);
 }

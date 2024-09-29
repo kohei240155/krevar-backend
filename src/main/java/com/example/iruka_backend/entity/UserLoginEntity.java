@@ -20,4 +20,11 @@ public class UserLoginEntity {
 
     /** 名前 */
     private String name;
+
+    /** 画像生成残数 */
+    private int imageGenerationRemaining;
+
+    /** サブスクリプションステータスID */
+    private Long subscriptionStatusId;
+
 }

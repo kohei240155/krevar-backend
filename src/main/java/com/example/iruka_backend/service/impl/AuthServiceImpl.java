@@ -11,9 +11,11 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import com.example.iruka_backend.entity.SubscriptionEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserLoginEntity;
 import com.example.iruka_backend.repository.UserRepository;
+import com.example.iruka_backend.repository.SubscriptionRepository;
 import com.example.iruka_backend.requestdto.GoogleLoginRequest;
 import com.example.iruka_backend.security.JwtTokenProvider;
 import com.example.iruka_backend.service.AuthService;
@@ -26,6 +28,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
 
@@ -48,10 +53,14 @@ public class AuthServiceImpl implements AuthService {
         UserEntity user = userRepository.findUserByEmail(email);
         if (user == null) {
             // ユーザーが存在しない場合、新規登録
-            UserLoginEntity userLoginEntity = new UserLoginEntity(email, "USER", googleId, name);
+            // サブスクリプションを取得
+            SubscriptionEntity subscription = subscriptionRepository.getSubscription("trial");
+
+            UserLoginEntity userLoginEntity = new UserLoginEntity(email, "USER", googleId, name,
+                    subscription.getMaxImageGeneration(), subscription.getId());
             userRepository.saveNewUser(userLoginEntity);
             isNewUser = true;
-            user = userRepository.findUserByEmail(email); // 新規登録後にユーザーを再取得
+            user = userRepository.findUserByEmail(email);
         }
 
         // JWTを発行

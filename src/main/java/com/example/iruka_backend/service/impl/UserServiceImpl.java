@@ -5,9 +5,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.iruka_backend.entity.LanguageEntity;
+import com.example.iruka_backend.entity.SubscriptionEntity;
 import com.example.iruka_backend.entity.UserEntity;
 import com.example.iruka_backend.entity.UserSettingsEntity;
 import com.example.iruka_backend.repository.UserRepository;
+import com.example.iruka_backend.repository.SubscriptionRepository;
 import com.example.iruka_backend.requestdto.UserSettingsUpdateRequest;
 import com.example.iruka_backend.service.UserService;
 
@@ -16,6 +18,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private SubscriptionRepository subscriptionRepository;
 
     /**
      * ユーザーの設定を取得する
@@ -65,4 +70,17 @@ public class UserServiceImpl implements UserService {
     public List<LanguageEntity> getLanguageList() {
         return userRepository.findAllLanguage();
     }
+
+    /**
+     * サブスクリプションをキャンセルする
+     *
+     * @param userId ユーザーID
+     */
+    @Override
+    public void cancelSubscription(Long userId) {
+        // サブスクリプションを取得
+        SubscriptionEntity subscription = subscriptionRepository.getSubscription("trial");
+        userRepository.cancelSubscription(userId, subscription);
+    }
 }
+

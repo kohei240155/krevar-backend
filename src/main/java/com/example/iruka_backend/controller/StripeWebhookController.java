@@ -59,7 +59,7 @@ public class StripeWebhookController {
                     String plan;
                     switch (priceId) {
                         case "price_1Q4CZDP4n7axDIegFeOCv21I":
-                            plan = "trial";
+                            plan = "light";
                             break;
                         case "price_1Q4CcIP4n7axDIegHrD4XjNb":
                             plan = "basic";
