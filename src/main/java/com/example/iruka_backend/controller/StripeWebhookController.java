@@ -26,6 +26,12 @@ public class StripeWebhookController {
 
     private static final Logger logger = LoggerFactory.getLogger(StripeWebhookController.class);
 
+    /**
+     * StripeのWebhookを受け取る
+     *
+     * @param payload
+     * @param sigHeader
+     */
     @PostMapping("/webhook")
     public void handleStripeWebhook(@RequestBody String payload,
             @RequestHeader("Stripe-Signature") String sigHeader) {
