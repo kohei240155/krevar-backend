@@ -17,7 +17,6 @@ import org.slf4j.Logger;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = "http://localhost:3000")
 public class StripeCheckoutController {
 
     private static final Logger log = LoggerFactory.getLogger(StripeCheckoutController.class);

@@ -1,6 +1,5 @@
 package com.example.iruka_backend.controller;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,7 +19,6 @@ import com.example.iruka_backend.security.JwtTokenProvider;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired

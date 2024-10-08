@@ -14,8 +14,6 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
-// @RequestMapping("/api")
-// @CrossOrigin(origins = "http://localhost:3000")
 public class StripeWebhookController {
 
     private static final String STRIPE_ENDPOINT_SECRET =
