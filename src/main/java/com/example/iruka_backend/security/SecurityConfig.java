@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
+import com.example.iruka_backend.util.JwtAuthenticationEntryPoint;
 import java.util.Arrays;
 
 @Configuration
@@ -22,6 +22,9 @@ public class SecurityConfig {
 
   @Autowired
   private JwtTokenProvider jwtTokenProvider;
+
+  @Autowired
+  private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint; // カスタムエントリーポイントを追加
 
   @Value("${spring.mvc.cors.allowed-origins}")
   private String[] allowedOrigins;
@@ -38,7 +41,10 @@ public class SecurityConfig {
             .requestMatchers("/api/checkout/**").permitAll() // StripeのCheckoutは認証なしでアクセス可能
             .requestMatchers("/api/sample/**").permitAll() // サンプルAPIは認証なしでアクセス可能
             .anyRequest().authenticated() // それ以外は認証が必要
-        ).addFilter(new JwtAuthorizationFilter(authenticationManager, jwtTokenProvider)); // JWTフィルタの追加
+        )
+        .exceptionHandling(
+            exception -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint)) // カスタムエントリーポイントを設定
+        .addFilter(new JwtAuthorizationFilter(authenticationManager, jwtTokenProvider)); // JWTフィルタの追加
 
     return http.build();
   }

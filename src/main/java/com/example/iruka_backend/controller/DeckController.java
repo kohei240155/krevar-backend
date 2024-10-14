@@ -48,8 +48,6 @@ public class DeckController {
 
     logger.info("------------- デッキ一覧取得API開始 -------------");
 
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
-
     DeckListResponse decks = deckService.getDecksByUserId(userId, page, size);
 
     logger.info("------------- デッキ一覧取得API終了 -------------");
@@ -69,8 +67,6 @@ public class DeckController {
       @RequestBody DeckCreateRequest deckCreateRequest) {
 
     logger.info("------------- デッキ作成API開始 -------------");
-
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     deckService.save(deckCreateRequest);
 
