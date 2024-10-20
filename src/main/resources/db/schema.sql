@@ -1,9 +1,9 @@
--- DROP TABLE `iruka_db`.`words`;
--- DROP TABLE `iruka_db`.`review_intervals`;
--- DROP TABLE `iruka_db`.`decks`;
--- DROP TABLE `iruka_db`.`users`;
--- DROP TABLE `iruka_db`.`subscription_statuses`;
--- DROP TABLE `iruka_db`.`languages`;
+-- DROP TABLE `krevar_db`.`words`;
+-- DROP TABLE `krevar_db`.`review_intervals`;
+-- DROP TABLE `krevar_db`.`decks`;
+-- DROP TABLE `krevar_db`.`users`;
+-- DROP TABLE `krevar_db`.`subscription_statuses`;
+-- DROP TABLE `krevar_db`.`languages`;
 
 -- languages table
 CREATE TABLE languages (
