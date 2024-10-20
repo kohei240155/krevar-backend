@@ -1,5 +1,6 @@
 package com.example.iruka_backend.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.iruka_backend.requestdto.DeckCreateRequest;
 import com.example.iruka_backend.requestdto.DeckUpdateRequest;
 import com.example.iruka_backend.responsedto.DeckListResponse;
-import com.example.iruka_backend.service.DeckService;
-import jakarta.servlet.http.HttpServletRequest;
 import com.example.iruka_backend.security.JwtTokenProvider;
+import com.example.iruka_backend.service.DeckService;
 
 @RestController
 @RequestMapping("/api")
@@ -47,6 +47,26 @@ public class DeckController {
       @RequestParam(name = "size", defaultValue = "10") Long size) {
 
     logger.info("------------- デッキ一覧取得API開始 -------------");
+
+    // // トークン取得する場合
+    // String token = null;
+
+    // // Authorizationヘッダーからトークンを取得
+    // String authorizationHeader = httpServletRequest.getHeader("Authorization");
+    // if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+    // token = authorizationHeader.replace("Bearer ", "");
+    // } else {
+    // // CookieからJWTを取得
+    // if (httpServletRequest.getCookies() != null) {
+    // for (jakarta.servlet.http.Cookie cookie : httpServletRequest.getCookies()) {
+    // if (cookie.getName().equals("JWT")) {
+    // token = cookie.getValue();
+    // }
+    // }
+    // }
+    // }
+    // String email = jwtTokenProvider.getEmailFromToken(token);
+    // System.out.println(email);
 
     DeckListResponse decks = deckService.getDecksByUserId(userId, page, size);
 
