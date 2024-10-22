@@ -16,6 +16,7 @@ import com.example.krevar_backend.requestdto.WordCreateRequest;
 import com.example.krevar_backend.requestdto.WordUpdateRequest;
 import com.example.krevar_backend.responsedto.WordListResponse;
 import com.example.krevar_backend.responsedto.WordResponse;
+import com.example.krevar_backend.security.JwtAuthorizationFilter;
 import com.example.krevar_backend.security.JwtTokenProvider;
 import com.example.krevar_backend.service.WordService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,6 +32,9 @@ public class WordController {
   @Autowired
   private JwtTokenProvider jwtTokenProvider;
 
+  @Autowired
+  private JwtAuthorizationFilter jwtAuthorizationFilter;
+
   private static final Logger logger = LoggerFactory.getLogger(WordController.class);
 
   /**
@@ -43,15 +47,13 @@ public class WordController {
    * @param deckId
    * @return 単語一覧
    */
-  @GetMapping("/user/{userId}/deck/{deckId}")
+  @GetMapping("/deck/{deckId}")
   public WordListResponse getWordsByDeckId(HttpServletRequest httpServletRequest,
       @RequestParam(name = "page", defaultValue = "0") Long page,
       @RequestParam(name = "size", defaultValue = "10") Long size,
-      @PathVariable("userId") Long userId, @PathVariable("deckId") Long deckId) {
+      @PathVariable("deckId") Long deckId) {
 
     logger.info("------------- 単語一覧取得API開始 -------------");
-
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     WordListResponse wordListResponse = wordService.getWordListByDeckId(deckId, page, size);
 
@@ -72,7 +74,9 @@ public class WordController {
 
     logger.info("------------- 単語登録API開始 -------------");
 
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
+    // ユーザーIDを取得
+    String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
+    Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
     wordService.save(wordCreateRequest);
 
@@ -91,7 +95,9 @@ public class WordController {
 
     logger.info("------------- 単語更新API開始 -------------");
 
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
+    // ユーザーIDを取得
+    String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
+    Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
     wordService.update(wordUpdateRequest);
 
@@ -106,13 +112,11 @@ public class WordController {
    * @param wordId
    * @return
    */
-  @GetMapping("/user/{userId}/word/{wordId}")
+  @GetMapping("/word/{wordId}")
   public WordResponse getWordById(HttpServletRequest httpServletRequest,
-      @PathVariable("userId") Long userId, @PathVariable("wordId") Long wordId) {
+      @PathVariable("wordId") Long wordId) {
 
     logger.info("------------- 単語取得API開始 -------------");
-
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     WordResponse wordResponse = wordService.getWordById(wordId);
 
@@ -128,13 +132,11 @@ public class WordController {
    * @param userId
    * @param wordId
    */
-  @DeleteMapping("/user/{userId}/word/{wordId}")
-  public void deleteWord(HttpServletRequest httpServletRequest, @PathVariable("userId") Long userId,
+  @DeleteMapping("/word/{wordId}")
+  public void deleteWord(HttpServletRequest httpServletRequest,
       @PathVariable("wordId") Long wordId) {
 
     logger.info("------------- 単語削除API開始 -------------");
-
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     wordService.delete(wordId);
 

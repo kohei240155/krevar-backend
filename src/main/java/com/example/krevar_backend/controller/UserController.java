@@ -12,9 +12,9 @@ import com.example.krevar_backend.entity.UserSettingsEntity;
 import com.example.krevar_backend.requestdto.UserSettingsUpdateRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 import org.slf4j.LoggerFactory;
+import com.example.krevar_backend.security.JwtAuthorizationFilter;
 import com.example.krevar_backend.security.JwtTokenProvider;
 
 @RestController
@@ -27,15 +27,20 @@ public class UserController {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
+    @Autowired
+    private JwtAuthorizationFilter jwtAuthorizationFilter;
+
     private static final org.slf4j.Logger logger = LoggerFactory.getLogger(UserController.class);
 
-    @GetMapping("/{userId}/settings")
-    public ResponseEntity<UserSettingsEntity> getUserSettings(HttpServletRequest httpServletRequest,
-            @PathVariable("userId") Long userId) {
+    @GetMapping("/settings")
+    public ResponseEntity<UserSettingsEntity> getUserSettings(
+            HttpServletRequest httpServletRequest) {
 
         logger.info("------------- ユーザー設定取得API開始 -------------");
 
-        jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
+        // ユーザーIDを取得
+        String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
+        Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
         UserSettingsEntity userSettingsEntity = userService.getUserSettings(userId);
 
@@ -44,14 +49,15 @@ public class UserController {
         return ResponseEntity.ok(userSettingsEntity);
     }
 
-    @PutMapping("/{userId}/settings")
+    @PutMapping("/settings")
     public ResponseEntity<String> saveUserSettings(HttpServletRequest httpServletRequest,
-            @PathVariable("userId") Long userId,
             @RequestBody UserSettingsUpdateRequest userSettingsUpdateRequest) {
 
         logger.info("------------- ユーザー設定更新API開始 -------------");
 
-        jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
+        // ユーザーIDを取得
+        String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
+        Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
         userService.updateUserSettings(userId, userSettingsUpdateRequest);
 

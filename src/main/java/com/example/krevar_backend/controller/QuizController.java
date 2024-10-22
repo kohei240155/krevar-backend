@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.krevar_backend.requestdto.ExtraQuizResultUpdateRequest;
 import com.example.krevar_backend.requestdto.NormalQuizResultUpdateRequest;
 import com.example.krevar_backend.responsedto.QuizResponse;
+import com.example.krevar_backend.security.JwtAuthorizationFilter;
 import com.example.krevar_backend.security.JwtTokenProvider;
 import com.example.krevar_backend.service.QuizService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,6 +26,9 @@ public class QuizController {
   @Autowired
   private JwtTokenProvider jwtTokenProvider;
 
+  @Autowired
+  private JwtAuthorizationFilter jwtAuthorizationFilter;
+
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(QuizController.class);
 
   /**
@@ -35,13 +39,11 @@ public class QuizController {
    * @param deckId
    * @return ノーマルクイズ
    */
-  @GetMapping("/user/{userId}/normal-quiz/deck/{deckId}")
+  @GetMapping("/normal-quiz/deck/{deckId}")
   public QuizResponse getNormalQuiz(HttpServletRequest httpServletRequest,
-      @PathVariable("userId") Long userId, @PathVariable("deckId") Long deckId) {
+      @PathVariable("deckId") Long deckId) {
 
     logger.info("------------- ノーマルクイズ取得API開始 -------------");
-
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     QuizResponse quizResponse = quizService.getNormalQuiz(deckId);
 
@@ -62,7 +64,9 @@ public class QuizController {
 
     logger.info("------------- ノーマルクイズ更新API開始 -------------");
 
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
+    // ユーザーIDを取得
+    String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
+    Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
     quizService.updateNormalQuiz(request);
 
@@ -78,13 +82,11 @@ public class QuizController {
    * @param deckId
    * @return エクストラクイズ
    */
-  @GetMapping("/user/{userId}/extra-quiz/deck/{deckId}")
+  @GetMapping("/extra-quiz/deck/{deckId}")
   public QuizResponse getExtraQuiz(HttpServletRequest httpServletRequest,
-      @PathVariable("userId") Long userId, @PathVariable("deckId") Long deckId) {
+      @PathVariable("deckId") Long deckId) {
 
     logger.info("------------- エクストラクイズ取得API開始 -------------");
-
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     QuizResponse quizResponse = quizService.getExtraQuiz(deckId);
 
@@ -105,7 +107,9 @@ public class QuizController {
 
     logger.info("------------- エクストラクイズ更新API開始 -------------");
 
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
+    // ユーザーIDを取得
+    String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
+    Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
     quizService.updateExtraQuiz(request);
 
@@ -119,13 +123,11 @@ public class QuizController {
    * @param userId
    * @param deckId
    */
-  @PutMapping("/user/{userId}/extra-quiz/reset/deck/{deckId}")
+  @PutMapping("/extra-quiz/reset/deck/{deckId}")
   public void resetExtraQuiz(HttpServletRequest httpServletRequest,
-      @PathVariable("userId") Long userId, @PathVariable("deckId") Long deckId) {
+      @PathVariable("deckId") Long deckId) {
 
     logger.info("------------- エクストラクイズリセットAPI開始 -------------");
-
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     quizService.resetExtraQuiz(deckId);
 

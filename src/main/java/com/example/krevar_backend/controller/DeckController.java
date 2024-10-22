@@ -51,9 +51,8 @@ public class DeckController {
 
     logger.info("------------- デッキ一覧取得API開始 -------------");
 
-    // トークン取得する場合
+    // ユーザーIDを取得
     String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
-
     Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
     DeckListResponse decks = deckService.getDecksByUserId(userId, page, size);
@@ -97,8 +96,6 @@ public class DeckController {
 
     logger.info("------------- デッキ更新API開始 -------------");
 
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
-
     deckService.update(deckUpdateRequest, deckId);
 
     logger.info("------------- デッキ更新API終了 -------------");
@@ -113,13 +110,11 @@ public class DeckController {
    * @param deckId
    * @return デッキ削除成功メッセージ
    */
-  @DeleteMapping("/user/{userId}/deck/{deckId}")
+  @DeleteMapping("/deck/{deckId}")
   public String deleteDeck(HttpServletRequest httpServletRequest,
-      @PathVariable("userId") Long userId, @PathVariable("deckId") Long deckId) {
+      @PathVariable("deckId") Long deckId) {
 
     logger.info("------------- デッキ削除API開始 -------------");
-
-    jwtTokenProvider.validateToken(httpServletRequest.getHeader("Authorization"));
 
     deckService.delete(deckId);
 
