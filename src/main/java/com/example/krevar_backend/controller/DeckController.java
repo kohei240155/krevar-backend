@@ -44,9 +44,8 @@ public class DeckController {
    * @param size
    * @return デッキ一覧
    */
-  @GetMapping("/user/{userId}/deck")
+  @GetMapping("/deck")
   public DeckListResponse getDeckList(HttpServletRequest httpServletRequest,
-      @PathVariable("userId") Long userId,
       @RequestParam(name = "page", defaultValue = "0") Long page,
       @RequestParam(name = "size", defaultValue = "10") Long size) {
 
@@ -54,7 +53,8 @@ public class DeckController {
 
     // トークン取得する場合
     String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
-    String email = jwtTokenProvider.getEmailFromToken(token);
+
+    Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
     DeckListResponse decks = deckService.getDecksByUserId(userId, page, size);
 

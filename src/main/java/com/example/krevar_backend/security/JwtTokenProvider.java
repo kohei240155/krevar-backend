@@ -25,8 +25,9 @@ public class JwtTokenProvider {
   private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
 
   // JWTトークンを生成するメソッド
-  public String generateToken(String email) {
+  public String generateToken(String email, String userId) {
     Map<String, Object> claims = new HashMap<>();
+    claims.put("userId", userId); // ユーザーIDをString型としてクレームに追加
     return Jwts.builder().setClaims(claims).setSubject(email).setIssuedAt(new Date())
         .setExpiration(new Date(new Date().getTime() + jwtExpirationMs))
         .signWith(Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtSecret)),
@@ -51,5 +52,14 @@ public class JwtTokenProvider {
       logger.error("Invalid JWT token: {}", e.getMessage());
       return false;
     }
+  }
+
+  // JWTトークンからユーザーIDを取得するメソッド
+  public Long getUserIdFromToken(String token) {
+    Claims claims = Jwts.parserBuilder()
+        .setSigningKey(Keys.hmacShaKeyFor(Base64.getDecoder().decode(jwtSecret))).build()
+        .parseClaimsJws(token).getBody();
+    String userIdString = claims.get("userId", String.class); // クレームからユーザーIDをString型で取得
+    return Long.parseLong(userIdString); // String型をLong型に変換
   }
 }

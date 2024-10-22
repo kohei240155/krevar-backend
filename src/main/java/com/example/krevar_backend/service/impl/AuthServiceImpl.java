@@ -63,8 +63,10 @@ public class AuthServiceImpl implements AuthService {
             user = userRepository.findUserByEmail(email);
         }
 
+        String userId = String.valueOf(user.getId());
+
         // JWTを発行
-        String jwtToken = jwtTokenProvider.generateToken(email);
+        String jwtToken = jwtTokenProvider.generateToken(email, userId);
 
         // JWTをクッキーに設定
         ResponseCookie jwtCookie = ResponseCookie.from("JWT", jwtToken).path("/") // クッキーのパスを指定
