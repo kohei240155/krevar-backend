@@ -4,6 +4,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.stereotype.Component;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+@Component
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -21,12 +23,8 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-            FilterChain chain) throws IOException, ServletException {
-
+    public String extractToken(HttpServletRequest request) {
         String token = null;
-
         // Authorizationヘッダーからトークンを取得
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -41,6 +39,14 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                 }
             }
         }
+        return token;
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+            FilterChain chain) throws IOException, ServletException {
+
+        String token = extractToken(request);
 
         // トークンが有効な場合、認証情報を設定
         if (token != null && jwtTokenProvider.validateToken(token)) {

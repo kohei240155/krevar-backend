@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.krevar_backend.requestdto.DeckCreateRequest;
 import com.example.krevar_backend.requestdto.DeckUpdateRequest;
 import com.example.krevar_backend.responsedto.DeckListResponse;
+import com.example.krevar_backend.security.JwtAuthorizationFilter;
 import com.example.krevar_backend.security.JwtTokenProvider;
 import com.example.krevar_backend.service.DeckService;
 
@@ -28,6 +29,9 @@ public class DeckController {
 
   @Autowired
   private JwtTokenProvider jwtTokenProvider;
+
+  @Autowired
+  private JwtAuthorizationFilter jwtAuthorizationFilter;
 
   private static final Logger logger = LoggerFactory.getLogger(DeckController.class);
 
@@ -48,25 +52,9 @@ public class DeckController {
 
     logger.info("------------- デッキ一覧取得API開始 -------------");
 
-    // // トークン取得する場合
-    // String token = null;
-
-    // // Authorizationヘッダーからトークンを取得
-    // String authorizationHeader = httpServletRequest.getHeader("Authorization");
-    // if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-    // token = authorizationHeader.replace("Bearer ", "");
-    // } else {
-    // // CookieからJWTを取得
-    // if (httpServletRequest.getCookies() != null) {
-    // for (jakarta.servlet.http.Cookie cookie : httpServletRequest.getCookies()) {
-    // if (cookie.getName().equals("JWT")) {
-    // token = cookie.getValue();
-    // }
-    // }
-    // }
-    // }
-    // String email = jwtTokenProvider.getEmailFromToken(token);
-    // System.out.println(email);
+    // トークン取得する場合
+    String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
+    String email = jwtTokenProvider.getEmailFromToken(token);
 
     DeckListResponse decks = deckService.getDecksByUserId(userId, page, size);
 
