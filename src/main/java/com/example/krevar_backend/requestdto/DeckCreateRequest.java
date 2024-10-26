@@ -11,9 +11,6 @@ import lombok.Setter;
 @NoArgsConstructor
 public class DeckCreateRequest {
 
-    /** ユーザーID */
-    private Long userId;
-
     /** デッキ名 */
     private String deckName;
 

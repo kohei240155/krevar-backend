@@ -49,7 +49,7 @@ public class DeckServiceImpl implements DeckService {
       deckInfoList.add(deckInfo);
     }
 
-    DeckListResponse response = new DeckListResponse(deckInfoList);
+    DeckListResponse response = new DeckListResponse(deckInfoList, deckInfoList.size());
 
     // progressの値が多い順に並び替え
     response.getDeckInfo().sort(Comparator.comparingInt(DeckInfo::getProgress).reversed());
@@ -71,11 +71,11 @@ public class DeckServiceImpl implements DeckService {
    * @param deckCreateRequest デッキリクエスト
    */
   @Override
-  public void save(DeckCreateRequest deckCreateRequest) {
+  public void save(Long userId, DeckCreateRequest deckCreateRequest) {
 
     // デッキエンティティを作成
     DeckCreateEntity deckCreateEntity =
-        new DeckCreateEntity(deckCreateRequest.getUserId(), deckCreateRequest.getDeckName(),
+        new DeckCreateEntity(userId, deckCreateRequest.getDeckName(),
             deckCreateRequest.getNativeLanguageId(), deckCreateRequest.getLearningLanguageId());
 
     // デッキを保存
@@ -88,11 +88,11 @@ public class DeckServiceImpl implements DeckService {
    * @param deckUpdateRequest デッキ更新リクエスト
    */
   @Override
-  public void update(DeckUpdateRequest deckUpdateRequest, Long deckId) {
+  public void update(Long userId, DeckUpdateRequest deckUpdateRequest, Long deckId) {
 
     // デッキエンティティを作成
     DeckUpdateEntity deckUpdateEntity =
-        new DeckUpdateEntity(deckUpdateRequest.getUserId(), deckUpdateRequest.getDeckName(),
+        new DeckUpdateEntity(userId, deckUpdateRequest.getDeckName(),
             deckUpdateRequest.getNativeLanguageId(), deckUpdateRequest.getLearningLanguageId());
 
     deckRepository.update(deckUpdateEntity, deckId);

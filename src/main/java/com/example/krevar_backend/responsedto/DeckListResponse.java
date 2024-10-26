@@ -10,6 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DeckListResponse {
 
+  /** デッキ一覧 */
   private List<DeckInfo> deckInfo;
 
+  /** 合計デッキ数 */
+  private int totalDeckCount;
 }

@@ -23,14 +23,14 @@ public interface DeckService {
    * @param deckRequest デッキリクエスト
    * @return 保存されたデッキ
    */
-  void save(DeckCreateRequest deckCreateRequest);
+  void save(Long userId, DeckCreateRequest deckCreateRequest);
 
   /**
    * デッキを更新する
    *
    * @param deckRequest デッキリクエスト
    */
-  void update(DeckUpdateRequest deckUpdateRequest, Long deckId);
+  void update(Long userId, DeckUpdateRequest deckUpdateRequest, Long deckId);
 
   /**
    * デッキを削除する
