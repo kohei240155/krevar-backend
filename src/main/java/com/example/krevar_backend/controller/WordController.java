@@ -43,11 +43,10 @@ public class WordController {
    * @param httpServletRequest
    * @param page
    * @param size
-   * @param userId
    * @param deckId
    * @return 単語一覧
    */
-  @GetMapping("/deck/{deckId}")
+  @GetMapping("/deck/{deckId}/words")
   public WordListResponse getWordsByDeckId(HttpServletRequest httpServletRequest,
       @RequestParam(name = "page", defaultValue = "0") Long page,
       @RequestParam(name = "size", defaultValue = "10") Long size,

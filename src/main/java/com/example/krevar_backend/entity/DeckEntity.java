@@ -16,6 +16,12 @@ public class DeckEntity {
   /** デッキ名 */
   private String deckName;
 
+  /** ネイティブ言語ID */
+  private Long nativeLanguageId;
+
+  /** 学習言語ID */
+  private Long learningLanguageId;
+
   /** ユーザーID */
   private Long userId;
 

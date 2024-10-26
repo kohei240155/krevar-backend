@@ -26,8 +26,28 @@ public class DeckRepositoryImpl implements DeckRepository {
     public List<DeckEntity> findByUserId(Long userId) {
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
-        List<DeckEntity> deck =
-                namedParameterJdbcTemplate.query(FIND_BY_ID_SQL, params, new DeckEntityRowMapper());
+        List<DeckEntity> deck = namedParameterJdbcTemplate.query(FIND_BY_USER_ID_SQL, params,
+                new DeckEntityRowMapper());
+        return deck;
+    }
+
+    private static final String FIND_BY_USER_ID_SQL = """
+            SELECT
+                *
+            FROM
+                decks
+            WHERE
+                user_id = :userId
+            AND
+                deleted = 0
+            """;
+
+    @Override
+    public DeckEntity findById(Long deckId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("deckId", deckId);
+        DeckEntity deck = namedParameterJdbcTemplate.queryForObject(FIND_BY_ID_SQL, params,
+                new DeckEntityRowMapper());
         return deck;
     }
 
@@ -37,7 +57,7 @@ public class DeckRepositoryImpl implements DeckRepository {
             FROM
                 decks
             WHERE
-                user_id = :userId
+                id = :deckId
             AND
                 deleted = 0
             """;

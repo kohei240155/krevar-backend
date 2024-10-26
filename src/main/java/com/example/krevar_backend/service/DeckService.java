@@ -2,6 +2,7 @@ package com.example.krevar_backend.service;
 
 import com.example.krevar_backend.requestdto.DeckCreateRequest;
 import com.example.krevar_backend.requestdto.DeckUpdateRequest;
+import com.example.krevar_backend.responsedto.DeckInfo;
 import com.example.krevar_backend.responsedto.DeckListResponse;
 
 public interface DeckService {
@@ -14,7 +15,15 @@ public interface DeckService {
    * @param limit ページサイズ
    * @return デッキリスト
    */
-  DeckListResponse getDecksByUserId(Long userId, Long page, Long limit);
+  DeckListResponse getDeckList(Long userId, Long page, Long limit);
+
+  /**
+   * デッキIDからデッキを取得する
+   *
+   * @param deckId デッキID
+   * @return デッキ
+   */
+  DeckInfo getDeck(Long deckId);
 
   /**
    * デッキを保存する

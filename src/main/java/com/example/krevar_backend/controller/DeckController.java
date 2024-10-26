@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.krevar_backend.requestdto.DeckCreateRequest;
 import com.example.krevar_backend.requestdto.DeckUpdateRequest;
+import com.example.krevar_backend.responsedto.DeckInfo;
 import com.example.krevar_backend.responsedto.DeckListResponse;
 import com.example.krevar_backend.security.JwtAuthorizationFilter;
 import com.example.krevar_backend.security.JwtTokenProvider;
@@ -55,11 +56,31 @@ public class DeckController {
     String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
     Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
-    DeckListResponse decks = deckService.getDecksByUserId(userId, page, size);
+    DeckListResponse decks = deckService.getDeckList(userId, page, size);
 
     logger.info("------------- デッキ一覧取得API終了 -------------");
 
     return decks;
+  }
+
+  /**
+   * デッキIDからデッキを取得
+   *
+   * @param deckId
+   * @return デッキ
+   */
+  @GetMapping("/deck/{deckId}")
+  public DeckInfo getDeckById(HttpServletRequest httpServletRequest,
+      @PathVariable("deckId") Long deckId) {
+
+    logger.info("------------- デッキIDからデッキ取得API開始 -------------");
+
+    // デッキを取得
+    DeckInfo deck = deckService.getDeck(deckId);
+
+    logger.info("------------- デッキIDからデッキ取得API終了 -------------");
+
+    return deck;
   }
 
   /**

@@ -33,7 +33,7 @@ public class DeckServiceImpl implements DeckService {
    * @return デッキリスト
    */
   @Override
-  public DeckListResponse getDecksByUserId(Long userId, Long page, Long size) {
+  public DeckListResponse getDeckList(Long userId, Long page, Long size) {
 
     // デッキを取得
     List<DeckEntity> decks = deckRepository.findByUserId(userId);
@@ -63,6 +63,26 @@ public class DeckServiceImpl implements DeckService {
     response.setDeckInfo(paginatedDeckInfo);
 
     return response;
+  }
+
+  /**
+   * デッキIDからデッキを取得する
+   *
+   * @param deckId デッキID
+   * @return デッキ
+   */
+  @Override
+  public DeckInfo getDeck(Long deckId) {
+
+    DeckEntity deck = deckRepository.findById(deckId);
+
+    DeckInfo deckInfo = new DeckInfo();
+    deckInfo.setId(deck.getId());
+    deckInfo.setDeckName(deck.getDeckName());
+    deckInfo.setNativeLanguageId(deck.getNativeLanguageId());
+    deckInfo.setLearningLanguageId(deck.getLearningLanguageId());
+
+    return deckInfo;
   }
 
   /**

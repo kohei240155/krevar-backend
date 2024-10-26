@@ -16,6 +16,14 @@ public interface DeckRepository {
   List<DeckEntity> findByUserId(Long userId);
 
   /**
+   * デッキIDからデッキを取得する
+   *
+   * @param deckId デッキID
+   * @return デッキ
+   */
+  DeckEntity findById(Long deckId);
+
+  /**
    * デッキを保存する
    *
    * @param deckRequest デッキリクエスト

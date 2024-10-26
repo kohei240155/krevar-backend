@@ -13,6 +13,12 @@ public class DeckInfo {
     /** デッキ名 */
     private String deckName;
 
+    /** ネイティブ言語ID */
+    private Long nativeLanguageId;
+
+    /** 学習言語ID */
+    private Long learningLanguageId;
+
     /** 進捗 */
     private int progress;
 }
