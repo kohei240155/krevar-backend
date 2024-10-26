@@ -71,8 +71,8 @@ public class AuthServiceImpl implements AuthService {
         // JWTをクッキーに設定
         ResponseCookie jwtCookie = ResponseCookie.from("JWT", jwtToken).path("/") // クッキーのパスを指定
                 .httpOnly(true) // JavaScriptからアクセス不可にする
-                .secure(true) // HTTPS接続のみで送信
-                .sameSite("None") // Cross-Siteリクエストの防止
+                .secure(false) // HTTPS接続のみで送信 (開発環境では false に設定、HTTPS環境では true)
+                .sameSite("None") // クロスサイトリクエストの許可
                 .build();
 
         logger.info("Google login successful for email: {}. JWT Token: {}", email, jwtToken);

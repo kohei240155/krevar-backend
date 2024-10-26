@@ -75,7 +75,11 @@ public class DeckController {
 
     logger.info("------------- デッキ作成API開始 -------------");
 
-    deckService.save(deckCreateRequest);
+    // ユーザーIDを取得
+    String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
+    Long userId = jwtTokenProvider.getUserIdFromToken(token);
+
+    deckService.save(userId, deckCreateRequest);
 
     logger.info("------------- デッキ作成API終了 -------------");
 
@@ -96,7 +100,11 @@ public class DeckController {
 
     logger.info("------------- デッキ更新API開始 -------------");
 
-    deckService.update(deckUpdateRequest, deckId);
+    // ユーザーIDを取得
+    String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
+    Long userId = jwtTokenProvider.getUserIdFromToken(token);
+
+    deckService.update(userId, deckUpdateRequest, deckId);
 
     logger.info("------------- デッキ更新API終了 -------------");
 
