@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 import com.example.krevar_backend.entity.ExtraQuizResultEntity;
 import com.example.krevar_backend.entity.NormalQuizResultEntity;
 import com.example.krevar_backend.entity.WordEntity;
+import com.example.krevar_backend.repository.DeckRepository;
 import com.example.krevar_backend.repository.QuizRepository;
 import com.example.krevar_backend.repository.ReviewIntervalRepository;
 import com.example.krevar_backend.requestdto.ExtraQuizResultUpdateRequest;
 import com.example.krevar_backend.requestdto.NormalQuizResultUpdateRequest;
+import com.example.krevar_backend.responsedto.QuizInfo;
 import com.example.krevar_backend.responsedto.QuizResponse;
 import com.example.krevar_backend.service.QuizService;
 
@@ -19,6 +21,9 @@ public class QuizServiceImpl implements QuizService {
 
   @Autowired
   private QuizRepository quizRepository;
+
+  @Autowired
+  private DeckRepository deckRepository;
 
   @Autowired
   private ReviewIntervalRepository reviewIntervalRepository;
@@ -38,6 +43,10 @@ public class QuizServiceImpl implements QuizService {
     // クイズの残数を取得
     int leftQuizCount = getLeftNormalQuizCount(deckId);
 
+    // デッキ名を取得
+    String deckName = deckRepository.findById(deckId).getDeckName();
+    response.setDeckName(deckName);
+
     // クイズの残数が0の場合はエラーをスロー
     if (leftQuizCount == 0) {
       response.setLeftQuizCount(0);
@@ -47,13 +56,21 @@ public class QuizServiceImpl implements QuizService {
     // クイズを取得
     WordEntity word = quizRepository.findNormalQuizByDeckId(deckId);
 
+    // デッキ名を取得
+
+    // クイズ情報を生成
+    QuizInfo quizData = new QuizInfo();
+    quizData.setId(word.getId());
+    quizData.setOriginalText(word.getOriginalText());
+    quizData.setTranslatedText(word.getTranslatedText());
+    quizData.setNuanceText(word.getNuanceText());
+    quizData.setImageUrl(word.getImageUrl());
+    quizData.setLeftQuizCount(leftQuizCount);
+
     // レスポンスに設定
-    response.setId(word.getId());
-    response.setOriginalText(word.getOriginalText());
-    response.setTranslatedText(word.getTranslatedText());
-    response.setNuanceText(word.getNuanceText());
-    response.setImageUrl(word.getImageUrl());
+    response.setQuizData(quizData);
     response.setLeftQuizCount(leftQuizCount);
+
 
     return response;
   }
@@ -131,6 +148,10 @@ public class QuizServiceImpl implements QuizService {
     // レスポンスを生成
     QuizResponse response = new QuizResponse();
 
+    // デッキ名を取得
+    String deckName = deckRepository.findById(deckId).getDeckName();
+    response.setDeckName(deckName);
+
     // クイズの残数を取得
     int leftQuizCount = getLeftExtraQuizCount(deckId);
 
@@ -143,12 +164,18 @@ public class QuizServiceImpl implements QuizService {
     // クイズを取得
     WordEntity word = quizRepository.findExtraQuizByDeckId(deckId);
 
+
+    // クイズ情報を生成
+    QuizInfo quizData = new QuizInfo();
+    quizData.setId(word.getId());
+    quizData.setOriginalText(word.getOriginalText());
+    quizData.setTranslatedText(word.getTranslatedText());
+    quizData.setNuanceText(word.getNuanceText());
+    quizData.setImageUrl(word.getImageUrl());
+    quizData.setLeftQuizCount(leftQuizCount);
+
     // レスポンスに設定
-    response.setId(word.getId());
-    response.setOriginalText(word.getOriginalText());
-    response.setTranslatedText(word.getTranslatedText());
-    response.setNuanceText(word.getNuanceText());
-    response.setImageUrl(word.getImageUrl());
+    response.setQuizData(quizData);
     response.setLeftQuizCount(leftQuizCount);
 
     return response;
