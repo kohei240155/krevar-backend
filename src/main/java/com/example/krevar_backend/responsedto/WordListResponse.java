@@ -10,6 +10,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class WordListResponse {
 
+  /** 単語一覧 */
   private List<WordInfo> wordInfo;
 
+  /** デッキ名 */
+  private String deckName;
+
+  /** 総単語数 */
+  private int totalWordCount;
 }

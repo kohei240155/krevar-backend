@@ -54,6 +54,10 @@ public class WordController {
 
     logger.info("------------- 単語一覧取得API開始 -------------");
 
+    logger.info("デッキID: {}", deckId);
+    logger.info("ページ: {}", page);
+    logger.info("サイズ: {}", size);
+
     WordListResponse wordListResponse = wordService.getWordListByDeckId(deckId, page, size);
 
     logger.info("------------- 単語一覧取得API終了 -------------");
@@ -73,11 +77,14 @@ public class WordController {
 
     logger.info("------------- 単語登録API開始 -------------");
 
+    // リクエストデータをログに出力
+    logger.info("リクエストデータ: {}", wordCreateRequest);
+
     // ユーザーIDを取得
     String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
     Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
-    wordService.save(wordCreateRequest);
+    wordService.save(userId, wordCreateRequest);
 
     logger.info("------------- 単語登録API終了 -------------");
   }

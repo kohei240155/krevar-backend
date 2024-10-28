@@ -11,9 +11,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.krevar_backend.entity.DeckEntity;
 import com.example.krevar_backend.entity.WordCreateEntity;
 import com.example.krevar_backend.entity.WordEntity;
 import com.example.krevar_backend.entity.WordUpdateEntity;
+import com.example.krevar_backend.repository.DeckRepository;
 import com.example.krevar_backend.repository.WordRepository;
 import com.example.krevar_backend.requestdto.WordCreateRequest;
 import com.example.krevar_backend.requestdto.WordUpdateRequest;
@@ -28,6 +30,9 @@ public class WordServiceImpl implements WordService {
   @Autowired
   private WordRepository wordRepository;
 
+  @Autowired
+  private DeckRepository deckRepository;
+
   private static final String LOCAL_IMAGE_DIR = "C:/Git/krevar-frontend/public/images/testImages/";
 
   /**
@@ -40,6 +45,10 @@ public class WordServiceImpl implements WordService {
    */
   @Override
   public WordListResponse getWordListByDeckId(Long deckId, Long page, Long size) {
+
+    // デッキを取得
+    DeckEntity deck = deckRepository.findById(deckId);
+    String deckName = deck.getDeckName();
 
     // デッキに紐づく単語を取得
     List<WordEntity> words = wordRepository.findByDeckId(deckId);
@@ -55,7 +64,10 @@ public class WordServiceImpl implements WordService {
       wordInfoList.add(wordInfo);
     }
 
-    WordListResponse response = new WordListResponse(wordInfoList);
+    // 総単語数を取得
+    int totalWordCount = wordInfoList.size();
+
+    WordListResponse response = new WordListResponse(wordInfoList, deckName, totalWordCount);
 
     // ページネーション
     Long offset = page * size;
@@ -97,9 +109,8 @@ public class WordServiceImpl implements WordService {
    * @param wordRegisterRequest 単語登録リクエスト
    */
   @Override
-  public void save(WordCreateRequest wordCreateRequest) {
+  public void save(Long userId, WordCreateRequest wordCreateRequest) {
 
-    Long userId = wordCreateRequest.getUserId();
     String originalText = wordCreateRequest.getOriginalText();
     String translatedText = wordCreateRequest.getTranslatedText();
     String nuanceText = wordCreateRequest.getNuanceText();
@@ -112,12 +123,13 @@ public class WordServiceImpl implements WordService {
     // 画像を保存
     String imagePath = wordCreateEntity.getImageUrl();
 
-    try {
-      String savedImagePath = saveImage(imagePath);
-      wordCreateEntity.setImageUrl(savedImagePath);
-    } catch (IOException e) {
-      throw new RuntimeException("画像の保存に失敗しました", e);
-    }
+    // 一時的に画像を保存しない
+    // try {
+    // String savedImagePath = saveImage(imagePath);
+    // wordCreateEntity.setImageUrl(savedImagePath);
+    // } catch (IOException e) {
+    // throw new RuntimeException("画像の保存に失敗しました", e);
+    // }
     // 単語を保存
     wordRepository.save(wordCreateEntity);
   }

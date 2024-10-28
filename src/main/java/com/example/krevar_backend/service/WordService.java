@@ -29,7 +29,7 @@ public interface WordService {
    *
    * @param wordCreateRequest 単語登録リクエスト
    */
-  void save(WordCreateRequest wordCreateRequest);
+  void save(Long userId, WordCreateRequest wordCreateRequest);
 
   /**
    * 画像を保存する
