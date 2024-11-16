@@ -5,6 +5,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,15 +30,6 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             token = authorizationHeader.replace("Bearer ", "");
-        } else {
-            // CookieからJWTを取得
-            if (request.getCookies() != null) {
-                for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
-                    if (cookie.getName().equals("JWT")) {
-                        token = cookie.getValue();
-                    }
-                }
-            }
         }
         return token;
     }
@@ -48,13 +40,17 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
         String token = extractToken(request);
 
-        // トークンが有効な場合、認証情報を設定
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            String email = jwtTokenProvider.getEmailFromToken(token);
-            // Long userId = jwtTokenProvider.getUserIdFromToken(token);
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(email, null, null);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            // トークンが有効な場合、認証情報を設定
+            if (token != null && jwtTokenProvider.validateToken(token)) {
+                String email = jwtTokenProvider.getEmailFromToken(token);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(email, null, null);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (JwtException e) {
+            logger.error("JWT validation error: {}", e);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
 
         chain.doFilter(request, response);
