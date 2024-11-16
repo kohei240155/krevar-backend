@@ -19,4 +19,7 @@ public class GoogleLoginRequest {
 
     /** GoogleID */
     private String googleId;
+
+    /** IDトークン */
+    private String idToken;
 }
