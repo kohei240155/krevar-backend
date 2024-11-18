@@ -1,10 +1,8 @@
 package com.example.krevar_backend.repository.impl;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -21,33 +19,6 @@ public class WordRepositoryImpl implements WordRepository {
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    private static final String FIND_PROGRESS_BY_DECK_ID_SQL = """
-            SELECT
-                COUNT(*)
-            FROM
-                words
-            WHERE
-                deck_id = :deckId
-                and next_practice_date <= :today
-                and deleted = 0
-            """;
-
-    @Override
-    public int getProgressByDeckId(Long deckId) {
-
-        // パラメータを設定
-        Map<String, Object> params = new HashMap<>();
-        params.put("deckId", deckId);
-        params.put("today", LocalDate.now());
-
-        // クエリを実行
-        Integer result = namedParameterJdbcTemplate.queryForObject(FIND_PROGRESS_BY_DECK_ID_SQL,
-                params, Integer.class);
-
-        return Optional.ofNullable(result).orElse(0);
-    }
-
 
     private static final String FIND_WORDS_BY_DECK_ID_SQL = """
             SELECT

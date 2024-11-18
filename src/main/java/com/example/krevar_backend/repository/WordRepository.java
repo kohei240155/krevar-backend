@@ -8,14 +8,6 @@ import com.example.krevar_backend.entity.WordCreateEntity;
 public interface WordRepository {
 
   /**
-   * デッキIDに紐づくクイズの進捗を取得する
-   *
-   * @param deckId デッキID
-   * @return クイズの進捗
-   */
-  int getProgressByDeckId(Long deckId);
-
-  /**
    * デッキIDに紐づく単語を取得する
    *
    * @param deckId デッキID

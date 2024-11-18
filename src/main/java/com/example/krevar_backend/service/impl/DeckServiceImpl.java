@@ -10,7 +10,6 @@ import com.example.krevar_backend.entity.DeckCreateEntity;
 import com.example.krevar_backend.entity.DeckEntity;
 import com.example.krevar_backend.entity.DeckUpdateEntity;
 import com.example.krevar_backend.repository.DeckRepository;
-import com.example.krevar_backend.repository.WordRepository;
 import com.example.krevar_backend.requestdto.DeckCreateRequest;
 import com.example.krevar_backend.requestdto.DeckUpdateRequest;
 import com.example.krevar_backend.responsedto.DeckInfo;
@@ -22,9 +21,6 @@ public class DeckServiceImpl implements DeckService {
 
   @Autowired
   private DeckRepository deckRepository;
-
-  @Autowired
-  private WordRepository wordRepository;
 
   /**
    * ユーザーIDに紐づくデッキを取得する
@@ -44,15 +40,16 @@ public class DeckServiceImpl implements DeckService {
       DeckInfo deckInfo = new DeckInfo();
       deckInfo.setId(deck.getId());
       deckInfo.setDeckName(deck.getDeckName());
-      int progress = wordRepository.getProgressByDeckId(deck.getId());
-      deckInfo.setProgress(progress);
+      int remainingQuestionCount = deckRepository.getRemainingQuestionCountByDeckId(deck.getId());
+      deckInfo.setRemainingQuestionCount(remainingQuestionCount);
       deckInfoList.add(deckInfo);
     }
 
     DeckListResponse response = new DeckListResponse(deckInfoList, deckInfoList.size());
 
     // progressの値が多い順に並び替え
-    response.getDeckInfo().sort(Comparator.comparingInt(DeckInfo::getProgress).reversed());
+    response.getDeckInfo()
+        .sort(Comparator.comparingInt(DeckInfo::getRemainingQuestionCount).reversed());
 
     // ページネーション
     Long offset = page * size;

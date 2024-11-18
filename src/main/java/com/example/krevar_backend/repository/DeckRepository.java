@@ -51,4 +51,12 @@ public interface DeckRepository {
    * @param deckId デッキID
    */
   Long getUserIdByDeckId(Long deckId);
+
+  /**
+   * デッキIDに紐づくクイズの進捗を取得する
+   *
+   * @param deckId デッキID
+   * @return クイズの進捗
+   */
+  int getRemainingQuestionCountByDeckId(Long deckId);
 }

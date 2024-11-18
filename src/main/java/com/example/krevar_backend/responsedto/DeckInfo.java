@@ -20,5 +20,5 @@ public class DeckInfo {
     private Long learningLanguageId;
 
     /** 進捗 */
-    private int progress;
+    private int remainingQuestionCount;
 }

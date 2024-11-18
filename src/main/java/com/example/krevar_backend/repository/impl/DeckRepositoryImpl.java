@@ -1,5 +1,6 @@
 package com.example.krevar_backend.repository.impl;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -22,6 +23,12 @@ public class DeckRepositoryImpl implements DeckRepository {
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
+    /**
+     * ユーザーIDに紐づくデッキを取得する
+     *
+     * @param userId ユーザーID
+     * @return デッキリスト
+     */
     @Override
     public List<DeckEntity> findByUserId(Long userId) {
         Map<String, Object> params = new HashMap<>();
@@ -42,6 +49,12 @@ public class DeckRepositoryImpl implements DeckRepository {
                 deleted = 0
             """;
 
+    /**
+     * デッキIDに紐づくデッキを取得する
+     *
+     * @param deckId デッキID
+     * @return デッキ
+     */
     @Override
     public DeckEntity findById(Long deckId) {
         Map<String, Object> params = new HashMap<>();
@@ -62,6 +75,11 @@ public class DeckRepositoryImpl implements DeckRepository {
                 deleted = 0
             """;
 
+    /**
+     * デッキを登録する
+     *
+     * @param deckCreateEntity デッキ登録リクエスト
+     */
     @Override
     public void save(DeckCreateEntity deckCreateEntity) {
 
@@ -86,6 +104,12 @@ public class DeckRepositoryImpl implements DeckRepository {
                         (:userId, :deckName, :nativeLanguageId, :learningLanguageId, :createdAt, :updatedAt)
                     """;
 
+    /**
+     * デッキを更新する
+     *
+     * @param deckUpdateEntity デッキ更新リクエスト
+     * @param deckId デッキID
+     */
     @Override
     public void update(DeckUpdateEntity deckUpdateEntity, Long deckId) {
 
@@ -114,6 +138,11 @@ public class DeckRepositoryImpl implements DeckRepository {
                 id = :deckId
             """;
 
+    /**
+     * デッキを削除する
+     *
+     * @param deckId デッキID
+     */
     @Override
     public void delete(Long deckId) {
 
@@ -135,6 +164,12 @@ public class DeckRepositoryImpl implements DeckRepository {
                 id = :deckId
             """;
 
+    /**
+     * デッキIDに紐づくユーザーIDを取得する
+     *
+     * @param deckId デッキID
+     * @return ユーザーID
+     */
     @Override
     public Long getUserIdByDeckId(Long deckId) {
 
@@ -158,5 +193,38 @@ public class DeckRepositoryImpl implements DeckRepository {
                 id = :deckId
             AND
                 deleted = 0
+            """;
+
+
+    /**
+     * デッキIDに紐づくクイズの進捗を取得する
+     *
+     * @param deckId デッキID
+     * @return クイズの進捗
+     */
+    @Override
+    public int getRemainingQuestionCountByDeckId(Long deckId) {
+
+        // パラメータを設定
+        Map<String, Object> params = new HashMap<>();
+        params.put("deckId", deckId);
+        params.put("today", LocalDate.now());
+
+        // クエリを実行
+        Integer result = namedParameterJdbcTemplate.queryForObject(FIND_PROGRESS_BY_DECK_ID_SQL,
+                params, Integer.class);
+
+        return Optional.ofNullable(result).orElse(0);
+    }
+
+    private static final String FIND_PROGRESS_BY_DECK_ID_SQL = """
+            SELECT
+                COUNT(*)
+            FROM
+                words
+            WHERE
+                deck_id = :deckId
+                and next_practice_date <= :today
+                and deleted = 0
             """;
 }
