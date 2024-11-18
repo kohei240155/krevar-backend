@@ -14,5 +14,5 @@ public class DeckListResponse {
   private List<DeckInfo> deckInfo;
 
   /** 合計デッキ数 */
-  private int totalDeckCount;
+  private int userDeckCount;
 }
