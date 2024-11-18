@@ -44,6 +44,7 @@ public class DeckServiceImpl implements DeckService {
       DeckInfo deckInfo = new DeckInfo();
       deckInfo.setId(deck.getId());
       deckInfo.setDeckName(deck.getDeckName());
+      // TODO: デッキの数だけ残りの問題数を取得するSQLが実行されるのでパフォーマンス改善の余地がある
       int remainingQuestionCount = deckRepository.getRemainingQuestionCountByDeckId(deck.getId());
       deckInfo.setRemainingQuestionCount(remainingQuestionCount);
       deckInfoList.add(deckInfo);
