@@ -15,7 +15,9 @@ import com.example.krevar_backend.requestdto.DeckUpdateRequest;
 import com.example.krevar_backend.responsedto.DeckInfo;
 import com.example.krevar_backend.responsedto.DeckListResponse;
 import com.example.krevar_backend.service.DeckService;
+import jakarta.transaction.Transactional;
 
+@Transactional
 @Service
 public class DeckServiceImpl implements DeckService {
 
