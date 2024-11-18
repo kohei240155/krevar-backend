@@ -22,7 +22,7 @@ import com.example.krevar_backend.security.JwtTokenProvider;
 import com.example.krevar_backend.service.DeckService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/deck")
 public class DeckController {
 
   @Autowired
@@ -45,42 +45,24 @@ public class DeckController {
    * @param size
    * @return デッキ一覧
    */
-  @GetMapping("/deck")
+  @GetMapping
   public DeckListResponse getDeckList(HttpServletRequest httpServletRequest,
       @RequestParam(name = "page", defaultValue = "0") Long page,
       @RequestParam(name = "size", defaultValue = "10") Long size) {
 
-    logger.info("------------- デッキ一覧取得API開始 -------------");
+    logger.info("------------- Get Deck List API Start -------------");
 
     // ユーザーIDを取得
     String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
     Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
+    logger.info("Request Info: UserId={}, Page={}, Size={}", userId, page, size);
+
     DeckListResponse decks = deckService.getDeckList(userId, page, size);
 
-    logger.info("------------- デッキ一覧取得API終了 -------------");
+    logger.info("------------- Get Deck List API End -------------");
 
     return decks;
-  }
-
-  /**
-   * デッキIDからデッキを取得
-   *
-   * @param deckId
-   * @return デッキ
-   */
-  @GetMapping("/deck/{deckId}")
-  public DeckInfo getDeckById(HttpServletRequest httpServletRequest,
-      @PathVariable("deckId") Long deckId) {
-
-    logger.info("------------- デッキIDからデッキ取得API開始 -------------");
-
-    // デッキを取得
-    DeckInfo deck = deckService.getDeck(deckId);
-
-    logger.info("------------- デッキIDからデッキ取得API終了 -------------");
-
-    return deck;
   }
 
   /**
@@ -90,21 +72,43 @@ public class DeckController {
    * @param deckCreateRequest
    * @return デッキ作成成功メッセージ
    */
-  @PostMapping("/deck")
+  @PostMapping
   public String createDeck(HttpServletRequest httpServletRequest,
       @RequestBody DeckCreateRequest deckCreateRequest) {
 
-    logger.info("------------- デッキ作成API開始 -------------");
+    logger.info("------------- Create Deck API Start -------------");
 
     // ユーザーIDを取得
     String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
     Long userId = jwtTokenProvider.getUserIdFromToken(token);
 
+    logger.info("Request Info: UserId={}, DeckCreateRequest={}", userId, deckCreateRequest);
+
     deckService.save(userId, deckCreateRequest);
 
-    logger.info("------------- デッキ作成API終了 -------------");
+    logger.info("------------- Create Deck API End -------------");
 
-    return "デッキの作成に成功しました";
+    return "Deck create success";
+  }
+
+  /**
+   * デッキIDからデッキを取得
+   *
+   * @param deckId
+   * @return デッキ
+   */
+  @GetMapping("/{deckId}")
+  public DeckInfo getDeckById(HttpServletRequest httpServletRequest,
+      @PathVariable("deckId") Long deckId) {
+
+    logger.info("------------- Get Deck By ID API Start -------------");
+
+    // デッキを取得
+    DeckInfo deck = deckService.getDeck(deckId);
+
+    logger.info("------------- Get Deck By ID API End -------------");
+
+    return deck;
   }
 
   /**
@@ -115,11 +119,11 @@ public class DeckController {
    * @param deckUpdateRequest
    * @return デッキ更新成功メッセージ
    */
-  @PutMapping("/deck/{deckId}")
+  @PutMapping("/{deckId}")
   public String updateDeck(HttpServletRequest httpServletRequest,
       @PathVariable("deckId") Long deckId, @RequestBody DeckUpdateRequest deckUpdateRequest) {
 
-    logger.info("------------- デッキ更新API開始 -------------");
+    logger.info("------------- Update Deck API Start -------------");
 
     // ユーザーIDを取得
     String token = jwtAuthorizationFilter.extractToken(httpServletRequest);
@@ -127,9 +131,9 @@ public class DeckController {
 
     deckService.update(userId, deckUpdateRequest, deckId);
 
-    logger.info("------------- デッキ更新API終了 -------------");
+    logger.info("------------- Update Deck API End -------------");
 
-    return "デッキの更新に成功しました";
+    return "Deck update success";
   }
 
   /**
@@ -139,16 +143,16 @@ public class DeckController {
    * @param deckId
    * @return デッキ削除成功メッセージ
    */
-  @DeleteMapping("/deck/{deckId}")
+  @DeleteMapping("/{deckId}")
   public String deleteDeck(HttpServletRequest httpServletRequest,
       @PathVariable("deckId") Long deckId) {
 
-    logger.info("------------- デッキ削除API開始 -------------");
+    logger.info("------------- Delete Deck API Start -------------");
 
     deckService.delete(deckId);
 
-    logger.info("------------- デッキ削除API終了 -------------");
+    logger.info("------------- Delete Deck API End -------------");
 
-    return "デッキの削除に成功しました";
+    return "Deck delete success";
   }
 }
