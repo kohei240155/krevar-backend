@@ -7,6 +7,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.lang.NonNull;
 import com.example.krevar_backend.entity.DeckEntity;
 
+/**
+ * デッキエンティティの行マッパー
+ */
 public class DeckEntityRowMapper implements RowMapper<DeckEntity> {
 
   @Override

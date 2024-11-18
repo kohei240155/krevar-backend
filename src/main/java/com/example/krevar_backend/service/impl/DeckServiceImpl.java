@@ -23,19 +23,23 @@ public class DeckServiceImpl implements DeckService {
   private DeckRepository deckRepository;
 
   /**
-   * ユーザーIDに紐づくデッキを取得する
+   * ユーザーIDに紐づくデッキ一覧を取得する
    *
    * @param userId ユーザーID
-   * @return デッキリスト
+   * @param page ページ番号
+   * @param size ページサイズ
+   * @return デッキ一覧
    */
   @Override
   public DeckListResponse getDeckList(Long userId, Long page, Long size) {
 
-    // デッキを取得
-    List<DeckEntity> decks = deckRepository.findByUserId(userId);
+    // デッキ一覧を取得
+    List<DeckEntity> decks = deckRepository.findDecksByUserId(userId);
 
+    // デッキ情報リストを作成
     List<DeckInfo> deckInfoList = new ArrayList<>();
 
+    // デッキ一覧をデッキ情報に変換
     for (DeckEntity deck : decks) {
       DeckInfo deckInfo = new DeckInfo();
       deckInfo.setId(deck.getId());
@@ -45,19 +49,17 @@ public class DeckServiceImpl implements DeckService {
       deckInfoList.add(deckInfo);
     }
 
-    DeckListResponse response = new DeckListResponse(deckInfoList, deckInfoList.size());
+    // 残りの問題数の値が多い順に並び替え
+    deckInfoList.sort(Comparator.comparingInt(DeckInfo::getRemainingQuestionCount).reversed());
 
-    // progressの値が多い順に並び替え
-    response.getDeckInfo()
-        .sort(Comparator.comparingInt(DeckInfo::getRemainingQuestionCount).reversed());
-
-    // ページネーション
+    // ページネーション処理
     Long offset = page * size;
     Long limit = size;
     List<DeckInfo> paginatedDeckInfo =
-        response.getDeckInfo().stream().skip(offset).limit(limit).collect(Collectors.toList());
+        deckInfoList.stream().skip(offset).limit(limit).collect(Collectors.toList());
 
-    response.setDeckInfo(paginatedDeckInfo);
+    // ページネーションしたデッキ情報を返却
+    DeckListResponse response = new DeckListResponse(paginatedDeckInfo, deckInfoList.size());
 
     return response;
   }

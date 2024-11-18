@@ -8,12 +8,12 @@ import com.example.krevar_backend.responsedto.DeckListResponse;
 public interface DeckService {
 
   /**
-   * ユーザーIDに紐づくデッキを取得する
+   * ユーザーIDに紐づくデッキ一覧を取得する
    *
    * @param userId ユーザーID
    * @param page ページ番号
    * @param limit ページサイズ
-   * @return デッキリスト
+   * @return デッキ一覧
    */
   DeckListResponse getDeckList(Long userId, Long page, Long limit);
 

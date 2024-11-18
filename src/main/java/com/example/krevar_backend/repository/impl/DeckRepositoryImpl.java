@@ -24,21 +24,21 @@ public class DeckRepositoryImpl implements DeckRepository {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     /**
-     * ユーザーIDに紐づくデッキを取得する
+     * ユーザーIDに紐づくデッキ一覧を取得する
      *
      * @param userId ユーザーID
-     * @return デッキリスト
+     * @return デッキ一覧
      */
     @Override
-    public List<DeckEntity> findByUserId(Long userId) {
+    public List<DeckEntity> findDecksByUserId(Long userId) {
         Map<String, Object> params = new HashMap<>();
         params.put("userId", userId);
-        List<DeckEntity> deck = namedParameterJdbcTemplate.query(FIND_BY_USER_ID_SQL, params,
+        List<DeckEntity> decks = namedParameterJdbcTemplate.query(FIND_DECKS_BY_USER_ID_SQL, params,
                 new DeckEntityRowMapper());
-        return deck;
+        return decks;
     }
 
-    private static final String FIND_BY_USER_ID_SQL = """
+    private static final String FIND_DECKS_BY_USER_ID_SQL = """
             SELECT
                 *
             FROM

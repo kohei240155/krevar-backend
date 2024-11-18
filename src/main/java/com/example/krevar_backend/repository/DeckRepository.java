@@ -11,9 +11,9 @@ public interface DeckRepository {
    * ユーザーIDに紐づくデッキを取得する
    *
    * @param userId ユーザーID
-   * @return デッキリスト
+   * @return デッキ一覧
    */
-  List<DeckEntity> findByUserId(Long userId);
+  List<DeckEntity> findDecksByUserId(Long userId);
 
   /**
    * デッキIDからデッキを取得する
