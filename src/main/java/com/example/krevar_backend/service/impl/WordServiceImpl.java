@@ -184,6 +184,7 @@ public class WordServiceImpl implements WordService {
    */
   @Override
   public void delete(Long wordId) {
+    // 単語を削除
     wordRepository.delete(wordId);
   }
 }
