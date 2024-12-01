@@ -43,9 +43,15 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         try {
             // トークンが有効な場合、認証情報を設定
             if (token != null && jwtTokenProvider.validateToken(token)) {
+
+                // トークンからユーザー情報を取得
                 String email = jwtTokenProvider.getEmailFromToken(token);
+
+                // 認証情報を設定
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(email, null, null);
+
+                // 認証情報をセキュリティコンテキストに設定
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (JwtException e) {
