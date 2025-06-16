@@ -16,8 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @RestController
 public class StripeWebhookController {
 
-    private static final String STRIPE_ENDPOINT_SECRET =
-            "whsec_55dd322250e8b885f05682f0cc39e8fe6018a77e7c19518ef245718d92f999e1"; // Webhookシークレット
+    private static final String STRIPE_ENDPOINT_SECRET = ""; // Webhookシークレット
 
     @Autowired
     private StripeWebhookService stripeWebhookService;
